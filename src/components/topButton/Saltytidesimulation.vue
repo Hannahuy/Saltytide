@@ -80,7 +80,7 @@ const toggleBox = (tab) => {
             tabName = '自定义绘制断面';
         }
         callUIInteraction({
-            function: '咸潮模拟/' + tabName,
+            function: '咸潮模拟_' + tabName,
         });
         console.log(tabName);
     }
