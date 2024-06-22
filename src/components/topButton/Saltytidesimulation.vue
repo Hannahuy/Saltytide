@@ -31,7 +31,7 @@
                     <span class="bottombox-slider-span">{{ formattedTime }}</span>
                 </div>
                 <el-slider :step="30" v-model="timePlay" :show-tooltip="false" :min="min" :max="max"
-                    style="position: relative; z-index: 1;width:1600px;">
+                    style="position: relative; z-index: 1;width:1600px;" @change="gettimePlay">
                 </el-slider>
             </div>
             <div class="bottombox-timespan">
@@ -90,9 +90,16 @@ const toggleBox = (tab) => {
 
 
 const Backoff = () => {
-    timePlay.value = dayjs(timePlay.value).subtract(3, 'hour').valueOf();
+    const previousTime = timePlay.value;
+    timePlay.value = dayjs(previousTime).subtract(3, 'hour').valueOf();
+    callUIInteraction({
+        function: '咸潮模拟时间轴倒退/' + dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'),
+    });
+    console.log("倒退:", dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'));
 }
+let previousPlayState = '';
 const togglePlay = () => {
+    previousPlayState = activePlay.value;
     activePlay.value = activePlay.value === 'play' ? '' : 'play';
     if (activePlay.value === 'play') {
         let interval = setInterval(() => {
@@ -104,8 +111,14 @@ const togglePlay = () => {
     }
 }
 const Fastforward = () => {
-    timePlay.value = dayjs(timePlay.value).add(3, 'hour').valueOf();
+    const previousTime = timePlay.value;
+    timePlay.value = dayjs(previousTime).add(3, 'hour').valueOf();
+    callUIInteraction({
+        function: '咸潮模拟时间轴快进/' + dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'),
+    });
+    console.log("快进:", dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'));
 }
+
 const min = ref(dayjs().startOf('day').valueOf());
 const max = ref(dayjs().endOf('day').valueOf());
 
@@ -146,19 +159,38 @@ const style = computed(() => {
         paddingLeft: `${left}%`,
     };
 });
-
 watch(timePick, (newVal) => {
     const selectedDate = dayjs(newVal);
+    const formattedDate = selectedDate.format('YYYY-MM-DD');
+    callUIInteraction({
+        function: '咸潮模拟选择时间/' + formattedDate,
+    });
     min.value = selectedDate.startOf('day').valueOf();
     max.value = selectedDate.endOf('day').valueOf();
     timePlay.value = selectedDate.startOf('day').valueOf();
 });
+watch(timePlay, (newVal) => {
+    const currentTime = dayjs(newVal);
+    if (currentTime.minute() === 0 && currentTime.second() === 0) {
+        callUIInteraction({
+        function: '咸潮模拟时间轴移动时间/' + currentTime.format('YYYY-MM-DD HH:mm:ss'),
+        });
+        console.log(currentTime.format('YYYY-MM-DD HH:mm:ss'));
+    }
+});
+const gettimePlay = (e) => {
+    const clickedTime = dayjs(e).format('YYYY-MM-DD HH:mm:ss');
+    callUIInteraction({
+        function: '咸潮模拟时间轴鼠标点击时间/' + clickedTime,
+    });
+    console.log(clickedTime);
+}
 const firstSpanText = ref('');
 const secondSpanText = ref('');
 
 const anewtop = () => {
     callUIInteraction({
-        function: '咸潮模拟河道中心断面/重新绘制',
+        function: '河道中心断面_重新绘制',
     });
 }
 const finishtop = () => {
@@ -166,12 +198,12 @@ const finishtop = () => {
     firstSpanText.value = '河道中心断面';
     secondSpanText.value = 'river center section';
     callUIInteraction({
-        function: '咸潮模拟河道中心断面/完成',
+        function: '河道中心断面_完成',
     });
 }
 const anewbottom = () => {
     callUIInteraction({
-        function: '咸潮模拟自定义绘制断面/重新绘制',
+        function: '自定义绘制断面_重新绘制',
     });
 }
 const finishbottom = () => {
@@ -179,7 +211,7 @@ const finishbottom = () => {
     firstSpanText.value = '自定义绘制断面';
     secondSpanText.value = 'Customize section';
     callUIInteraction({
-        function: '咸潮模拟河道中心断面/完成',
+        function: '自定义绘制断面_完成',
     });
 }
 
