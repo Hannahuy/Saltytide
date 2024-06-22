@@ -157,20 +157,30 @@ const firstSpanText = ref('');
 const secondSpanText = ref('');
 
 const anewtop = () => {
-
+    callUIInteraction({
+        function: '咸潮模拟河道中心断面/重新绘制',
+    });
 }
 const finishtop = () => {
     showEcharts.value = true;
     firstSpanText.value = '河道中心断面';
     secondSpanText.value = 'river center section';
+    callUIInteraction({
+        function: '咸潮模拟河道中心断面/完成',
+    });
 }
 const anewbottom = () => {
-
+    callUIInteraction({
+        function: '咸潮模拟自定义绘制断面/重新绘制',
+    });
 }
 const finishbottom = () => {
     showEcharts.value = true;
     firstSpanText.value = '自定义绘制断面';
     secondSpanText.value = 'Customize section';
+    callUIInteraction({
+        function: '咸潮模拟河道中心断面/完成',
+    });
 }
 
 const closeEcharts = () => {
