@@ -1,0 +1,549 @@
+<template>
+    <div class="leftbox">
+        <div class="leftbox-top">
+            <div class="Weather-list-top">
+                <div class="Weather-list-top-left">
+                    <span>{{ currentTime }}</span>
+                    <span>{{ currentDate }}</span>
+                </div>
+                <div class="Weather-list-top-right">
+                    <span>是否实时</span>
+                    <el-switch style="margin-left: 20px;" v-model="swtichvalue" inline-prompt active-text="ON"
+                        inactive-text="OFF" @change="handleswtich" />
+                </div>
+            </div>
+            <div class="leftbox-top-title" style="margin-top: 20px;">
+                <span>天气模拟</span>
+                <span>Weather simulation</span>
+            </div>
+            <div class="Weather-type-icon">
+                <img src="../../assets/img/weather_sunny_icon.png" alt="Sunny"
+                    :class="{ 'selected': selectedIcon === 'sunny' }" @click="selectIcon('sunny')" />
+                <img src="../../assets/img/heavyrain.png" alt="Heavy Rain"
+                    :class="{ 'selected': selectedIcon === 'heavyrain' }" @click="selectIcon('heavyrain')" />
+                <img src="../../assets/img/Mediumfog.png" alt="Medium Fog"
+                    :class="{ 'selected': selectedIcon === 'fog' }" @click="selectIcon('fog')" />
+            </div>
+            <div class="Weather-type-icon-detailed">
+                <img :src="weatherone" alt="" :class="{ 'selected': selectedIconDetail === 'sunnyDetail' }"
+                    @click="selectDetailIcon('sunnyDetail')" />
+                <img :src="weathertwo" alt="" :class="{ 'selected': selectedIconDetail === 'heavyrainDetail' }"
+                    @click="selectDetailIcon('heavyrainDetail')" />
+                <img :src="weatherthree" alt="" :class="{ 'selected': selectedIconDetail === 'fogDetail' }"
+                    @click="selectDetailIcon('fogDetail')" />
+            </div>
+            <div class="leftbox-top-content">
+                <span>风强度</span>
+                <img src="../../assets/img/small_icon.png" alt="" class="imgbutton" @click="decreaseintensity">
+                <el-slider v-model="Windintensity" style="width: 240px;margin-left: 20px;" @change="getWindintensity" />
+                <img src="../../assets/img/big_icon.png" alt="" class="imgbutton" @click="addintensity">
+            </div>
+            <div class="leftbox-top-content">
+                <span style="margin-left: 12px;">风向</span>
+                <img src="../../assets/img/small_icon.png" alt="" class="imgbutton" @click="decreasedirection">
+                <el-slider v-model="Winddirection" style="width: 240px;margin-left: 20px;" @change="getWinddirection" />
+                <img src="../../assets/img/big_icon.png" alt="" class="imgbutton" @click="adddirection">
+            </div>
+        </div>
+        <div class="leftbox-middle">
+            <div class="leftbox-top-title">
+                <span>时间模拟</span>
+                <span>Time simulation</span>
+            </div>
+            <div class="leftbox-middle-title">
+                <span>1:00h</span>
+                <span>6:00h</span>
+                <span>12:00h</span>
+                <span>18:00h</span>
+                <span>24:00h</span>
+            </div>
+            <div class="leftbox-middle-content">
+                <img src="../../assets/img/small_icon.png" alt="" class="imgbutton" @click="decreasetime">
+                <el-slider v-model="timevalue" style="width: 320px;margin-left: 20px;" :min="1" :max="24" :step="1"
+                    @input="updateTimeDisplay" @change="gettimevalue" />
+                <img src="../../assets/img/big_icon.png" alt="" class="imgbutton" @click="addtime">
+            </div>
+            <div class="leftbox-middle-bottom">
+                <div class="leftbox-middle-bottom-content">
+                    <img src="../../assets/img/morning_icon.png" alt="">
+                    <span>早晨</span>
+                </div>
+                <div class="leftbox-middle-bottom-content">
+                    <img src="../../assets/img/noon_icon.png" alt="">
+                    <span>中午</span>
+                </div>
+                <div class="leftbox-middle-bottom-content">
+                    <img src="../../assets/img/night_icon.png" alt="">
+                    <span>傍晚</span>
+                </div>
+                <div class="leftbox-middle-bottom-content">
+                    <img src="../../assets/img/evening_icon.png" alt="">
+                    <span>晚上</span>
+                </div>
+            </div>
+        </div>
+        <div class="leftbox-bottom">
+            <div class="leftbox-top-title">
+                <span>海浪模拟</span>
+                <span>Ocean wave simulation</span>
+            </div>
+            <div class="leftbox-bottom-content">
+                <span>海浪高度</span>
+                <img src="../../assets/img/small_icon.png" alt="" class="imgbutton" @click="decreaseoceanWave">
+                <el-slider v-model="oceanWavevalue" style="width: 240px;margin-left: 20px;"
+                    @change="getoceanWavevalue" />
+                <img src="../../assets/img/big_icon.png" alt="" class="imgbutton" @click="addoceanWave">
+            </div>
+        </div>
+    </div>
+</template>
+
+<script setup>
+import { ref, onMounted } from 'vue';
+import { callUIInteraction } from "../../module/webrtcVideo/webrtcVideo.js";
+
+const currentTime = ref('');
+const currentDate = ref('');
+const timevalue = ref(1);
+
+const updateTimeDisplay = (value) => {
+    timevalue.value = value;
+};
+const Windintensity = ref(0);
+const Winddirection = ref(0);
+const oceanWavevalue = ref(0);
+
+const updateTime = () => {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    currentTime.value = `${hours}:${minutes}:${seconds}`;
+
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    currentDate.value = `${year}/${month}/${day}`;
+};
+
+updateTime();
+setInterval(updateTime, 1000);
+const swtichvalue = ref(false);
+const handleswtich = (e) => {
+    callUIInteraction({
+        function: '是否实时/' + e,
+    });
+}
+const weatherIcons = {
+    '/src/assets/img/weather_sunny_icon.png': '晴天',
+    '/src/assets/img/sunnycloudy.png': '晴转多云',
+    '/src/assets/img/cloudy.png': '多云',
+    '/src/assets/img/lightrain.png': '小雨',
+    '/src/assets/img/heavyrain.png': '中雨',
+    '/src/assets/img/rainstorm.png': '暴雨',
+    '/src/assets/img/Lightfog.png': '小雾',
+    '/src/assets/img/Mediumfog.png': '中雾',
+    '/src/assets/img/Fog.png': '大雾'
+};
+const weatherone = ref('/src/assets/img/weather_sunny_icon.png')
+const weathertwo = ref('/src/assets/img/sunnycloudy.png')
+const weatherthree = ref('/src/assets/img/cloudy.png')
+const selectedIcon = ref(sessionStorage.getItem('selectedIcon') || 'sunny');
+const selectedIconDetail = ref(sessionStorage.getItem('selectedIconDetail') || 'sunnyDetail');
+
+const selectIcon = (icon) => {
+    selectedIcon.value = icon;
+    sessionStorage.setItem('selectedIcon', icon);
+    updateWeatherDetails(icon);
+};
+
+const selectDetailIcon = (icon) => {
+    selectedIconDetail.value = icon;
+    sessionStorage.setItem('selectedIconDetail', icon);
+    let selectedWeatherIcon = '';
+    switch (icon) {
+        case 'sunnyDetail':
+            selectedWeatherIcon = weatherIcons[weatherone.value];
+            break;
+        case 'heavyrainDetail':
+            selectedWeatherIcon = weatherIcons[weathertwo.value];
+            break;
+        case 'fogDetail':
+            selectedWeatherIcon = weatherIcons[weatherthree.value];
+            break;
+        default:
+            break;
+    }
+    console.log('Selected weather icon:', selectedWeatherIcon);
+    callUIInteraction({
+        function: '选中的天气详情图标/' + selectedWeatherIcon,
+    });
+};
+
+const updateWeatherDetails = (icon) => {
+    switch (icon) {
+        case 'sunny':
+            weatherone.value = '/src/assets/img/weather_sunny_icon.png';
+            weathertwo.value = '/src/assets/img/sunnycloudy.png';
+            weatherthree.value = '/src/assets/img/cloudy.png';
+            selectedIconDetail.value = 'sunnyDetail';
+            callUIInteraction({
+                function: '选中的天气详情图标/晴天'
+            });
+            console.log('晴天');
+            break;
+        case 'heavyrain':
+            weatherone.value = '/src/assets/img/lightrain.png';
+            weathertwo.value = '/src/assets/img/heavyrain.png';
+            weatherthree.value = '/src/assets/img/rainstorm.png';
+            selectedIconDetail.value = 'heavyrainDetail';
+            callUIInteraction({
+                function: '选中的天气详情图标/中雨'
+            });
+            console.log('中雨');
+            break;
+        case 'fog':
+            weatherone.value = '/src/assets/img/Lightfog.png';
+            weathertwo.value = '/src/assets/img/Mediumfog.png';
+            weatherthree.value = '/src/assets/img/Fog.png';
+            selectedIconDetail.value = 'fogDetail';
+            callUIInteraction({
+                function: '选中的天气详情图标/大雾'
+            });
+            console.log('大雾');
+            break;
+        default:
+            break;
+    }
+    sessionStorage.setItem('weatherone', weatherone.value);
+    sessionStorage.setItem('weathertwo', weathertwo.value);
+    sessionStorage.setItem('weatherthree', weatherthree.value);
+};
+
+const addtime = () => {
+    timevalue.value++;
+    callUIInteraction({
+        function: '虚拟仿真时间模拟/' + timevalue.value,
+    });
+}
+const decreasetime = () => {
+    timevalue.value--;
+    callUIInteraction({
+        function: '虚拟仿真时间模拟/' + timevalue.value,
+    });
+}
+const addintensity = () => {
+    Windintensity.value++;
+    callUIInteraction({
+        function: '虚拟仿真风强度/' + Windintensity.value,
+    });
+}
+const decreaseintensity = () => {
+    Windintensity.value--;
+    callUIInteraction({
+        function: '虚拟仿真风强度/' + Windintensity.value,
+    });
+}
+const adddirection = () => {
+    Winddirection.value++;
+    callUIInteraction({
+        function: '虚拟仿真风向/' + Winddirection.value,
+    });
+}
+const decreasedirection = () => {
+    Winddirection.value--;
+    callUIInteraction({
+        function: '虚拟仿真风向/' + Winddirection.value,
+    });
+}
+const addoceanWave = () => {
+    oceanWavevalue.value++;
+    callUIInteraction({
+        function: '虚拟仿真海浪高度/' + oceanWavevalue.value,
+    });
+}
+const decreaseoceanWave = () => {
+    oceanWavevalue.value--;
+    callUIInteraction({
+        function: '虚拟仿真海浪高度/' + oceanWavevalue.value,
+    });
+}
+const getWindintensity = (e) => {
+    callUIInteraction({
+        function: '虚拟仿真风强度/' + e,
+    });
+}
+const getWinddirection = (e) => {
+    callUIInteraction({
+        function: '虚拟仿真风向/' + e,
+    });
+}
+const gettimevalue = (e) => {
+    callUIInteraction({
+        function: '虚拟仿真时间模拟/' + e,
+    });
+}
+const getoceanWavevalue = (e) => {
+    callUIInteraction({
+        function: '虚拟仿真海浪高度/' + e,
+    });
+}
+
+onMounted(() => {
+    if (sessionStorage.getItem('weatherone')) {
+        weatherone.value = sessionStorage.getItem('weatherone');
+    }
+    if (sessionStorage.getItem('weathertwo')) {
+        weathertwo.value = sessionStorage.getItem('weathertwo');
+    }
+    if (sessionStorage.getItem('weatherthree')) {
+        weatherthree.value = sessionStorage.getItem('weatherthree');
+    }
+    if (!sessionStorage.getItem('selectedIconDetail')) {
+        const iconPath = selectedIconDetail.value === 'sunnyDetail' ? weatherone.value
+            : selectedIconDetail.value === 'heavyrainDetail' ? weathertwo.value
+                : selectedIconDetail.value === 'fogDetail' ? weatherthree.value
+                    : '';
+
+        if (iconPath && weatherIcons[iconPath]) {
+            callUIInteraction({
+                function: '选中的天气详情图标/' + weatherIcons[iconPath],
+            });
+            console.log('selectedIconDetail:', weatherIcons[iconPath]);
+        } else {
+            console.log('selectedIconDetail: 未知');
+        }
+    } else {
+        const iconPath = selectedIconDetail.value === 'sunnyDetail' ? weatherone.value
+            : selectedIconDetail.value === 'heavyrainDetail' ? weathertwo.value
+                : selectedIconDetail.value === 'fogDetail' ? weatherthree.value
+                    : '';
+        if (iconPath && weatherIcons[iconPath]) {
+            callUIInteraction({
+                function: '选中的天气详情图标/' + weatherIcons[iconPath],
+            });
+            console.log('selectedIconDetail:', weatherIcons[iconPath]);
+        }
+    }
+});
+</script>
+
+
+<style scoped>
+.leftbox {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    left: 20px;
+    top: 120px;
+}
+
+.leftbox-top {
+    width: 460px;
+    height: 410px;
+    background-image: url('../../assets/img/module_back.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.leftbox-top-title {
+    width: 418px;
+    height: 33px;
+    background-image: url('../../assets/img/module_titleback.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+.leftbox-top-title span {
+    font-family: PangMenZhengDao;
+    font-size: 20px;
+    color: #B7CFFC;
+    margin-left: 40px;
+}
+
+.leftbox-top-title span:nth-child(2) {
+    font-size: 12px;
+}
+
+.leftbox-top-content {
+    /* width: 100%; */
+    height: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #E6E6E6;
+    font-size: 14px;
+    margin-top: 20px;
+}
+
+.leftbox-middle {
+    width: 460px;
+    height: 228px;
+    background-image: url('../../assets/img/module_back_row.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    margin-top: 20px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.leftbox-middle-title {
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    margin-top: 20px;
+    font-size: 14px;
+    /* padding: 0 10px 0 30px; */
+}
+
+.leftbox-middle-content {
+    /* width: 100%; */
+    height: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #E6E6E6;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.leftbox-middle-bottom {
+    /* width: 100%; */
+    color: white;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    margin-top: 5px;
+}
+
+.leftbox-middle-bottom-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.leftbox-bottom {
+    width: 460px;
+    height: 128px;
+    background-image: url('../../assets/img/module_back_row.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    margin-top: 20px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.Weather-list-top {
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.Weather-list-top-left span:first-child {
+    color: #B7CFFC;
+    font-size: 20px;
+}
+
+.Weather-list-top-left span:last-child {
+    color: #B7CFFC;
+    font-size: 14px;
+    margin-left: 10px;
+}
+
+.Weather-list-top-right {
+    margin-left: 95px;
+}
+
+.Weather-list-top-right span {
+    font-family: SourceHanSansCN, SourceHanSansCN;
+    font-weight: 500;
+    font-size: 16px;
+    color: #B7CFFC;
+}
+
+.Weather-list-top-right :deep(.el-switch__core) {
+    border-radius: 0;
+    border: 1px solid #28E3F2;
+}
+
+.Weather-list-top-right :deep(.el-switch__core .el-switch__action) {
+    border-radius: 0;
+    background-color: #28E3F2;
+}
+
+.Weather-list-top-right :deep(.el-switch.is-checked .el-switch__core .el-switch__inner) {
+    background-color: #08415c;
+}
+
+.Weather-list-top-right :deep(.el-switch__core .el-switch__inner) {
+    border: 1px solid #08415c;
+    background-color: #08415c;
+}
+
+.Weather-list-top-right :deep(.el-switch.is-checked .el-switch__core) {
+    background-color: #08415c;
+}
+
+.Weather-list-top-right :deep(.el-switch__core .el-switch__inner .is-text) {
+    color: #AFDFFD;
+}
+
+.Weather-type-icon,
+.Weather-type-icon-detailed {
+    padding-left: 40px;
+    padding-right: 40px;
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.Weather-type-icon img,
+.Weather-type-icon-detailed img {
+    cursor: pointer;
+}
+
+.selected {
+    filter: invert(0) sepia(1) saturate(20) hue-rotate(147.6deg) brightness(0.92);
+}
+
+.leftbox-bottom-content {
+    /* width: 100%; */
+    height: calc(108px - 33px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #E6E6E6;
+    font-size: 14px;
+}
+
+.imgbutton {
+    margin-left: 20px;
+    cursor: pointer;
+}
+
+:deep(.el-slider__runway) {
+    height: 2px;
+    background-color: #00A8D2;
+}
+
+:deep(.el-slider__bar) {
+    height: 2px;
+    background-color: #00A8D2;
+}
+
+:deep(.el-slider__button) {
+    background-color: transparent;
+    border: 0;
+    background-image: url('../../assets/img/slipPoint_icon.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    margin-bottom: 4px;
+}
+</style>
