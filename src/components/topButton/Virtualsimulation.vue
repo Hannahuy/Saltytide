@@ -18,31 +18,31 @@
             </div>
             <div class="Weather-type-icon">
                 <img src="../../assets/img/weather_sunny_icon.png" alt="Sunny"
-                    :class="{ 'selected': selectedIcon === 'sunny' }" @click="selectIcon('sunny')" />
+                    :class="{ 'selected': selectedIcon === 'sunny' , 'disabled': swtichvalue}" @click="selectIcon('sunny')" />
                 <img src="../../assets/img/heavyrain.png" alt="Heavy Rain"
-                    :class="{ 'selected': selectedIcon === 'heavyrain' }" @click="selectIcon('heavyrain')" />
+                    :class="{ 'selected': selectedIcon === 'heavyrain' , 'disabled': swtichvalue}" @click="selectIcon('heavyrain')" />
                 <img src="../../assets/img/Mediumfog.png" alt="Medium Fog"
-                    :class="{ 'selected': selectedIcon === 'fog' }" @click="selectIcon('fog')" />
+                    :class="{ 'selected': selectedIcon === 'fog' , 'disabled': swtichvalue}" @click="selectIcon('fog')" />
             </div>
             <div class="Weather-type-icon-detailed">
-                <img :src="weatherone" alt="" :class="{ 'selected': selectedIconDetail === 'sunnyDetail' }"
+                <img :src="weatherone" alt="" :class="{ 'selected': selectedIconDetail === 'sunnyDetail', 'disabled': swtichvalue }"
                     @click="selectDetailIcon('sunnyDetail')" />
-                <img :src="weathertwo" alt="" :class="{ 'selected': selectedIconDetail === 'heavyrainDetail' }"
+                <img :src="weathertwo" alt="" :class="{ 'selected': selectedIconDetail === 'heavyrainDetail' , 'disabled': swtichvalue}"
                     @click="selectDetailIcon('heavyrainDetail')" />
-                <img :src="weatherthree" alt="" :class="{ 'selected': selectedIconDetail === 'fogDetail' }"
+                <img :src="weatherthree" alt="" :class="{ 'selected': selectedIconDetail === 'fogDetail' , 'disabled': swtichvalue}"
                     @click="selectDetailIcon('fogDetail')" />
             </div>
             <div class="leftbox-top-content">
                 <span>风强度</span>
-                <img src="../../assets/img/small_icon.png" alt="" class="imgbutton" @click="decreaseintensity">
-                <el-slider v-model="Windintensity" style="width: 240px;margin-left: 20px;" @change="getWindintensity" />
-                <img src="../../assets/img/big_icon.png" alt="" class="imgbutton" @click="addintensity">
+                <img src="../../assets/img/small_icon.png" alt="" :class="{ 'disabled': swtichvalue }" class="imgbutton" @click="decreaseintensity">
+                <el-slider v-model="Windintensity" :disabled="swtichvalue" style="width: 240px;margin-left: 20px;" @change="getWindintensity" />
+                <img src="../../assets/img/big_icon.png" :class="{ 'disabled': swtichvalue }" alt="" class="imgbutton" @click="addintensity">
             </div>
             <div class="leftbox-top-content">
                 <span style="margin-left: 12px;">风向</span>
-                <img src="../../assets/img/small_icon.png" alt="" class="imgbutton" @click="decreasedirection">
-                <el-slider v-model="Winddirection" style="width: 240px;margin-left: 20px;" @change="getWinddirection" />
-                <img src="../../assets/img/big_icon.png" alt="" class="imgbutton" @click="adddirection">
+                <img src="../../assets/img/small_icon.png" :class="{ 'disabled': swtichvalue }" alt="" class="imgbutton" @click="decreasedirection">
+                <el-slider v-model="Winddirection" :disabled="swtichvalue" style="width: 240px;margin-left: 20px;" @change="getWinddirection" />
+                <img src="../../assets/img/big_icon.png" :class="{ 'disabled': swtichvalue }" alt="" class="imgbutton" @click="adddirection">
             </div>
         </div>
         <div class="leftbox-middle">
@@ -58,10 +58,10 @@
                 <span>24:00h</span>
             </div>
             <div class="leftbox-middle-content">
-                <img src="../../assets/img/small_icon.png" alt="" class="imgbutton" @click="decreasetime">
-                <el-slider v-model="timevalue" style="width: 320px;margin-left: 20px;" :min="1" :max="24" :step="1"
+                <img src="../../assets/img/small_icon.png" :class="{ 'disabled': swtichvalue }" alt="" class="imgbutton" @click="decreasetime">
+                <el-slider v-model="timevalue" :disabled="swtichvalue" style="width: 320px;margin-left: 20px;" :min="1" :max="24" :step="1"
                     @input="updateTimeDisplay" @change="gettimevalue" />
-                <img src="../../assets/img/big_icon.png" alt="" class="imgbutton" @click="addtime">
+                <img src="../../assets/img/big_icon.png" :class="{ 'disabled': swtichvalue }" alt="" class="imgbutton" @click="addtime">
             </div>
             <div class="leftbox-middle-bottom">
                 <div class="leftbox-middle-bottom-content">
@@ -104,14 +104,15 @@ import { callUIInteraction } from "../../module/webrtcVideo/webrtcVideo.js";
 
 const currentTime = ref('');
 const currentDate = ref('');
-const timevalue = ref(1);
+const timevalue = ref(sessionStorage.getItem('timevalue') ? parseInt(sessionStorage.getItem('timevalue')) : 1);
+const Windintensity = ref(sessionStorage.getItem('Windintensity') ? parseInt(sessionStorage.getItem('Windintensity')) : 0);
+const Winddirection = ref(sessionStorage.getItem('Winddirection') ? parseInt(sessionStorage.getItem('Winddirection')) : 0);
+const oceanWavevalue = ref(sessionStorage.getItem('oceanWavevalue') ? parseInt(sessionStorage.getItem('oceanWavevalue')) : 0);
 
 const updateTimeDisplay = (value) => {
     timevalue.value = value;
+    sessionStorage.setItem('timevalue', value);
 };
-const Windintensity = ref(0);
-const Winddirection = ref(0);
-const oceanWavevalue = ref(0);
 
 const updateTime = () => {
     const now = new Date();
@@ -134,6 +135,7 @@ const handleswtich = (e) => {
         function: '是否实时/' + e,
     });
 }
+
 const weatherIcons = {
     '/src/assets/img/weather_sunny_icon.png': '晴天',
     '/src/assets/img/sunnycloudy.png': '晴转多云',
@@ -145,6 +147,7 @@ const weatherIcons = {
     '/src/assets/img/Mediumfog.png': '中雾',
     '/src/assets/img/Fog.png': '大雾'
 };
+
 const weatherone = ref('/src/assets/img/weather_sunny_icon.png')
 const weathertwo = ref('/src/assets/img/sunnycloudy.png')
 const weatherthree = ref('/src/assets/img/cloudy.png')
@@ -174,7 +177,6 @@ const selectDetailIcon = (icon) => {
         default:
             break;
     }
-    console.log('Selected weather icon:', selectedWeatherIcon);
     callUIInteraction({
         function: '选中的天气详情图标/' + selectedWeatherIcon,
     });
@@ -190,7 +192,6 @@ const updateWeatherDetails = (icon) => {
             callUIInteraction({
                 function: '选中的天气详情图标/晴天'
             });
-            console.log('晴天');
             break;
         case 'heavyrain':
             weatherone.value = '/src/assets/img/lightrain.png';
@@ -200,7 +201,6 @@ const updateWeatherDetails = (icon) => {
             callUIInteraction({
                 function: '选中的天气详情图标/中雨'
             });
-            console.log('中雨');
             break;
         case 'fog':
             weatherone.value = '/src/assets/img/Lightfog.png';
@@ -210,7 +210,6 @@ const updateWeatherDetails = (icon) => {
             callUIInteraction({
                 function: '选中的天气详情图标/大雾'
             });
-            console.log('大雾');
             break;
         default:
             break;
@@ -222,72 +221,95 @@ const updateWeatherDetails = (icon) => {
 
 const addtime = () => {
     timevalue.value++;
+    sessionStorage.setItem('timevalue', timevalue.value);
     callUIInteraction({
         function: '虚拟仿真时间模拟/' + timevalue.value,
     });
-}
+};
+
 const decreasetime = () => {
     timevalue.value--;
+    sessionStorage.setItem('timevalue', timevalue.value);
     callUIInteraction({
         function: '虚拟仿真时间模拟/' + timevalue.value,
     });
-}
+};
+
 const addintensity = () => {
     Windintensity.value++;
+    sessionStorage.setItem('Windintensity', Windintensity.value);
     callUIInteraction({
         function: '虚拟仿真风强度/' + Windintensity.value,
     });
-}
+};
+
 const decreaseintensity = () => {
     Windintensity.value--;
+    sessionStorage.setItem('Windintensity', Windintensity.value);
     callUIInteraction({
         function: '虚拟仿真风强度/' + Windintensity.value,
     });
-}
+};
+
 const adddirection = () => {
     Winddirection.value++;
+    sessionStorage.setItem('Winddirection', Winddirection.value);
     callUIInteraction({
         function: '虚拟仿真风向/' + Winddirection.value,
     });
-}
+};
+
 const decreasedirection = () => {
     Winddirection.value--;
+    sessionStorage.setItem('Winddirection', Winddirection.value);
     callUIInteraction({
         function: '虚拟仿真风向/' + Winddirection.value,
     });
-}
+};
+
 const addoceanWave = () => {
     oceanWavevalue.value++;
+    sessionStorage.setItem('oceanWavevalue', oceanWavevalue.value);
     callUIInteraction({
         function: '虚拟仿真海浪高度/' + oceanWavevalue.value,
     });
-}
+};
+
 const decreaseoceanWave = () => {
     oceanWavevalue.value--;
+    sessionStorage.setItem('oceanWavevalue', oceanWavevalue.value);
     callUIInteraction({
         function: '虚拟仿真海浪高度/' + oceanWavevalue.value,
     });
-}
+};
+
 const getWindintensity = (e) => {
+    sessionStorage.setItem('Windintensity', e);
     callUIInteraction({
         function: '虚拟仿真风强度/' + e,
     });
-}
+};
+
 const getWinddirection = (e) => {
+    sessionStorage.setItem('Winddirection', e);
     callUIInteraction({
         function: '虚拟仿真风向/' + e,
     });
-}
+};
+
 const gettimevalue = (e) => {
+    sessionStorage.setItem('timevalue', e);
     callUIInteraction({
         function: '虚拟仿真时间模拟/' + e,
     });
-}
+};
+
 const getoceanWavevalue = (e) => {
+    sessionStorage.setItem('oceanWavevalue', e);
     callUIInteraction({
         function: '虚拟仿真海浪高度/' + e,
     });
-}
+};
 
 onMounted(() => {
     if (sessionStorage.getItem('weatherone')) {
@@ -309,9 +331,6 @@ onMounted(() => {
             callUIInteraction({
                 function: '选中的天气详情图标/' + weatherIcons[iconPath],
             });
-            console.log('selectedIconDetail:', weatherIcons[iconPath]);
-        } else {
-            console.log('selectedIconDetail: 未知');
         }
     } else {
         const iconPath = selectedIconDetail.value === 'sunnyDetail' ? weatherone.value
@@ -322,11 +341,11 @@ onMounted(() => {
             callUIInteraction({
                 function: '选中的天气详情图标/' + weatherIcons[iconPath],
             });
-            console.log('selectedIconDetail:', weatherIcons[iconPath]);
         }
     }
 });
 </script>
+
 
 
 <style scoped>
@@ -545,5 +564,9 @@ onMounted(() => {
     background-repeat: no-repeat;
     background-size: 100% 100%;
     margin-bottom: 4px;
+}
+.disabled {
+    pointer-events: none; /* 禁用鼠标事件 */
+    opacity: 0.6; /* 使元素半透明 */
 }
 </style>
