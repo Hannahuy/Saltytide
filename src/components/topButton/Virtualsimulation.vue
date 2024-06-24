@@ -59,8 +59,8 @@
             </div>
             <div class="leftbox-middle-content">
                 <img src="../../assets/img/small_icon.png" :class="{ 'disabled': swtichvalue }" alt="" class="imgbutton" @click="decreasetime">
-                <el-slider v-model="timevalue" :disabled="swtichvalue" style="width: 320px;margin-left: 20px;" :min="1" :max="24" :step="1"
-                    @input="updateTimeDisplay" @change="gettimevalue" />
+                <el-slider v-model="timevalue" :disabled="swtichvalue" style="width: 320px;margin-left: 20px;" :min="1" :max="86400" :step="1"
+                    @input="updateTimeDisplay" @change="gettimevalue" :show-tooltip="false" />
                 <img src="../../assets/img/big_icon.png" :class="{ 'disabled': swtichvalue }" alt="" class="imgbutton" @click="addtime">
             </div>
             <div class="leftbox-middle-bottom">
@@ -130,10 +130,25 @@ const updateTime = () => {
 updateTime();
 setInterval(updateTime, 1000);
 const swtichvalue = ref(false);
+let intervalId;
+
 const handleswtich = (e) => {
     callUIInteraction({
         function: '是否实时/' + e,
     });
+    if (e) {
+        const now = new Date();
+        const totalSeconds = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+        timevalue.value = totalSeconds;
+        callUIInteraction({
+            function: '虚拟仿真时间模拟/' + timevalue.value,
+        });
+        intervalId = setInterval(() => {
+            timevalue.value++;
+        }, 1000);
+    } else {
+        clearInterval(intervalId);
+    }
 }
 
 const weatherIcons = {
@@ -220,7 +235,7 @@ const updateWeatherDetails = (icon) => {
 };
 
 const addtime = () => {
-    timevalue.value++;
+    timevalue.value += 3600;
     sessionStorage.setItem('timevalue', timevalue.value);
     callUIInteraction({
         function: '虚拟仿真时间模拟/' + timevalue.value,
@@ -228,7 +243,7 @@ const addtime = () => {
 };
 
 const decreasetime = () => {
-    timevalue.value--;
+    timevalue.value -= 3600;
     sessionStorage.setItem('timevalue', timevalue.value);
     callUIInteraction({
         function: '虚拟仿真时间模拟/' + timevalue.value,
