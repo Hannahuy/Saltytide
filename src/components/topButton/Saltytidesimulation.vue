@@ -59,7 +59,7 @@
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import dayjs from 'dayjs'
 import * as echarts from "echarts";
-import { callUIInteraction } from "../../module/webrtcVideo/webrtcVideo.js";
+import { callUIInteraction , addResponseEventListener} from "../../module/webrtcVideo/webrtcVideo.js";
 
 const timePick = ref(new Date());
 const timePlay = ref(dayjs().startOf('day').valueOf())
@@ -69,23 +69,35 @@ const showEcharts = ref(false)
 let lastClickedTab = '';
 
 const toggleBox = (tab) => {
-    let tabName = '';
-    if (activeTab.value === tab && lastClickedTab === tab) {
+    if (activeTab.value === tab) {
         activeTab.value = '';
+        if (tab === 'top') {
+          callUIInteraction({
+            function: '咸潮模拟_河道中心断面/false',
+          });
+          console.log('咸潮模拟_河道中心断面/false');
+        } else if (tab === 'bottom') {
+          callUIInteraction({
+            function: '咸潮模拟_自定义绘制断面/false',
+          });
+          console.log('咸潮模拟_自定义绘制断面/false');
+        }
     } else {
         activeTab.value = tab;
+        let tabName = '';
         if (tab === 'top') {
             tabName = '河道中心断面';
         } else if (tab === 'bottom') {
             tabName = '自定义绘制断面';
         }
         callUIInteraction({
-            function: '咸潮模拟_' + tabName,
+            function: '咸潮模拟_' + tabName + '/true',
         });
-        console.log(tabName);
+        console.log('咸潮模拟_' + tabName + '/true');
     }
     lastClickedTab = tab;
 }
+
 
 
 
@@ -95,7 +107,7 @@ const Backoff = () => {
     callUIInteraction({
         function: '咸潮模拟时间轴/' + dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'),
     });
-    console.log("倒退:", dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'));
+    // console.log("倒退:", dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'));
 }
 let previousPlayState = '';
 const togglePlay = () => {
@@ -116,7 +128,7 @@ const Fastforward = () => {
     callUIInteraction({
         function: '咸潮模拟时间轴/' + dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'),
     });
-    console.log("快进:", dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'));
+    // console.log("快进:", dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'));
 }
 
 const min = ref(dayjs().startOf('day').valueOf());
@@ -175,7 +187,7 @@ watch(timePlay, (newVal) => {
         callUIInteraction({
         function: '咸潮模拟时间轴/' + currentTime.format('YYYY-MM-DD HH:mm:ss'),
         });
-        console.log(currentTime.format('YYYY-MM-DD HH:mm:ss'));
+        // console.log(currentTime.format('YYYY-MM-DD HH:mm:ss'));
     }
 });
 const gettimePlay = (e) => {
@@ -186,7 +198,7 @@ const gettimePlay = (e) => {
     callUIInteraction({
         function: '咸潮模拟时间轴/' + clickedTime,
     });
-    console.log(clickedTime);
+    // console.log(clickedTime);
 }
 const firstSpanText = ref('');
 const secondSpanText = ref('');
@@ -211,13 +223,11 @@ const anewbottom = () => {
     });
 }
 const finishbottom = () => {
-    showEcharts.value = true;
     firstSpanText.value = '自定义绘制断面';
     secondSpanText.value = 'Customize section';
     callUIInteraction({
         function: '自定义绘制断面_完成',
     });
-    init();
 }
 
 const closeEcharts = () => {
@@ -436,8 +446,12 @@ const init = () => {
     };
     waterdata.setOption(options);
 }
+const myHandleResponseFunction = (data) => {
+  console.log(data);
+}
 onMounted(() => {
     // init();
+    addResponseEventListener("handle_responses", myHandleResponseFunction);
 });
 onBeforeUnmount(() => {
     if (waterdata) {
