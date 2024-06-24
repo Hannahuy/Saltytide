@@ -1,0 +1,70 @@
+{
+    "Statistic": {
+        "BZ": 3,
+        "LL": 2,
+        "SW": 4,
+        "YD": 3
+    },
+    "Table": [
+        {
+            "DeviceName": "BZ01",
+            "DeviceType": "泵站监测",
+            "OnlineSituation": "在线"
+        },
+        {
+            "DeviceName": "BZ02",
+            "DeviceType": "泵站监测",
+            "OnlineSituation": "在线"
+        },
+        {
+            "DeviceName": "BZ03",
+            "DeviceType": "泵站监测",
+            "OnlineSituation": "在线"
+        },
+        {
+            "DeviceName": "LL01",
+            "DeviceType": "流量监测",
+            "OnlineSituation": "在线"
+        },
+        {
+            "DeviceName": "LL02",
+            "DeviceType": "流量监测",
+            "OnlineSituation": "在线"
+        },
+        {
+            "DeviceName": "SW01",
+            "DeviceType": "水位监测",
+            "OnlineSituation": "在线"
+        },
+        {
+            "DeviceName": "SW02",
+            "DeviceType": "水位监测",
+            "OnlineSituation": "在线"
+        },
+        {
+            "DeviceName": "SW03",
+            "DeviceType": "水位监测",
+            "OnlineSituation": "在线"
+        },
+        {
+            "DeviceName": "SW04",
+            "DeviceType": "水位监测",
+            "OnlineSituation": "在线"
+        },
+        {
+            "DeviceName": "YD01",
+            "DeviceType": "盐度监测",
+            "OnlineSituation": "在线"
+        },
+        {
+            "DeviceName": "YD02",
+            "DeviceType": "盐度监测",
+            "OnlineSituation": "在线"
+        },
+        {
+            "DeviceName": "YD03",
+            "DeviceType": "盐度监测",
+            "OnlineSituation": "在线"
+        }
+    ]
+}

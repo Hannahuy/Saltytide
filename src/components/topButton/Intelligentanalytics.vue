@@ -4,7 +4,7 @@
             <div class="leftbox-top-title">
                 <span>取水辅助</span>
                 <span>Intake aid</span>
-                <img class="closeimg" src="../../assets/img/close.png" alt="" @click="closeEcharts">
+                <img class="closeimg" src="../../assets/image/close.png" alt="" @click="closeEcharts">
             </div>
             <div id="leftbox-content"></div>
         </div>
@@ -215,7 +215,7 @@ onBeforeUnmount(() => {
 .leftbox-middle {
     width: 1000px;
     height: 500px;
-    background-image: url('../../assets/img/module_back_row.png');
+    background-image: url('../../assets/image/框-bg.png');
     background-repeat: no-repeat;
     background-size: 100% 100%;
     margin-top: 20px;
@@ -226,7 +226,7 @@ onBeforeUnmount(() => {
 .leftbox-top-title {
     width: 930px;
     height: 33px;
-    background-image: url('../../assets/img/module_titleback.png');
+    background-image: url('../../assets/image/title.png');
     background-repeat: no-repeat;
     background-size: 100% 100%;
 }
@@ -249,7 +249,7 @@ onBeforeUnmount(() => {
 
 .closeimg {
     position: absolute;
-    right: 15px;
+    right: 20px;
     top: 35px;
     cursor: pointer;
 }

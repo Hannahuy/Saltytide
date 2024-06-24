@@ -375,7 +375,7 @@ onMounted(() => {
 .leftbox-top {
     width: 460px;
     height: 410px;
-    background-image: url('../../assets/img/module_back.png');
+    background-image: url('../../assets/image/框-bg.png');
     background-repeat: no-repeat;
     background-size: 100% 100%;
     padding: 20px;
@@ -385,7 +385,7 @@ onMounted(() => {
 .leftbox-top-title {
     width: 418px;
     height: 33px;
-    background-image: url('../../assets/img/module_titleback.png');
+    background-image: url('../../assets/image/title.png');
     background-repeat: no-repeat;
     background-size: 100% 100%;
 }
@@ -415,7 +415,7 @@ onMounted(() => {
 .leftbox-middle {
     width: 460px;
     height: 228px;
-    background-image: url('../../assets/img/module_back_row.png');
+    background-image: url('../../assets/image/框-bg.png');
     background-repeat: no-repeat;
     background-size: 100% 100%;
     margin-top: 20px;
@@ -464,7 +464,7 @@ onMounted(() => {
 .leftbox-bottom {
     width: 460px;
     height: 128px;
-    background-image: url('../../assets/img/module_back_row.png');
+    background-image: url('../../assets/image/框-bg.png');
     background-repeat: no-repeat;
     background-size: 100% 100%;
     margin-top: 20px;
@@ -503,12 +503,12 @@ onMounted(() => {
 
 .Weather-list-top-right :deep(.el-switch__core) {
     border-radius: 0;
-    border: 1px solid #28E3F2;
+    border: 1px solid #42AEFF;
 }
 
 .Weather-list-top-right :deep(.el-switch__core .el-switch__action) {
     border-radius: 0;
-    background-color: #28E3F2;
+    background-color: #42AEFF;
 }
 
 .Weather-list-top-right :deep(.el-switch.is-checked .el-switch__core .el-switch__inner) {
@@ -544,7 +544,7 @@ onMounted(() => {
 }
 
 .selected {
-    filter: invert(0) sepia(1) saturate(20) hue-rotate(147.6deg) brightness(0.92);
+    filter: invert(0.4) sepia(1) saturate(20) hue-rotate(180deg) brightness(1.01);
 }
 
 .leftbox-bottom-content {

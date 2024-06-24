@@ -47,9 +47,11 @@
                 <div class="leftbox-top-title">
                     <span>{{ firstSpanText }}</span>
                     <span>{{ secondSpanText }}</span>
-                    <img class="closeimg" src="../../assets/img/close.png" alt="" @click="closeEcharts">
+                    <img class="closeimg" src="../../assets/image/close.png" alt="" @click="closeEcharts">
                 </div>
-                <div id="transversalsEcharts"></div>
+                <div id="transversalsEcharts">
+                  <img :src="transversalsEchartsimg" alt="" style="width: 100%;height:98%;">
+                </div>
             </div>
         </div>
     </div>
@@ -66,6 +68,7 @@ const timePlay = ref(dayjs().startOf('day').valueOf())
 const activeTab = ref('')
 const activePlay = ref('')
 const showEcharts = ref(false)
+const transversalsEchartsimg = ref('/src/assets/dataImg/1aa4dcbb0bdeecd96083f41e35f910e.png')
 let lastClickedTab = '';
 
 const toggleBox = (tab) => {
@@ -97,17 +100,25 @@ const toggleBox = (tab) => {
     }
     lastClickedTab = tab;
 }
-
-
-
-
+const imagePaths = [
+  '/src/assets/dataImg/89414d47203f8e5fd56cf15b9520970.png',
+  '/src/assets/dataImg/f11baccb8e23beb13656810a1757a87.png',
+  '/src/assets/dataImg/1aa4dcbb0bdeecd96083f41e35f910e.png'
+];
+let currentImagePathIndex = 0;
+const updateImage = () => {
+  transversalsEchartsimg.value = imagePaths[currentImagePathIndex];
+}
 const Backoff = () => {
-    const previousTime = timePlay.value;
-    timePlay.value = dayjs(previousTime).subtract(3, 'hour').valueOf();
-    callUIInteraction({
-        function: '咸潮模拟时间轴/' + dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'),
-    });
-    // console.log("倒退:", dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'));
+  const previousTime = timePlay.value;
+  timePlay.value = dayjs(previousTime).subtract(3, 'hour').valueOf();
+  callUIInteraction({
+    function: '咸潮模拟时间轴/' + dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'),
+  });
+  // console.log("倒退:", dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'));
+  transversalsEchartsimg.value = imagePaths[currentImagePathIndex];
+  currentImagePathIndex = (currentImagePathIndex - 1 + imagePaths.length) % imagePaths.length;
+  updateImage()
 }
 let previousPlayState = '';
 const togglePlay = () => {
@@ -123,12 +134,15 @@ const togglePlay = () => {
     }
 }
 const Fastforward = () => {
-    const previousTime = timePlay.value;
-    timePlay.value = dayjs(previousTime).add(3, 'hour').valueOf();
-    callUIInteraction({
-        function: '咸潮模拟时间轴/' + dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'),
-    });
-    // console.log("快进:", dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'));
+  const previousTime = timePlay.value;
+  timePlay.value = dayjs(previousTime).add(3, 'hour').valueOf();
+  callUIInteraction({
+    function: '咸潮模拟时间轴/' + dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'),
+  });
+  // console.log("快进:", dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'));
+  transversalsEchartsimg.value = imagePaths[currentImagePathIndex];
+  currentImagePathIndex = (currentImagePathIndex + 1) % imagePaths.length;
+  updateImage()
 }
 
 const min = ref(dayjs().startOf('day').valueOf());
@@ -215,7 +229,7 @@ const finishtop = () => {
     callUIInteraction({
         function: '河道中心断面_完成',
     });
-    init();
+    // init();
 }
 const anewbottom = () => {
     callUIInteraction({
@@ -233,219 +247,18 @@ const finishbottom = () => {
 const closeEcharts = () => {
     showEcharts.value = false;
 }
-let waterdata = null;
-const init = () => {
-    const waterChartElement = document.getElementById("transversalsEcharts");
-    if (waterdata) {
-        waterdata.dispose();
-    }
-    waterdata = echarts.init(waterChartElement);
-    const options = {
-        dataset: [
-        {
-          dimensions: ['distance', '2', '8', '12', '18', '22'],
-          source: [
-            [0, -1, -0.5, -1, -2, -3],
-            [10, -2, -1, -2, -2, -2],
-            [20, -3, -1.5, -1.5, -2, -2],
-            [30, -6, -3, -2, -1, -1],
-            [40, -14, -1, 0, 0, 0],
-            [50, -11, -0.3, 0, 0, 0],
-            [60, -13, 0, 0, 0, 0],
-            [70, -16, 0, 0, 0, 0],
-            [75, -14, 0, 0, 0, 0]
-          ]
-        }
-      ],
-      color: ['#80FFA5', '#00DDFF', '#37A2FF', '#FF0087', '#FFBF00'],
-      title: {
-        text: 'Salinity',
-        left: 'center',
-        textStyle: {
-          fontSize: 30,
-          padding: [0, 0, 0, 0] // 在这里设置间距，例如上边距为10px，其余为0
-        }
-      },
-      toolbox: {
-        feature: {
-          saveAsImage: {}
-        }
-      },
-      grid: {
-        left: '3%',
-        right: '4%',
-        bottom: '2%',
-        containLabel: true
-      },
-      xAxis: [
-        {
-          type: 'category',
-          boundaryGap: false,
-          axisLabel: {
-            formatter: '{value} km',
-            textStyle: {
-              fontSize: 15
-            }
-          }
-        }
-      ],
-      yAxis: [
-        {
-          type: 'value',
-          axisLabel: {
-            formatter: '{value} m',
-            textStyle: {
-              fontSize: 15
-            }
-          }
-        }
-      ],
-      series: [
-        {
-          name: '2',
-          type: 'line',
-          stack: 'Total',
-          smooth: true,
-          lineStyle: {
-            width: 3,
-            color: "black"
-          },
-          showSymbol: false,
-          areaStyle: {
-            opacity: 0.8,
-            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-              {
-                offset: 0,
-                color: 'rgb(55, 162, 255)'
-              },
-              {
-                offset: 1,
-                color: 'rgb(116, 21, 219)'
-              }
-            ])
-          },
-          emphasis: {
-            focus: 'series'
-          },
-          encode: { x: 0, y: [1] }
-        },
-        {
-          name: '8',
-          type: 'line',
-          stack: 'Total',
-          smooth: true,
-          lineStyle: {
-            width: 3,
-            color: "black"
-          },
-          showSymbol: false,
-          areaStyle: {
-            opacity: 0.8,
-            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-              {
-                offset: 0,
-                color: 'rgb(0, 221, 255)'
-              },
-              {
-                offset: 1,
-                color: 'rgb(77, 119, 255)'
-              }
-            ])
-          },
-          emphasis: {
-            focus: 'series'
-          },
-          encode: { x: 0, y: [2] }
-        },
-        {
-          name: '12',
-          type: 'line',
-          stack: 'Total',
-          smooth: true,
-          lineStyle: {
-            width: 3,
-            color: "black"
-          },
-          showSymbol: false,
-          areaStyle: {
-            opacity: 0.8,
-            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-              {
-                offset: 0,
-                color: 'rgb(128, 255, 165)'
-              },
-              {
-                offset: 1,
-                color: 'rgb(1, 191, 236)'
-              }
-            ])
-          },
-          emphasis: {
-            focus: 'series'
-          },
-          encode: { x: 0, y: [3] }
-        },
-        {
-          name: '18',
-          type: 'line',
-          stack: 'Total',
-          smooth: true,
-          lineStyle: {
-            width: 3,
-            color: "black"
-          },
-          showSymbol: false,
-          areaStyle: {
-            opacity: 0.8,
-            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-              {
-                offset: 0,
-                color: 'rgb(255, 191, 0)'
-              },
-              {
-                offset: 1,
-                color: 'rgb(224, 62, 76)'
-              }
-            ])
-          },
-          emphasis: {
-            focus: 'series'
-          },
-          encode: { x: 0, y: [4] }
-        },
-        {
-          name: '22',
-          type: 'line',
-          stack: 'Total',
-          smooth: true,
-          lineStyle: {
-            width: 3,
-            color: "black"
-          },
-          showSymbol: false,
-          areaStyle: {
-            opacity: 0.8,
-            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-              {
-                offset: 0,
-                color: 'rgb(255, 0, 135)'
-              },
-              {
-                offset: 1,
-                color: 'rgb(135, 0, 157)'
-              }
-            ])
-          },
-          emphasis: {
-            focus: 'series'
-          },
-          encode: { x: 0, y: [5] }
-        }
-
-      ]
-    };
-    waterdata.setOption(options);
-}
+// let waterdata = null;
+// const init = () => {
+//     const waterChartElement = document.getElementById("transversalsEcharts");
+//     if (waterdata) {
+//         waterdata.dispose();
+//     }
+//     waterdata = echarts.init(waterChartElement);
+//     const options = {
+//         
+//     };
+//     waterdata.setOption(options);
+// }
 const myHandleResponseFunction = (data) => {
   console.log(data);
 }
@@ -454,9 +267,9 @@ onMounted(() => {
     addResponseEventListener("handle_responses", myHandleResponseFunction);
 });
 onBeforeUnmount(() => {
-    if (waterdata) {
-        waterdata.dispose();
-    }
+    // if (waterdata) {
+    //     waterdata.dispose();
+    // }
 });
 </script>
 
@@ -558,7 +371,7 @@ onBeforeUnmount(() => {
 .bottombox-Backoff {
     background-image: url('../../assets/img/Backoff.png');
     background-repeat: no-repeat;
-    background-color: #00A8D2;
+    background-color: #42AEFF;
     background-position: center;
     border-radius: 100%;
     border: 0;
@@ -569,7 +382,7 @@ onBeforeUnmount(() => {
 .bottombox-play {
     background-image: url('../../assets/img/Timeout.png');
     background-repeat: no-repeat;
-    background-color: #00A8D2;
+    background-color: #42AEFF;
     background-position: 55% 50%;
     border-radius: 100%;
     border: 0;
@@ -580,7 +393,7 @@ onBeforeUnmount(() => {
 .bottombox-play.active {
     background-image: url('../../assets/img/Play.png');
     background-repeat: no-repeat;
-    background-color: #00A8D2;
+    background-color: #42AEFF;
     background-position: center;
     border-radius: 100%;
     border: 0;
@@ -591,7 +404,7 @@ onBeforeUnmount(() => {
 .bottombox-Fastforward {
     background-image: url('../../assets/img/Fastforward.png');
     background-repeat: no-repeat;
-    background-color: #00A8D2;
+    background-color: #42AEFF;
     background-position: center;
     border-radius: 100%;
     border: 0;
@@ -611,7 +424,7 @@ onBeforeUnmount(() => {
 
 .bottombox-slider-span {
     width: 120px;
-    background-color: #00A8D2;
+    background-color: #42AEFF;
     border-radius: 1.25rem;
     color: white;
     display: block;
@@ -625,7 +438,7 @@ onBeforeUnmount(() => {
 }
 
 :deep(.el-slider__bar) {
-    background-color: #00A8D2;
+    background-color: #42AEFF;
 }
 
 .top-leftbox-top-set,
@@ -647,6 +460,8 @@ onBeforeUnmount(() => {
 }
 
 #transversalsEcharts {
+  display: flex;
+  align-items: center;
     width: 960px;
     height: 430px;
 }
@@ -654,7 +469,7 @@ onBeforeUnmount(() => {
 .leftbox-middle {
     width: 1000px;
     height: 500px;
-    background-image: url('../../assets/img/module_back_row.png');
+    background-image: url('../../assets/image/框-bg.png');
     background-repeat: no-repeat;
     background-size: 100% 100%;
     margin-top: 20px;
@@ -665,7 +480,7 @@ onBeforeUnmount(() => {
 .leftbox-top-title {
     width: 930px;
     height: 33px;
-    background-image: url('../../assets/img/module_titleback.png');
+    background-image: url('../../assets/image/title.png');
     background-repeat: no-repeat;
     background-size: 100% 100%;
 }
@@ -683,7 +498,7 @@ onBeforeUnmount(() => {
 
 .closeimg {
     position: absolute;
-    right: 15px;
+    right: 24px;
     top: 35px;
     cursor: pointer;
 }
