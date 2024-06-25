@@ -5,8 +5,27 @@
         <span>站点数量</span>
         <span>Number of sites</span>
       </div>
-      <div>
-        <!-- <img src="/src/assets/img/图标4.png" alt=""> -->
+      <div class="top-leftbox-title-top">
+        <div class="top-leftbox-title-top-content">
+          <span class="top-leftbox-title-top-span">10</span>
+          <img src="/src/assets/img/图标4.png" class="top-leftbox-title-img" alt="">
+          <span>GNSS监测</span>
+        </div>
+        <div class="top-leftbox-title-top-content">
+          <span class="top-leftbox-title-top-span">13</span>
+          <img src="/src/assets/img/图标4.png" class="top-leftbox-title-img" alt="">
+          <span>雨量监测</span>
+        </div>
+        <div class="top-leftbox-title-top-content">
+          <span class="top-leftbox-title-top-span" style="left: 30px;">11</span>
+          <img src="/src/assets/img/图标4.png" class="top-leftbox-title-img" alt="">
+          <span>温湿度监测</span>
+        </div>
+        <div class="top-leftbox-title-top-content">
+          <span class="top-leftbox-title-top-span">12</span>
+          <img src="/src/assets/img/图标4.png" class="top-leftbox-title-img" alt="">
+          <span>风向监测</span>
+        </div>
       </div>
       <div id="SalinityCharts"></div>
     </div>
@@ -19,7 +38,7 @@
         background: 'transparent',
         fontSize: '15px',
         'text-align': 'center',
-      }" height="220" align="center">
+      }" height="150" align="center">
         <el-table-column prop="DeviceName" label="设备名称" width="120" align="center" />
         <el-table-column prop="DeviceType" label="设备类型" width="120" align="center" />
         <el-table-column prop="OnlineSituation" label="是否在线" width="120" align="center" />
@@ -110,38 +129,46 @@ const initSalinityChart = () => {
   }
   salinityChartInstance = echarts.init(salinityChartElement);
   const options = {
-    xAxis: {
-      data: ["03/25", "03/26", "03/27", "03/28", "03/29", "03/30", "03/31"],
-      axisLabel: {
-        show: true,
-        textStyle: {
-          color: "#b7cffc", //更改坐标轴文字颜色
-          fontSize: 12, //更改坐标轴文字大小
-        },
-      },
+    tooltip: {
+      trigger: 'item'
     },
-    yAxis: {
-      splitLine: { show: false },
-      axisLabel: {
-        show: true,
-        textStyle: {
-          color: "#b7cffc", //更改坐标轴文字颜色
-          fontSize: 12, //更改坐标轴文字大小
-        },
+    legend: {
+      orient: 'vertical',
+      left: 'left',
+      textStyle: {
+        color: '#b7cffc',
       },
     },
     series: [
       {
-        name: "单位",
-        type: "line",
-        data: [110, 75, 135, 175, 100, 10, 90],
-        lineStyle: { color: "#28F2E6" },
-        symbol: "rect",
-        symbolSize: 8,
-        itemStyle: { color: "#28F2E6", borderColor: "#000000" },
-      },
-    ],
-    grid: { x: 40, y: 15, x2: 20, y2: 35 },
+        name: 'Access From',
+        type: 'pie',
+        radius: '50%',
+        data: [
+          { value: 10, name: 'GNSS监测' },
+          { value: 13, name: '雨量监测' },
+          { value: 11, name: '温湿度监测' },
+          { value: 12, name: '风向监测' }
+        ],
+        itemStyle: {
+          normal: {
+            label: {
+              textStyle: {
+                color: '#b7cffc',
+                fontWeight: 'bolder'
+              }
+            },
+          }
+        },
+        emphasis: {
+          itemStyle: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: 'rgba(0, 0, 0, 0.5)'
+          }
+        }
+      }
+    ]
   };
   salinityChartInstance.setOption(options);
 };
@@ -174,13 +201,16 @@ onBeforeUnmount(() => {
   left: 10px;
   padding: 20px;
 }
-.leftbox1{
-  height: 255px;
+
+.leftbox1 {
+  height: 325px;
 }
-.leftbox2{
-  height: 280px;
+
+.leftbox2 {
+  height: 210px;
 }
-.leftbox3{
+
+.leftbox3 {
   height: 255px;
 }
 
@@ -258,10 +288,44 @@ onBeforeUnmount(() => {
   color: #b7cffc;
 }
 
-#WaterCharts,
+
 #SalinityCharts {
+  width: 100%;
+  height: 170px;
+  margin-top: 20px;
+}
+
+#WaterCharts {
   width: 100%;
   height: 200px;
   margin-top: 20px;
+}
+
+.top-leftbox-title-top {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.top-leftbox-title-top-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #b7cffc;
+}
+
+.top-leftbox-title-img {
+  width: 80px;
+  height: 60px;
+}
+
+.top-leftbox-title-top-span {
+  position: absolute;
+  color: #b7cffc;
+  font-size: 24px;
+  font-family: YouSheBiaoTiHei;
+  left: 25px;
 }
 </style>
