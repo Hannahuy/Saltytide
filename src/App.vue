@@ -11,11 +11,42 @@
   margin: 0;
   padding: 0;
 }
+
 /* 禁止鼠标选中文字 */
 div {
   user-select: none;
   -moz-user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
+}
+.el-popper.is-light.blueBack {
+  background-color: #254277 !important;
+  border: 1px solid #254277 !important;
+}
+
+.blueBack.el-popper[data-popper-placement^=bottom] .el-popper__arrow::before {
+  background: #254277 !important;
+  border: 1px solid #254277 !important;
+}
+
+.blueBack.el-popper[data-popper-placement^=top] .el-popper__arrow::before {
+  background: #254277 !important;
+  border: 1px solid #254277 !important;
+}
+
+.el-select-dropdown__item.hover,
+.el-select-dropdown__item:hover {
+  background: #2A77C6 !important;
+}
+
+.el-select-dropdown__item {
+  color: #b7cffc !important;
+}
+
+.el-select-dropdown__item.selected {
+  background: #2A77C6 !important;
+}
+.el-select-dropdown__item.is-hovering{
+  background-color: #2A77C6 !important;
 }
 </style>
