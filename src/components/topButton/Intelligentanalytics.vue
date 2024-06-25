@@ -506,7 +506,9 @@ onBeforeUnmount(() => {
 
 .closeimg {
   position: absolute;
-  right: 20px;
+  width: 20px;
+  height: 20px;
+  right: 25px;
   top: 20px;
   cursor: pointer;
 }

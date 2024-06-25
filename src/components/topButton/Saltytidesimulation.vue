@@ -691,17 +691,17 @@ onBeforeUnmount(() => {
     color: #b7cffc;
 }
 
-:deep(.el-slider__runway) {
+.top-leftbox-middle-content-2:deep(.el-slider__runway) {
     height: 2px;
     background-color: #00A8D2;
 }
 
-:deep(.el-slider__bar) {
+.top-leftbox-middle-content-2:deep(.el-slider__bar) {
     height: 2px;
     background-color: #00A8D2;
 }
 
-:deep(.el-slider__button) {
+.top-leftbox-middle-content-2:deep(.el-slider__button) {
     background-color: transparent;
     border: 0;
     background-image: url('../../assets/img/slipPoint_icon.png');
