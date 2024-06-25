@@ -19,8 +19,8 @@
             <div class="top-leftbox-middle-content" v-show="showtransversals">
                 <span>断面选择</span>
                 <div class="top-leftbox-middle-content-div">
-                    <el-select v-model="transversalsvalue" placeholder="Select" style="width: 160px"
-                        @change="getselect">
+                    <el-select v-model="transversalsvalue" placeholder="请选择断面" style="width: 160px" @change="getselect"
+                        popper-class="blueBack">
                         <el-option v-for="item in transversalsoptions" :key="item.value" :label="item.label"
                             :value="item.value" />
                     </el-select>
@@ -102,7 +102,7 @@ const showtransversals = ref(true)
 const Zaxis = ref(0)
 const threshold = ref(0)
 const transversalsEchartsimg = ref('/src/assets/dataImg/1aa4dcbb0bdeecd96083f41e35f910e.png')
-const transversalsvalue = ref('河道中心断面')
+const transversalsvalue = ref('')
 const transversalsoptions = [
     {
         value: '河道中心断面',
@@ -283,7 +283,7 @@ const anewtop = () => {
             function: '河道中心断面_重新绘制',
         });
         console.log('河道');
-    } else {
+    } else if (transversalsvalue.value === '自定义绘制断面') {
         callUIInteraction({
             function: '自定义绘制断面_重新绘制',
         });
@@ -300,7 +300,7 @@ const finishtop = () => {
             // init();
         });
         console.log('河道');
-    } else {
+    } else if (transversalsvalue.value === '自定义绘制断面') {
         callUIInteraction({
             function: '自定义绘制断面_完成',
         });
@@ -716,5 +716,4 @@ onBeforeUnmount(() => {
     height: 40px;
     margin-top: 5px;
 }
-
 </style>

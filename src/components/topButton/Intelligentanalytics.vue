@@ -8,7 +8,7 @@
       <div class="leftbox-middle-content">
         <div class="leftbox-middle-content-top">
           <span>站点选择：</span>
-          <el-select v-model="selectValue" placeholder="请选择站点" style="width: 380px">
+          <el-select v-model="selectValue" placeholder="请选择站点" style="width: 380px" popper-class="blueBack">
             <el-option v-for="item in selectoptions" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </div>
