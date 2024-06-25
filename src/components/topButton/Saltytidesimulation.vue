@@ -2,18 +2,48 @@
     <div>
         <div class="top-leftbox">
             <div class="top-leftbox-top" :class="{ active: activeTab === 'top' }" @click="toggleBox('top')">
-                河道中心断面
+                <img :src="activeTab === 'top' ? '/src/assets/image/表层渲染-浅蓝.png' : '/src/assets/image/表层渲染-深蓝.png'"
+                    alt="" class="top-leftbox-img">
+                <span class="top-span">表层渲染</span>
             </div>
-            <div class="top-leftbox-top-set" :style="{ height: activeTab === 'top' ? '53px' : '0' }">
-                <el-button type="primary" class="topbutton" @click="anewtop">重新绘制</el-button>
-                <el-button type="primary" class="topbutton" @click="finishtop">完成</el-button>
+            <div class="top-leftbox-middle" :class="{ active: activeTab === 'middle' }" @click="toggleBox('middle')">
+                <img :src="activeTab === 'middle' ? '/src/assets/image/断面分析-浅蓝.png' : '/src/assets/image/断面分析-深蓝.png'"
+                    alt="" class="top-leftbox-img2">
+                <span class="top-span">断面分析</span>
             </div>
             <div class="top-leftbox-bottom" :class="{ active: activeTab === 'bottom' }" @click="toggleBox('bottom')">
-                自定义绘制断面
+                <img :src="activeTab === 'bottom' ? '/src/assets/image/体渲染-浅蓝.png' : '/src/assets/image/体渲染-深蓝.png'"
+                    alt="" class="top-leftbox-img3">
+                <span>体渲染</span>
             </div>
-            <div class="top-leftbox-bottom-set" :style="{ height: activeTab === 'bottom' ? '53px' : '0' }">
-                <el-button type="primary" class="topbutton" @click="anewbottom">重新绘制</el-button>
-                <el-button type="primary" class="topbutton" @click="finishbottom">完成</el-button>
+            <div class="top-leftbox-middle-content" v-show="showtransversals">
+                <span>断面选择</span>
+                <div class="top-leftbox-middle-content-div">
+                    <el-select v-model="transversalsvalue" placeholder="Select" style="width: 160px"
+                        @change="getselect">
+                        <el-option v-for="item in transversalsoptions" :key="item.value" :label="item.label"
+                            :value="item.value" />
+                    </el-select>
+                    <div style="width:100%;display: flex;align-items: center;justify-content: center;margin-top: 20px;">
+                        <el-button type="primary" class="topbutton" @click="anewtop">重新绘制</el-button>
+                        <el-button type="primary" class="topbutton" @click="finishtop">完成</el-button>
+                    </div>
+                </div>
+            </div>
+            <div class="top-leftbox-middle-content-2" v-show="showVolumerendering">
+                <span class="top-leftbox-middle-content-2-span">体渲染剖切</span>
+                <div class="top-leftbox-middle-content-div-2">
+                    <div class="top-leftbox-middle-content-div-2-content">
+                        <span class="top-leftbox-middle-content-div-2-span">Z轴剖切</span>
+                        <el-slider v-model="Zaxis" style="width: 120px;margin-left: 10px;" @change="getZaxis" :min="0"
+                            :max="1" :step="0.01" />
+                    </div>
+                    <div class="top-leftbox-middle-content-div-2-content">
+                        <span class="top-leftbox-middle-content-div-2-span">特征阈值</span>
+                        <el-slider v-model="threshold" style="width: 120px;margin-left: 10px;" @change="getthreshold"
+                            :min="0" :max="1" :step="0.01" />
+                    </div>
+                </div>
             </div>
         </div>
         <div class="bottomCalendar">
@@ -50,7 +80,7 @@
                     <img class="closeimg" src="../../assets/image/close.png" alt="" @click="closeEcharts">
                 </div>
                 <div id="transversalsEcharts">
-                  <img :src="transversalsEchartsimg" alt="" style="width: 100%;height:98%;">
+                    <img :src="transversalsEchartsimg" alt="" style="width: 100%;height:98%;">
                 </div>
             </div>
         </div>
@@ -61,37 +91,62 @@
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import dayjs from 'dayjs'
 import * as echarts from "echarts";
-import { callUIInteraction , addResponseEventListener} from "../../module/webrtcVideo/webrtcVideo.js";
+import { callUIInteraction, addResponseEventListener } from "../../module/webrtcVideo/webrtcVideo.js";
 
 const timePick = ref(new Date());
 const timePlay = ref(dayjs().startOf('day').valueOf())
-const activeTab = ref('')
+const activeTab = ref('middle')
 const activePlay = ref('')
 const showEcharts = ref(false)
+const showtransversals = ref(true)
+const Zaxis = ref(0)
+const threshold = ref(0)
 const transversalsEchartsimg = ref('/src/assets/dataImg/1aa4dcbb0bdeecd96083f41e35f910e.png')
+const transversalsvalue = ref('河道中心断面')
+const transversalsoptions = [
+    {
+        value: '河道中心断面',
+        label: '河道中心断面',
+    },
+    {
+        value: '自定义绘制断面',
+        label: '自定义绘制断面',
+    }
+]
 let lastClickedTab = '';
-
 const toggleBox = (tab) => {
     if (activeTab.value === tab) {
         activeTab.value = '';
         if (tab === 'top') {
-          callUIInteraction({
-            function: '咸潮模拟_河道中心断面/false',
-          });
-          console.log('咸潮模拟_河道中心断面/false');
+            callUIInteraction({
+                function: '咸潮模拟_表层渲染/false',
+            });
+            console.log('咸潮模拟_表层渲染/false');
+        } else if (tab === 'middle') {
+            callUIInteraction({
+                function: '咸潮模拟_断面分析/false',
+            });
+            console.log('咸潮模拟_断面分析/false');
         } else if (tab === 'bottom') {
-          callUIInteraction({
-            function: '咸潮模拟_自定义绘制断面/false',
-          });
-          console.log('咸潮模拟_自定义绘制断面/false');
+            callUIInteraction({
+                function: '咸潮模拟_体渲染/false',
+            });
+            console.log('咸潮模拟_体渲染/false');
         }
     } else {
         activeTab.value = tab;
         let tabName = '';
         if (tab === 'top') {
-            tabName = '河道中心断面';
+            tabName = '表层渲染';
+            showEcharts.value = false;
+            showtransversals.value = false;
+        } else if (tab === 'middle') {
+            tabName = '断面分析';
+            showtransversals.value = true;
         } else if (tab === 'bottom') {
-            tabName = '自定义绘制断面';
+            tabName = '体渲染';
+            showEcharts.value = false;
+            showtransversals.value = false;
         }
         callUIInteraction({
             function: '咸潮模拟_' + tabName + '/true',
@@ -100,25 +155,30 @@ const toggleBox = (tab) => {
     }
     lastClickedTab = tab;
 }
+const getselect = (e) => {
+    callUIInteraction({
+        function: e,
+    });
+}
 const imagePaths = [
-  '/src/assets/dataImg/89414d47203f8e5fd56cf15b9520970.png',
-  '/src/assets/dataImg/f11baccb8e23beb13656810a1757a87.png',
-  '/src/assets/dataImg/1aa4dcbb0bdeecd96083f41e35f910e.png'
+    '/src/assets/dataImg/89414d47203f8e5fd56cf15b9520970.png',
+    '/src/assets/dataImg/f11baccb8e23beb13656810a1757a87.png',
+    '/src/assets/dataImg/1aa4dcbb0bdeecd96083f41e35f910e.png'
 ];
 let currentImagePathIndex = 0;
 const updateImage = () => {
-  transversalsEchartsimg.value = imagePaths[currentImagePathIndex];
+    transversalsEchartsimg.value = imagePaths[currentImagePathIndex];
 }
 const Backoff = () => {
-  const previousTime = timePlay.value;
-  timePlay.value = dayjs(previousTime).subtract(3, 'hour').valueOf();
-  callUIInteraction({
-    function: '咸潮模拟时间轴/' + dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'),
-  });
-  // console.log("倒退:", dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'));
-  transversalsEchartsimg.value = imagePaths[currentImagePathIndex];
-  currentImagePathIndex = (currentImagePathIndex - 1 + imagePaths.length) % imagePaths.length;
-  updateImage()
+    const previousTime = timePlay.value;
+    timePlay.value = dayjs(previousTime).subtract(3, 'hour').valueOf();
+    callUIInteraction({
+        function: '咸潮模拟时间轴/' + dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'),
+    });
+    // console.log("倒退:", dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'));
+    transversalsEchartsimg.value = imagePaths[currentImagePathIndex];
+    currentImagePathIndex = (currentImagePathIndex - 1 + imagePaths.length) % imagePaths.length;
+    updateImage()
 }
 let previousPlayState = '';
 const togglePlay = () => {
@@ -134,15 +194,15 @@ const togglePlay = () => {
     }
 }
 const Fastforward = () => {
-  const previousTime = timePlay.value;
-  timePlay.value = dayjs(previousTime).add(3, 'hour').valueOf();
-  callUIInteraction({
-    function: '咸潮模拟时间轴/' + dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'),
-  });
-  // console.log("快进:", dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'));
-  transversalsEchartsimg.value = imagePaths[currentImagePathIndex];
-  currentImagePathIndex = (currentImagePathIndex + 1) % imagePaths.length;
-  updateImage()
+    const previousTime = timePlay.value;
+    timePlay.value = dayjs(previousTime).add(3, 'hour').valueOf();
+    callUIInteraction({
+        function: '咸潮模拟时间轴/' + dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'),
+    });
+    // console.log("快进:", dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'));
+    transversalsEchartsimg.value = imagePaths[currentImagePathIndex];
+    currentImagePathIndex = (currentImagePathIndex + 1) % imagePaths.length;
+    updateImage()
 }
 
 const min = ref(dayjs().startOf('day').valueOf());
@@ -199,14 +259,14 @@ watch(timePlay, (newVal) => {
     const currentTime = dayjs(newVal);
     if (currentTime.minute() === 0 && currentTime.second() === 0) {
         callUIInteraction({
-        function: '咸潮模拟时间轴/' + currentTime.format('YYYY-MM-DD HH:mm:ss'),
+            function: '咸潮模拟时间轴/' + currentTime.format('YYYY-MM-DD HH:mm:ss'),
         });
         // console.log(currentTime.format('YYYY-MM-DD HH:mm:ss'));
     }
 });
 const gettimePlay = (e) => {
     const clickedTime = dayjs(e).format('YYYY-MM-DD HH:mm:ss');
-    if(activePlay.value = 'play'){
+    if (activePlay.value = 'play') {
         activePlay.value = ''
     }
     callUIInteraction({
@@ -218,35 +278,54 @@ const firstSpanText = ref('');
 const secondSpanText = ref('');
 
 const anewtop = () => {
-    callUIInteraction({
-        function: '河道中心断面_重新绘制',
-    });
+    if (transversalsvalue.value === '河道中心断面') {
+        callUIInteraction({
+            function: '河道中心断面_重新绘制',
+        });
+        console.log('河道');
+    } else {
+        callUIInteraction({
+            function: '自定义绘制断面_重新绘制',
+        });
+        console.log('自定义');
+    }
 }
 const finishtop = () => {
-    showEcharts.value = true;
-    firstSpanText.value = '河道中心断面';
-    secondSpanText.value = 'river center section';
-    callUIInteraction({
-        function: '河道中心断面_完成',
-    });
-    // init();
-}
-const anewbottom = () => {
-    callUIInteraction({
-        function: '自定义绘制断面_重新绘制',
-    });
-}
-const finishbottom = () => {
-    firstSpanText.value = '自定义绘制断面';
-    secondSpanText.value = 'Customize section';
-    callUIInteraction({
-        function: '自定义绘制断面_完成',
-    });
+    if (transversalsvalue.value === '河道中心断面') {
+        showEcharts.value = true;
+        firstSpanText.value = '河道中心断面';
+        secondSpanText.value = 'river center section';
+        callUIInteraction({
+            function: '河道中心断面_完成',
+            // init();
+        });
+        console.log('河道');
+    } else {
+        callUIInteraction({
+            function: '自定义绘制断面_完成',
+        });
+        console.log('自定义');
+    }
 }
 
 const closeEcharts = () => {
     showEcharts.value = false;
 }
+const getZaxis = (e) => {
+    callUIInteraction({
+        function: 'Z轴剖切_' + e,
+    });
+    console.log(e);
+}
+const getthreshold = (e) => {
+    callUIInteraction({
+        function: '特征阈值' + e,
+    });
+    console.log(e);
+}
+const showVolumerendering = computed(() => {
+    return activeTab.value === 'bottom';
+});
 // let waterdata = null;
 // const init = () => {
 //     const waterChartElement = document.getElementById("transversalsEcharts");
@@ -260,11 +339,14 @@ const closeEcharts = () => {
 //     waterdata.setOption(options);
 // }
 const myHandleResponseFunction = (data) => {
-  console.log(data);
+    console.log(data);
 }
 onMounted(() => {
     // init();
     addResponseEventListener("handle_responses", myHandleResponseFunction);
+    callUIInteraction({
+        function: '咸潮模拟_断面分析/true',
+    });
 });
 onBeforeUnmount(() => {
     // if (waterdata) {
@@ -283,24 +365,126 @@ onBeforeUnmount(() => {
 }
 
 .top-leftbox-top,
+.top-leftbox-middle,
 .top-leftbox-bottom {
-    width: 227px;
-    height: 53px;
-    background-image: url('../../assets/img/title02_back_default.png');
+    margin-top: 20px;
+    width: 250px;
+    height: 70px;
+    background-image: url('../../assets/image/二级按钮.png');
     background-repeat: no-repeat;
     background-size: 100% 100%;
-    font-family: PangMenZhengDao;
-    font-size: 22px;
-    color: #0093B9;
+    font-size: 24px;
+    font-family: YouSheBiaoTiHei;
+    font-weight: 400;
+    color: #D4E1FF;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
+    letter-spacing: 5px;
+}
+
+.top-span {
+    margin-left: 30px;
+    box-sizing: border-box;
 }
 
 .active {
-    background-image: url('../../assets/img/title01_back_active.png');
-    color: #FFCC00;
+    background-image: url('../../assets/image/二级按钮-选中.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+.top-leftbox-img {
+    position: absolute;
+    width: 65px;
+    height: 65px;
+    left: 3px;
+    top: 20px;
+}
+
+.top-leftbox-img2 {
+    position: absolute;
+    width: 65px;
+    height: 65px;
+    left: 4px;
+    top: 110px;
+}
+
+.top-leftbox-img3 {
+    position: absolute;
+    width: 65px;
+    height: 65px;
+    left: 3px;
+    top: 202px;
+}
+
+.top-leftbox-middle-content {
+    width: 200px;
+    height: 160px;
+    background-image: url('../../assets/image/弹框.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 120% 125%;
+    position: absolute;
+    color: #b7cffc;
+    left: 280px;
+    top: 55px;
+}
+
+.top-leftbox-middle-content span {
+    width: 100%;
+    height: 35px;
+    line-height: 38px;
+    padding-left: 10px;
+    font-size: 20px;
+    display: block;
+    font-family: YouSheBiaoTiHei;
+    box-sizing: border-box;
+}
+
+.top-leftbox-middle-content-div {
+    height: 85px;
+    padding: 20px;
+}
+
+.top-leftbox-middle-content-2 {
+    width: 200px;
+    height: 160px;
+    background-image: url('../../assets/image/弹框.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 120% 125%;
+    position: absolute;
+    color: #b7cffc;
+    left: 280px;
+    top: 175px;
+}
+
+.top-leftbox-middle-content-2-span {
+    width: 100%;
+    height: 35px;
+    line-height: 38px;
+    padding-left: 10px;
+    font-size: 20px;
+    display: block;
+    font-family: YouSheBiaoTiHei;
+    box-sizing: border-box;
+}
+
+.top-leftbox-middle-content-div-2-span {
+    width: 60px;
+    height: 35px;
+    line-height: 38px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.top-leftbox-middle-content-div-2 {
+    display: flex;
+    flex-direction: column;
+    height: 85px;
+    padding: 10px;
 }
 
 .bottomCalendar {
@@ -395,6 +579,7 @@ onBeforeUnmount(() => {
     background-repeat: no-repeat;
     background-color: #42AEFF;
     background-position: center;
+    background-size: 70% 70%;
     border-radius: 100%;
     border: 0;
     width: 40px;
@@ -441,33 +626,21 @@ onBeforeUnmount(() => {
     background-color: #42AEFF;
 }
 
-.top-leftbox-top-set,
-.top-leftbox-bottom-set {
-    width: 227px;
-    height: 0;
-    overflow: hidden;
-    background-image: url('../../assets/img/title01_back_default.png');
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: height 0.5s;
-}
-
 .topbutton {
-    background: #ffcc00;
+    border-radius: 0;
+    background-color: #0a6adf;
     border: 0;
-    color: #606266;
 }
 
 #transversalsEcharts {
-  display: flex;
-  align-items: center;
-    width: 960px;
+    display: flex;
+    align-items: center;
+    width: 860px;
     height: 430px;
 }
 
 .leftbox-middle {
-    width: 1000px;
+    width: 900px;
     height: 500px;
     background-image: url('../../assets/image/框-bg.png');
     background-repeat: no-repeat;
@@ -502,4 +675,46 @@ onBeforeUnmount(() => {
     top: 35px;
     cursor: pointer;
 }
+
+:deep(.el-select__wrapper) {
+    border-radius: 0;
+    background-color: #041831;
+    border: 1px solid #416491;
+    box-shadow: none;
+}
+
+:deep(.el-select__placeholder.is-transparent) {
+    background-color: #041831;
+}
+
+:deep(.el-select__placeholder) {
+    color: #b7cffc;
+}
+
+:deep(.el-slider__runway) {
+    height: 2px;
+    background-color: #00A8D2;
+}
+
+:deep(.el-slider__bar) {
+    height: 2px;
+    background-color: #00A8D2;
+}
+
+:deep(.el-slider__button) {
+    background-color: transparent;
+    border: 0;
+    background-image: url('../../assets/img/slipPoint_icon.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    margin-bottom: 4px;
+}
+
+.top-leftbox-middle-content-div-2-content {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    margin-top: 5px;
+}
+
 </style>

@@ -1,43 +1,37 @@
 <template>
-  <div class="top-leftbox2">
-    <div class="top-leftbox-title">
-      <span>盐度监测</span>
-      <span>Salinity monitoring</span>
-    </div>
-    <div id="SalinityCharts"></div>
-  </div>
   <div class="top-leftbox">
-    <div class="top-leftbox-title">
-      <span>设备列表</span>
-      <span>A list of devices</span>
+    <div class="leftbox1">
+      <div class="top-leftbox-title">
+        <span>站点数量</span>
+        <span>Number of sites</span>
+      </div>
+      <div>
+        <!-- <img src="/src/assets/img/图标4.png" alt=""> -->
+      </div>
+      <div id="SalinityCharts"></div>
     </div>
-    <el-table
-      :data="tableData"
-      style="width: 100%"
-      :header-cell-style="{
+    <div class="leftbox2">
+      <div class="top-leftbox-title">
+        <span>设备列表</span>
+        <span>A list of devices</span>
+      </div>
+      <el-table :data="tableData" style="width: 100%" :header-cell-style="{
         background: 'transparent',
         fontSize: '15px',
         'text-align': 'center',
-      }"
-      height="220"
-      align="center"
-    >
-      <el-table-column prop="DeviceName" label="设备名称" width="120" align="center" />
-      <el-table-column prop="DeviceType" label="设备类型" width="120" align="center" />
-      <el-table-column
-        prop="OnlineSituation"
-        label="是否在线"
-        width="120"
-        align="center"
-      />
-    </el-table>
-  </div>
-  <div class="top-leftbox1">
-    <div class="top-leftbox-title">
-      <span>水位监测</span>
-      <span>Water level monitori</span>
+      }" height="220" align="center">
+        <el-table-column prop="DeviceName" label="设备名称" width="120" align="center" />
+        <el-table-column prop="DeviceType" label="设备类型" width="120" align="center" />
+        <el-table-column prop="OnlineSituation" label="是否在线" width="120" align="center" />
+      </el-table>
     </div>
-    <div id="WaterCharts"></div>
+    <div class="leftbox3">
+      <div class="top-leftbox-title">
+        <span>水位监测</span>
+        <span>Water level monitori</span>
+      </div>
+      <div id="WaterCharts"></div>
+    </div>
   </div>
 </template>
 
@@ -147,7 +141,7 @@ const initSalinityChart = () => {
         itemStyle: { color: "#28F2E6", borderColor: "#000000" },
       },
     ],
-    grid: { x: 50, y: 25, x2: 30, y2: 35 },
+    grid: { x: 40, y: 15, x2: 20, y2: 35 },
   };
   salinityChartInstance.setOption(options);
 };
@@ -169,33 +163,25 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-.top-leftbox,
-.top-leftbox1,
-.top-leftbox2 {
+.top-leftbox {
+  width: 500px;
+  height: 800px;
   background-image: url("../../assets/image/框-bg.png");
   background-repeat: no-repeat;
   background-size: 100% 100%;
   position: absolute;
-  left: 30px;
+  top: 11%;
+  left: 10px;
   padding: 20px;
 }
-
-.top-leftbox {
-  top: 380px;
-  width: 400px;
+.leftbox1{
   height: 255px;
 }
-
-.top-leftbox1 {
-  top: 700px;
-  width: 400px;
-  height: 195px;
+.leftbox2{
+  height: 280px;
 }
-
-.top-leftbox2 {
-  top: 120px;
-  width: 400px;
-  height: 195px;
+.leftbox3{
+  height: 255px;
 }
 
 .top-leftbox-title {
@@ -267,13 +253,15 @@ onBeforeUnmount(() => {
 :deep(.el-table__inner-wrapper:before) {
   display: none;
 }
+
 :deep(.el-table .cell) {
   color: #b7cffc;
 }
+
 #WaterCharts,
 #SalinityCharts {
   width: 100%;
-  height: calc(100% - 33px - 20px);
+  height: 200px;
   margin-top: 20px;
 }
 </style>

@@ -186,6 +186,7 @@ onMounted(() => {
     background: linear-gradient(0deg, #7EC0FF 0%, #FFFFFF 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    letter-spacing: 10px;
 }
 .title-line-bg {
     background: url('../assets/image/title-横.png');
@@ -202,7 +203,7 @@ onMounted(() => {
 .top-view-button {
     position: absolute;
     top: 17px;
-    left: 650px;
+    left: 750px;
     display: flex;
 }
 
@@ -221,6 +222,7 @@ onMounted(() => {
     font-weight: 400;
     color: #D4E1FF;
     cursor: pointer;
+    letter-spacing: 5px;
 }
 
 .top-view-button-style.active {

@@ -2063,8 +2063,8 @@ function registerLockedMouseEvents(playerElement) {
 // the cursor to have an effect over the video. Otherwise the cursor just
 // passes over the browser.
 function registerHoveringMouseEvents(playerElement) {
-  styleCursor = "none"; // We will rely on UE4 client's software cursor.
-  //styleCursor = 'default';  // Showing cursor
+  // styleCursor = "none"; // We will rely on UE4 client's software cursor.
+  styleCursor = 'default';  // Showing cursor
 
   playerElement.onmousemove = function (e) {
     emitMouseMove(e.offsetX, e.offsetY, e.movementX, e.movementY);

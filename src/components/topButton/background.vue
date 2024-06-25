@@ -9,7 +9,7 @@ import '../../module/webrtcVideo/player.css';
 onMounted(() => {
     app_load(
         {
-            serverUrl: 'http://192.168.0.137/',
+            serverUrl: 'http://192.168.0.124:89/',
             matchViewportResolution: true,
             autoConnection: true,
             showPlayOverlay: true,
