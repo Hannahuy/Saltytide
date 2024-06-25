@@ -7,24 +7,24 @@
       </div>
       <div class="top-leftbox-title-top">
         <div class="top-leftbox-title-top-content">
-          <span class="top-leftbox-title-top-span">10</span>
+          <span class="top-leftbox-title-top-span">3</span>
           <img src="/src/assets/img/图标4.png" class="top-leftbox-title-img" alt="">
-          <span>GNSS监测</span>
+          <span>泵站监测</span>
         </div>
         <div class="top-leftbox-title-top-content">
-          <span class="top-leftbox-title-top-span">13</span>
+          <span class="top-leftbox-title-top-span">2</span>
           <img src="/src/assets/img/图标4.png" class="top-leftbox-title-img" alt="">
-          <span>雨量监测</span>
+          <span>流量监测</span>
         </div>
         <div class="top-leftbox-title-top-content">
-          <span class="top-leftbox-title-top-span" style="left: 30px;">11</span>
+          <span class="top-leftbox-title-top-span">4</span>
           <img src="/src/assets/img/图标4.png" class="top-leftbox-title-img" alt="">
-          <span>温湿度监测</span>
+          <span>水位监测</span>
         </div>
         <div class="top-leftbox-title-top-content">
-          <span class="top-leftbox-title-top-span">12</span>
+          <span class="top-leftbox-title-top-span">3</span>
           <img src="/src/assets/img/图标4.png" class="top-leftbox-title-img" alt="">
-          <span>风向监测</span>
+          <span>盐度监测</span>
         </div>
       </div>
       <div id="SalinityCharts"></div>
@@ -46,8 +46,8 @@
     </div>
     <div class="leftbox3">
       <div class="top-leftbox-title">
-        <span>水位监测</span>
-        <span>Water level monitori</span>
+        <span>监测信息</span>
+        <span>Monitoring information</span>
       </div>
       <div id="WaterCharts"></div>
     </div>
@@ -145,10 +145,10 @@ const initSalinityChart = () => {
         type: 'pie',
         radius: '50%',
         data: [
-          { value: 10, name: 'GNSS监测' },
-          { value: 13, name: '雨量监测' },
-          { value: 11, name: '温湿度监测' },
-          { value: 12, name: '风向监测' }
+          { value: 3, name: '泵站监测' },
+          { value: 2, name: '流量监测' },
+          { value: 4, name: '水位监测' },
+          { value: 3, name: '盐度监测' }
         ],
         itemStyle: {
           normal: {
@@ -192,7 +192,7 @@ onBeforeUnmount(() => {
 <style scoped>
 .top-leftbox {
   width: 500px;
-  height: 800px;
+  height: 83%;
   background-image: url("../../assets/image/框-bg.png");
   background-repeat: no-repeat;
   background-size: 100% 100%;
@@ -203,15 +203,15 @@ onBeforeUnmount(() => {
 }
 
 .leftbox1 {
-  height: 325px;
+  height: 40%;
 }
 
 .leftbox2 {
-  height: 210px;
+  height: 25%;
 }
 
 .leftbox3 {
-  height: 255px;
+  height: 35%;
 }
 
 .top-leftbox-title {
@@ -291,13 +291,13 @@ onBeforeUnmount(() => {
 
 #SalinityCharts {
   width: 100%;
-  height: 170px;
+  height: 52%;
   margin-top: 20px;
 }
 
 #WaterCharts {
   width: 100%;
-  height: 200px;
+  height: 80%;
   margin-top: 20px;
 }
 
@@ -326,6 +326,6 @@ onBeforeUnmount(() => {
   color: #b7cffc;
   font-size: 24px;
   font-family: YouSheBiaoTiHei;
-  left: 25px;
+  left: 30px;
 }
 </style>

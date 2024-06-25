@@ -95,10 +95,9 @@ import { callUIInteraction, addResponseEventListener } from "../../module/webrtc
 
 const timePick = ref(new Date());
 const timePlay = ref(dayjs().startOf('day').valueOf())
-const activeTab = ref('middle')
+const activeTab = ref('top')
 const activePlay = ref('')
 const showEcharts = ref(false)
-const showtransversals = ref(true)
 const Zaxis = ref(0)
 const threshold = ref(0)
 const transversalsEchartsimg = ref('/src/assets/dataImg/1aa4dcbb0bdeecd96083f41e35f910e.png')
@@ -126,6 +125,7 @@ const toggleBox = (tab) => {
             callUIInteraction({
                 function: '咸潮模拟_断面分析/false',
             });
+            showEcharts.value = false;
             console.log('咸潮模拟_断面分析/false');
         } else if (tab === 'bottom') {
             callUIInteraction({
@@ -155,6 +155,7 @@ const toggleBox = (tab) => {
     }
     lastClickedTab = tab;
 }
+
 const getselect = (e) => {
     callUIInteraction({
         function: e,
@@ -326,6 +327,9 @@ const getthreshold = (e) => {
 const showVolumerendering = computed(() => {
     return activeTab.value === 'bottom';
 });
+const showtransversals = computed(() => {
+    return activeTab.value === 'middle';
+});
 // let waterdata = null;
 // const init = () => {
 //     const waterChartElement = document.getElementById("transversalsEcharts");
@@ -345,7 +349,7 @@ onMounted(() => {
     // init();
     addResponseEventListener("handle_responses", myHandleResponseFunction);
     callUIInteraction({
-        function: '咸潮模拟_断面分析/true',
+        function: '咸潮模拟_表面渲染/true',
     });
 });
 onBeforeUnmount(() => {
