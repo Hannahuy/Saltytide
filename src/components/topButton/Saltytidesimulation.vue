@@ -98,7 +98,7 @@ const timePlay = ref(dayjs().startOf('day').valueOf())
 const activeTab = ref('top')
 const activePlay = ref('')
 const showEcharts = ref(false)
-const Zaxis = ref(0)
+const Zaxis = ref(1)
 const threshold = ref(0)
 const transversalsEchartsimg = ref('/src/assets/dataImg/1aa4dcbb0bdeecd96083f41e35f910e.png')
 const transversalsvalue = ref('')
@@ -314,13 +314,13 @@ const closeEcharts = () => {
 }
 const getZaxis = (e) => {
     callUIInteraction({
-        function: 'Z轴剖切_' + e,
+        function: 'Z轴剖切/' + e,
     });
     console.log(e);
 }
 const getthreshold = (e) => {
     callUIInteraction({
-        function: '特征阈值' + e,
+        function: '特征阈值/' + e,
     });
     console.log(e);
 }
