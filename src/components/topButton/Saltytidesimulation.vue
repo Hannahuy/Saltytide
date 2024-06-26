@@ -136,7 +136,7 @@ const toggleBox = (tab) => {
             console.log('咸潮模拟_体渲染/false');
         }
     } else {
-        var formattedTime = dayjs(timePlay.value).format('YYYY-MM-DD HH');
+        var formattedTime = dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss');
         activeTab.value = tab;
         let tabName = '';
         if (tab === 'top') {
@@ -303,24 +303,21 @@ const anewtop = () => {
     }
 }
 const finishtop = () => {
-    var formattedTime = dayjs(timePlay.value).format('YYYY-MM-DD HH');
+    var formattedTime = dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss');
     if (transversalsvalue.value === '河道中心断面') {
         showEcharts.value = true;
         firstSpanText.value = '河道中心断面';
         secondSpanText.value = 'river center section';
         callUIInteraction({
-            function: '河道中心断面_完成/' + {
+            function: '河道中心断面_完成/' + JSON.stringify({
                 "time": formattedTime
-            }
-        });
-        console.log('河道中心断面_完成/' + {
-            "time": formattedTime
+            })
         });
     } else if (transversalsvalue.value === '自定义绘制断面') {
         callUIInteraction({
-            function: '自定义绘制断面_完成/' + {
+            function: '自定义绘制断面_完成/' + JSON.stringify({
                 "time": formattedTime
-            }
+            })
         });
     }
 }
@@ -365,7 +362,7 @@ onMounted(() => {
     // init();
     addResponseEventListener("handle_responses", myHandleResponseFunction);
     callUIInteraction({
-        function: '咸潮模拟_表面渲染/true',
+        function: '咸潮模拟_表层渲染/true',
     });
 });
 onBeforeUnmount(() => {
