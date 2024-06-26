@@ -24,8 +24,9 @@
           <span>数据选择：</span>
           <div class="buttonbox">
             <el-button class="buttonstyle" type="primary">实时数据</el-button>
-            <el-button class="buttonstyle" type="primary">样例数据</el-button>
-            <el-button class="buttonstyle" type="primary">手动输入</el-button>
+            <el-button class="buttonstyle" type="primary" @click="uploadSampleData">样例数据</el-button>
+            <input type="file" ref="fileInput" @change="handleFileUpload" style="display: none;" />
+            <el-button class="buttonstyle" type="primary" @click="">手动输入</el-button>
           </div>
         </div>
         <div class="leftbox-table">
@@ -34,49 +35,49 @@
             fontSize: '15px',
             'text-align': 'center',
           }" height="410" align="center">
-            <el-table-column prop="DeviceName" width="45" align="center" show-overflow-tooltip>
+            <el-table-column prop="s1" width="45" align="center" show-overflow-tooltip>
               <template #header="scope">
                 <el-tooltip class="item" effect="dark" content="前日盐度" placement="top">
                   <span>s1</span>
                 </el-tooltip>
               </template>
             </el-table-column>
-            <el-table-column prop="DeviceType" width="45" align="center">
+            <el-table-column prop="s2" width="45" align="center" show-overflow-tooltip>
               <template #header="scope">
                 <el-tooltip class="item" effect="dark" content="昨日盐度" placement="top">
                   <span>s2</span>
                 </el-tooltip>
               </template>
             </el-table-column>
-            <el-table-column prop="OnlineSituation" width="45" align="center">
+            <el-table-column prop="s3" width="45" align="center" show-overflow-tooltip>
               <template #header="scope">
                 <el-tooltip class="item" effect="dark" content="今日盐度" placement="top">
                   <span>s3</span>
                 </el-tooltip>
               </template>
             </el-table-column>
-            <el-table-column prop="OnlineSituation" width="80" align="center">
+            <el-table-column prop="sanzao" width="80" align="center" show-overflow-tooltip>
               <template #header="scope">
                 <el-tooltip class="item" effect="dark" content="三灶日最低潮位" placement="top">
                   <span>sanzao</span>
                 </el-tooltip>
               </template>
             </el-table-column>
-            <el-table-column prop="OnlineSituation" width="80" align="center">
+            <el-table-column prop="makou" width="80" align="center" show-overflow-tooltip>
               <template #header="scope">
                 <el-tooltip class="item" effect="dark" content="马口日均流量" placement="top">
                   <span>makou</span>
                 </el-tooltip>
               </template>
             </el-table-column>
-            <el-table-column prop="OnlineSituation" width="80" align="center">
+            <el-table-column prop="macao" width="80" align="center" show-overflow-tooltip>
               <template #header="scope">
                 <el-tooltip class="item" effect="dark" content="澳门风速" placement="top">
                   <span>macao</span>
                 </el-tooltip>
               </template>
             </el-table-column>
-            <el-table-column prop="OnlineSituation" width="80" align="center">
+            <el-table-column prop="sk" width="80" align="center" show-overflow-tooltip>
               <template #header="scope">
                 <el-tooltip class="item" effect="dark" content="潮波不对称性因子" placement="top">
                   <span>sk</span>
@@ -103,8 +104,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, watch} from "vue";
+import { ref, onMounted, onBeforeUnmount, watch } from "vue";
 import * as echarts from "echarts";
+import * as XLSX from "xlsx";
+import { ElMessage } from 'element-plus'
 
 const selectValue = ref("");
 const selectoptions = [
@@ -340,6 +343,47 @@ const init = () => {
 const closeEcharts = () => {
   showEcharts.value = false;
 }
+const fileInput = ref(null);
+
+const uploadSampleData = () => {
+  if (selectValue.value == '') {
+    ElMessage({
+      message: '请选择站点',
+      type: 'warning',
+    })
+    return
+  }
+  fileInput.value.click();
+};
+
+const handleFileUpload = (event) => {
+  const file = event.target.files[0];
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const data = new Uint8Array(e.target.result);
+    const workbook = XLSX.read(data, { type: 'array' });
+    const sheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[sheetName];
+    const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+    const headers = jsonData[0];
+    const rows = jsonData.slice(1);
+
+    tableData.value = rows.map(row => {
+      return {
+        s1: row[0],
+        s2: row[1],
+        s3: row[2],
+        sanzao: row[3],
+        makou: row[4],
+        macao: row[5],
+        sk: row[6]
+      };
+    });
+    console.log(tableData.value);
+  };
+  reader.readAsArrayBuffer(file);
+};
 onMounted(() => {
 
 });

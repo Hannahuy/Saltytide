@@ -116,6 +116,7 @@ const transversalsoptions = [
 ]
 let lastClickedTab = '';
 const toggleBox = (tab) => {
+    transversalsvalue.value = '';
     if (activeTab.value === tab) {
         activeTab.value = '';
         if (tab === 'top') {
