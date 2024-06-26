@@ -14,7 +14,7 @@
         </div>
         <div class="leftbox-middle-content-top-raido">
           <span>预测范围：</span>
-          <el-radio-group v-model="dayradio" class="ml-4">
+          <el-radio-group v-model="dayradio" class="ml-4" @change="getdayradio">
             <el-radio value="1" size="large" :disabled="disable1Day" style="width: 115px;margin: 0">1天(逐时预报)</el-radio>
             <el-radio value="2" size="large" style="width: 115px;margin: 0">3天(逐日预报)</el-radio>
             <el-radio value="3" size="large" style="width: 115px;margin: 0">7天(逐日预报)</el-radio>
@@ -23,68 +23,71 @@
         <div class="leftbox-middle-content-middle">
           <span>数据选择：</span>
           <div class="buttonbox">
-            <el-button class="buttonstyle" type="primary">实时数据</el-button>
+            <el-button class="buttonstyle" type="primary" @click="Realtimedata">实时数据</el-button>
             <el-button class="buttonstyle" type="primary" @click="uploadSampleData">样例数据</el-button>
             <input type="file" ref="fileInput" @change="handleFileUpload" style="display: none;" />
-            <el-button class="buttonstyle" type="primary" @click="">手动输入</el-button>
+            <el-button class="buttonstyle" type="primary" @click="Manualentry">手动输入</el-button>
           </div>
         </div>
         <div class="leftbox-table">
-          <el-table :data="tableData" style="width: 100%" :header-cell-style="{
-            background: 'transparent',
-            fontSize: '15px',
-            'text-align': 'center',
-          }" height="410" align="center">
-            <el-table-column prop="s1" width="45" align="center" show-overflow-tooltip>
-              <template #header="scope">
-                <el-tooltip class="item" effect="dark" content="前日盐度" placement="top">
-                  <span>s1</span>
-                </el-tooltip>
-              </template>
-            </el-table-column>
-            <el-table-column prop="s2" width="45" align="center" show-overflow-tooltip>
-              <template #header="scope">
-                <el-tooltip class="item" effect="dark" content="昨日盐度" placement="top">
-                  <span>s2</span>
-                </el-tooltip>
-              </template>
-            </el-table-column>
-            <el-table-column prop="s3" width="45" align="center" show-overflow-tooltip>
-              <template #header="scope">
-                <el-tooltip class="item" effect="dark" content="今日盐度" placement="top">
-                  <span>s3</span>
-                </el-tooltip>
-              </template>
-            </el-table-column>
-            <el-table-column prop="sanzao" width="80" align="center" show-overflow-tooltip>
-              <template #header="scope">
-                <el-tooltip class="item" effect="dark" content="三灶日最低潮位" placement="top">
-                  <span>sanzao</span>
-                </el-tooltip>
-              </template>
-            </el-table-column>
-            <el-table-column prop="makou" width="80" align="center" show-overflow-tooltip>
-              <template #header="scope">
-                <el-tooltip class="item" effect="dark" content="马口日均流量" placement="top">
-                  <span>makou</span>
-                </el-tooltip>
-              </template>
-            </el-table-column>
-            <el-table-column prop="macao" width="80" align="center" show-overflow-tooltip>
-              <template #header="scope">
-                <el-tooltip class="item" effect="dark" content="澳门风速" placement="top">
-                  <span>macao</span>
-                </el-tooltip>
-              </template>
-            </el-table-column>
-            <el-table-column prop="sk" width="80" align="center" show-overflow-tooltip>
-              <template #header="scope">
-                <el-tooltip class="item" effect="dark" content="潮波不对称性因子" placement="top">
-                  <span>sk</span>
-                </el-tooltip>
-              </template>
-            </el-table-column>
-          </el-table>
+          <table class="custom-table">
+            <tr v-if="dayradio === '1'">
+              <td>实时盐度</td>
+              <td>{{ tableData[0] }}</td>
+            </tr>
+            <tr v-if="dayradio === '1'">
+              <td>前1小时盐度</td>
+              <td>{{ tableData[1] }}</td>
+            </tr>
+            <tr v-if="dayradio === '1'">
+              <td>前2小时盐度</td>
+              <td>{{ tableData[2] }}</td>
+            </tr>
+            <tr v-if="dayradio === '1'">
+              <td>提前24小时三灶潮位</td>
+              <td>{{ tableData[3] }}</td>
+            </tr>
+            <tr v-if="dayradio === '1'">
+              <td>提前48小时马口径流</td>
+              <td>{{ tableData[4] }}</td>
+            </tr>
+            <tr v-if="dayradio === '1'">
+              <td>提前24小时u方向风速</td>
+              <td>{{ tableData[5] }}</td>
+            </tr>
+            <tr v-if="dayradio === '1'">
+              <td>提前24小时v方向风速</td>
+              <td>{{ tableData[6] }}</td>
+            </tr>
+            <tr v-if="dayradio === '2' || dayradio === '3'">
+              <td>今日最大盐度</td>
+              <td>{{ tableData[0] }}</td>
+            </tr>
+            <tr v-if="dayradio === '2' || dayradio === '3'">
+              <td>昨日最大盐度</td>
+              <td>{{ tableData[1] }}</td>
+            </tr>
+            <tr v-if="dayradio === '2' || dayradio === '3'">
+              <td>前日最大盐度</td>
+              <td>{{ tableData[2] }}</td>
+            </tr>
+            <tr v-if="dayradio === '2' || dayradio === '3'">
+              <td>今日三灶日最低潮位</td>
+              <td>{{ tableData[3] }}</td>
+            </tr>
+            <tr v-if="dayradio === '2' || dayradio === '3'">
+              <td>今日马口平均流量</td>
+              <td>{{ tableData[4] }}</td>
+            </tr>
+            <tr v-if="dayradio === '2' || dayradio === '3'">
+              <td>今日澳门风速</td>
+              <td>{{ tableData[5] }}</td>
+            </tr>
+            <tr v-if="dayradio === '2' || dayradio === '3'">
+              <td>今日潮波不对称性因子</td>
+              <td>{{ tableData[6] }}</td>
+            </tr>
+          </table>
           <el-button style="margin-top: 20px; margin-left: 372px" class="buttonstyle" type="primary"
             @click="drive">驱动模型</el-button>
         </div>
@@ -132,12 +135,8 @@ const selectoptions = [
     label: "全禄水厂",
   },
 ];
-const tableData = ref([])
+const tableData = ref(["", "", "", "", "", "", ""])
 const dayradio = ref("1");
-const drive = () => {
-  showEcharts.value = true;
-  init();
-}
 const showEcharts = ref(false)
 const disable1Day = ref(false);
 watch(selectValue, (newValue) => {
@@ -343,8 +342,18 @@ const init = () => {
 const closeEcharts = () => {
   showEcharts.value = false;
 }
+// 实时数据
+const Realtimedata = () => {
+  if (selectValue.value == '') {
+    ElMessage({
+      message: '请选择站点',
+      type: 'warning',
+    })
+    return
+  }
+}
+// 样例数据
 const fileInput = ref(null);
-
 const uploadSampleData = () => {
   if (selectValue.value == '') {
     ElMessage({
@@ -355,7 +364,7 @@ const uploadSampleData = () => {
   }
   fileInput.value.click();
 };
-
+// 上传文件
 const handleFileUpload = (event) => {
   const file = event.target.files[0];
   const reader = new FileReader();
@@ -367,23 +376,41 @@ const handleFileUpload = (event) => {
     const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
     const headers = jsonData[0];
-    const rows = jsonData.slice(1);
-
-    tableData.value = rows.map(row => {
-      return {
-        s1: row[0],
-        s2: row[1],
-        s3: row[2],
-        sanzao: row[3],
-        makou: row[4],
-        macao: row[5],
-        sk: row[6]
-      };
-    });
-    console.log(tableData.value);
+    const rows = jsonData.slice(1)[0];
+    console.log(headers);
+    console.log(rows);
+    tableData.value = rows;
   };
   reader.readAsArrayBuffer(file);
 };
+// 选择预测范围
+const getdayradio = () => {
+  tableData.value = ["", "", "", "", "", "", ""];
+}
+// 手动输入
+const Manualentry = () => {
+  if (selectValue.value == '') {
+    ElMessage({
+      message: '请选择站点',
+      type: 'warning',
+    })
+    return
+  }
+}
+// 驱动模型
+const drive = () => {
+  const isTableDataEmpty = tableData.value.some(item => item === "");
+  if (isTableDataEmpty) {
+    ElMessage({
+      message: '表格数据不能为空，请填写完整',
+      type: 'warning',
+    })
+    return
+  } else {
+    showEcharts.value = true;
+    init();
+  }
+}
 onMounted(() => {
 
 });
@@ -403,7 +430,7 @@ onBeforeUnmount(() => {
 
 .leftbox-middle {
   width: 500px;
-  height: 715px;
+  height: 705px;
   background-image: url("../../assets/image/框-bg.png");
   background-repeat: no-repeat;
   background-size: 100% 100%;
@@ -607,5 +634,19 @@ onBeforeUnmount(() => {
   right: 25px;
   top: 20px;
   cursor: pointer;
+}
+
+.custom-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.custom-table th,
+.custom-table td {
+  border: 1px solid #416491;
+  padding: 8px;
+  text-align: center;
+  height: 40px;
+  width: 50%;
 }
 </style>
