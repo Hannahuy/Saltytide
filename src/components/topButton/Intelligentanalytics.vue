@@ -15,9 +15,9 @@
         <div class="leftbox-middle-content-top-raido">
           <span>预测范围：</span>
           <el-radio-group v-model="dayradio" class="ml-4">
-            <el-radio value="1" size="large">1天</el-radio>
-            <el-radio value="2" size="large">3天</el-radio>
-            <el-radio value="3" size="large">7天</el-radio>
+            <el-radio value="1" size="large" style="width: 115px;margin: 0">1天(逐时预报)</el-radio>
+            <el-radio value="2" size="large" style="width: 115px;margin: 0">3天(逐日预报)</el-radio>
+            <el-radio value="3" size="large" style="width: 115px;margin: 0">7天(逐日预报)</el-radio>
           </el-radio-group>
         </div>
         <div class="leftbox-middle-content-middle">
@@ -34,13 +34,55 @@
             fontSize: '15px',
             'text-align': 'center',
           }" height="410" align="center">
-            <el-table-column prop="DeviceName" label="s1" width="45" align="center" />
-            <el-table-column prop="DeviceType" label="s2" width="45" align="center" />
-            <el-table-column prop="OnlineSituation" label="s3" width="45" align="center" />
-            <el-table-column prop="OnlineSituation" label="sanzao" width="80" align="center" />
-            <el-table-column prop="OnlineSituation" label="makou" width="80" align="center" />
-            <el-table-column prop="OnlineSituation" label="macao" width="80" align="center" />
-            <el-table-column prop="OnlineSituation" label="sk" width="80" align="center" />
+            <el-table-column prop="DeviceName" width="45" align="center" show-overflow-tooltip>
+              <template #header="scope">
+                <el-tooltip class="item" effect="dark" content="前日盐度" placement="top">
+                  <span>s1</span>
+                </el-tooltip>
+              </template>
+            </el-table-column>
+            <el-table-column prop="DeviceType" width="45" align="center">
+              <template #header="scope">
+                <el-tooltip class="item" effect="dark" content="昨日盐度" placement="top">
+                  <span>s2</span>
+                </el-tooltip>
+              </template>
+            </el-table-column>
+            <el-table-column prop="OnlineSituation" width="45" align="center">
+              <template #header="scope">
+                <el-tooltip class="item" effect="dark" content="今日盐度" placement="top">
+                  <span>s3</span>
+                </el-tooltip>
+              </template>
+            </el-table-column>
+            <el-table-column prop="OnlineSituation" width="80" align="center">
+              <template #header="scope">
+                <el-tooltip class="item" effect="dark" content="三灶日最低潮位" placement="top">
+                  <span>sanzao</span>
+                </el-tooltip>
+              </template>
+            </el-table-column>
+            <el-table-column prop="OnlineSituation" width="80" align="center">
+              <template #header="scope">
+                <el-tooltip class="item" effect="dark" content="马口日均流量" placement="top">
+                  <span>makou</span>
+                </el-tooltip>
+              </template>
+            </el-table-column>
+            <el-table-column prop="OnlineSituation" width="80" align="center">
+              <template #header="scope">
+                <el-tooltip class="item" effect="dark" content="澳门风速" placement="top">
+                  <span>macao</span>
+                </el-tooltip>
+              </template>
+            </el-table-column>
+            <el-table-column prop="OnlineSituation" width="80" align="center">
+              <template #header="scope">
+                <el-tooltip class="item" effect="dark" content="潮波不对称性因子" placement="top">
+                  <span>sk</span>
+                </el-tooltip>
+              </template>
+            </el-table-column>
           </el-table>
           <el-button style="margin-top: 20px; margin-left: 372px" class="buttonstyle" type="primary"
             @click="drive">驱动模型</el-button>
@@ -65,7 +107,6 @@ import { ref, onMounted, onBeforeUnmount } from "vue";
 import * as echarts from "echarts";
 
 const selectValue = ref("");
-
 const selectoptions = [
   {
     value: "平岗",
@@ -88,6 +129,7 @@ const selectoptions = [
     label: "全禄水厂",
   },
 ];
+const tableData = ref([])
 const dayradio = ref("1");
 const drive = () => {
   showEcharts.value = true;
