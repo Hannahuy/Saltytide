@@ -501,6 +501,10 @@ onBeforeUnmount(() => {
   color: #b7cffc;
 }
 
+:deep(.el-radio.el-radio--large) {
+  height: auto;
+}
+
 :deep(.el-radio.el-radio--large .el-radio__label) {
   color: #b7cffc;
 }
