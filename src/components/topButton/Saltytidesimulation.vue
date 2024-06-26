@@ -172,7 +172,7 @@ const updateImage = () => {
 }
 const Backoff = () => {
     const previousTime = timePlay.value;
-    timePlay.value = dayjs(previousTime).subtract(3, 'hour').valueOf();
+    timePlay.value = dayjs(previousTime).subtract(1, 'hour').valueOf();
     callUIInteraction({
         function: '咸潮模拟时间轴/' + dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'),
     });
@@ -196,7 +196,7 @@ const togglePlay = () => {
 }
 const Fastforward = () => {
     const previousTime = timePlay.value;
-    timePlay.value = dayjs(previousTime).add(3, 'hour').valueOf();
+    timePlay.value = dayjs(previousTime).add(1, 'hour').valueOf();
     callUIInteraction({
         function: '咸潮模拟时间轴/' + dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'),
     });

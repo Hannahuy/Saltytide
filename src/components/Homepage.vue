@@ -1,7 +1,7 @@
 <template>
     <div class="page">
         <div class="top-view">
-            <span>磨刀门河道咸潮数字孪生</span>
+            <span>磨刀门水道咸潮数字孪生</span>
             <div class="title-line-bg"></div>
         </div>
         <div class="top-view-button">
