@@ -93,8 +93,10 @@ import dayjs from 'dayjs'
 import * as echarts from "echarts";
 import { callUIInteraction, addResponseEventListener } from "../../module/webrtcVideo/webrtcVideo.js";
 
-const timePick = ref(new Date());
-const timePlay = ref(dayjs().startOf('day').valueOf())
+// const timePick = ref(new Date());
+const timePick = ref(dayjs('2023-03-10').toDate());
+// const timePlay = ref(dayjs().startOf('day').valueOf())
+const timePlay = ref(dayjs('2023-03-10').startOf('day').valueOf())
 const activeTab = ref('top')
 const activePlay = ref('')
 const showEcharts = ref(false)
@@ -134,12 +136,16 @@ const toggleBox = (tab) => {
             console.log('咸潮模拟_体渲染/false');
         }
     } else {
+        var formattedTime = dayjs(timePlay.value).format('YYYY-MM-DD HH');
         activeTab.value = tab;
         let tabName = '';
         if (tab === 'top') {
             tabName = '表层渲染';
             showEcharts.value = false;
             showtransversals.value = false;
+            callUIInteraction({
+                function: '表层渲染/' + formattedTime,
+            });
         } else if (tab === 'middle') {
             tabName = '断面分析';
             showtransversals.value = true;
@@ -147,6 +153,9 @@ const toggleBox = (tab) => {
             tabName = '体渲染';
             showEcharts.value = false;
             showtransversals.value = false;
+            callUIInteraction({
+                function: '体渲染/' + formattedTime,
+            });
         }
         callUIInteraction({
             function: '咸潮模拟_' + tabName + '/true',
@@ -206,8 +215,10 @@ const Fastforward = () => {
     updateImage()
 }
 
-const min = ref(dayjs().startOf('day').valueOf());
-const max = ref(dayjs().endOf('day').valueOf());
+// const min = ref(dayjs().startOf('day').valueOf());
+// const max = ref(dayjs().endOf('day').valueOf());
+const min = ref(dayjs(timePick.value).startOf('day').valueOf());
+const max = ref(dayjs(timePick.value).endOf('day').valueOf());
 
 const formattedTime = computed(() => {
     const time = dayjs(timePlay.value);
@@ -292,20 +303,25 @@ const anewtop = () => {
     }
 }
 const finishtop = () => {
+    var formattedTime = dayjs(timePlay.value).format('YYYY-MM-DD HH');
     if (transversalsvalue.value === '河道中心断面') {
         showEcharts.value = true;
         firstSpanText.value = '河道中心断面';
         secondSpanText.value = 'river center section';
         callUIInteraction({
-            function: '河道中心断面_完成',
-            // init();
+            function: '河道中心断面_完成/' + {
+                "time": formattedTime
+            }
         });
-        console.log('河道');
+        console.log('河道中心断面_完成/' + {
+            "time": formattedTime
+        });
     } else if (transversalsvalue.value === '自定义绘制断面') {
         callUIInteraction({
-            function: '自定义绘制断面_完成',
+            function: '自定义绘制断面_完成/' + {
+                "time": formattedTime
+            }
         });
-        console.log('自定义');
     }
 }
 

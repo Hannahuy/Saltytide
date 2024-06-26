@@ -15,7 +15,7 @@
         <div class="leftbox-middle-content-top-raido">
           <span>预测范围：</span>
           <el-radio-group v-model="dayradio" class="ml-4">
-            <el-radio value="1" size="large" style="width: 115px;margin: 0">1天(逐时预报)</el-radio>
+            <el-radio value="1" size="large" :disabled="disable1Day" style="width: 115px;margin: 0">1天(逐时预报)</el-radio>
             <el-radio value="2" size="large" style="width: 115px;margin: 0">3天(逐日预报)</el-radio>
             <el-radio value="3" size="large" style="width: 115px;margin: 0">7天(逐日预报)</el-radio>
           </el-radio-group>
@@ -103,7 +103,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from "vue";
+import { ref, onMounted, onBeforeUnmount, watch} from "vue";
 import * as echarts from "echarts";
 
 const selectValue = ref("");
@@ -136,6 +136,16 @@ const drive = () => {
   init();
 }
 const showEcharts = ref(false)
+const disable1Day = ref(false);
+watch(selectValue, (newValue) => {
+  if (newValue === "平岗" || newValue === "广昌") {
+    dayradio.value = "1";
+    disable1Day.value = false;
+  } else if (newValue === "竹洲头" || newValue === "灯笼山" || newValue === "全禄水厂") {
+    dayradio.value = "2";
+    disable1Day.value = true;
+  }
+});
 let waterdata = null;
 const init = () => {
   const waterChartElement = document.getElementById("leftbox-content");

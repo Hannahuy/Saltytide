@@ -193,6 +193,7 @@ onBeforeUnmount(() => {
 .top-leftbox {
   width: 500px;
   height: 83%;
+  min-height: 804px;
   background-image: url("../../assets/image/框-bg.png");
   background-repeat: no-repeat;
   background-size: 100% 100%;
@@ -203,14 +204,17 @@ onBeforeUnmount(() => {
 }
 
 .leftbox1 {
+  min-height: 321px;
   height: 40%;
 }
 
 .leftbox2 {
+  min-height: 201px;
   height: 25%;
 }
 
 .leftbox3 {
+  min-height: 281px;
   height: 35%;
 }
 
