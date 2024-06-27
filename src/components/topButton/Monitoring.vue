@@ -39,9 +39,9 @@
         fontSize: '15px',
         'text-align': 'center',
       }" height="150" align="center">
-        <el-table-column prop="DeviceName" label="设备名称" width="120" align="center" />
-        <el-table-column prop="DeviceType" label="设备类型" width="120" align="center" />
-        <el-table-column prop="OnlineSituation" label="是否在线" width="120" align="center" />
+        <el-table-column prop="DeviceName" label="设备名称" align="center" />
+        <el-table-column prop="DeviceType" label="设备类型" align="center" />
+        <el-table-column prop="OnlineSituation" label="是否在线" align="center" />
       </el-table>
     </div>
     <div class="leftbox3">
@@ -83,8 +83,10 @@ const initWaterChart = () => {
         data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
         axisLabel: {
           show: true,
-          color: "#b7cffc", //更改坐标轴文字颜色
-          fontSize: 12, //更改坐标轴文字大小
+          textStyle: {
+            color: "#b7cffc", //更改坐标轴文字颜色
+            fontSize: 12, //更改坐标轴文字大小
+          },
         },
       },
     ],
@@ -92,8 +94,10 @@ const initWaterChart = () => {
       splitLine: { show: false },
       axisLabel: {
         show: true,
-        color: "#b7cffc", //更改坐标轴文字颜色
-        fontSize: 12, //更改坐标轴文字大小
+        textStyle: {
+          color: "#b7cffc", //更改坐标轴文字颜色
+          fontSize: 12, //更改坐标轴文字大小
+        },
       },
     },
     series: [
@@ -131,8 +135,11 @@ const initSalinityChart = () => {
     },
     legend: {
       orient: 'vertical',
-      left: 'left',
-      color: '#b7cffc',
+      left: '7%',
+      top:'15%',
+      textStyle: {
+        color: '#b7cffc',
+      },
     },
     series: [
       {
@@ -146,11 +153,17 @@ const initSalinityChart = () => {
           { value: 3, name: '盐度监测' }
         ],
         itemStyle: {
-          label: {
-            color: '#b7cffc',
-            fontWeight: 'bolder'
-          },
+          normal: {
+            label: {
+              textStyle: {
+                color: '#b7cffc',
+                fontWeight: 'bolder'
+              }
+            },
+          }
         },
+        left:'20%',
+        bottom:'17%',
         emphasis: {
           itemStyle: {
             shadowBlur: 10,

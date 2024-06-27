@@ -19,6 +19,7 @@ div {
   -webkit-user-select: none;
   -ms-user-select: none;
 }
+
 .el-popper.is-light.blueBack {
   background-color: #254277 !important;
   border: 1px solid #254277 !important;
@@ -46,7 +47,18 @@ div {
 .el-select-dropdown__item.selected {
   background: #2A77C6 !important;
 }
-.el-select-dropdown__item.is-hovering{
+
+.el-select-dropdown__item.is-hovering {
   background-color: #2A77C6 !important;
+}
+
+.el-picker__popper.el-popper {
+  inset: 490px auto auto 15px !important;
+}
+
+.el-popper__arrow {
+  position: absolute;
+  top: 336px !important;
+  left: 75px !important;
 }
 </style>
