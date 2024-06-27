@@ -223,7 +223,9 @@ onBeforeUnmount(() => {
   height: 33px;
   background-image: url("../../assets/image/title.png");
   background-repeat: no-repeat;
-  background-size: 150% 100%;
+  background-size: 140% 100%;
+  display: flex;
+  align-items: center;
 }
 
 .top-leftbox-title span {

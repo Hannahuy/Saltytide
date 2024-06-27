@@ -46,6 +46,14 @@
                 </div>
             </div>
         </div>
+        <div class="bar" v-show="showbar">
+            <div class="color-bar-number">
+                <span>10(‰)</span>
+                <span>5(‰)</span>
+                <span>0(‰)</span>
+            </div>
+            <div class="color-bar"></div>
+        </div>
         <div class="bottomCalendar">
             <el-date-picker v-model="timePick" type="date" :editable="false" />
         </div>
@@ -343,6 +351,9 @@ const showVolumerendering = computed(() => {
 });
 const showtransversals = computed(() => {
     return activeTab.value === 'middle';
+});
+const showbar = computed(() => {
+    return activeTab.value === 'top';
 });
 // let waterdata = null;
 // const init = () => {
@@ -669,18 +680,20 @@ onBeforeUnmount(() => {
 }
 
 .leftbox-top-title {
-    width: 930px;
+    width: 860px;
     height: 33px;
     background-image: url('../../assets/image/title.png');
     background-repeat: no-repeat;
-    background-size: 100% 100%;
+    background-size: 85% 100%;
+    display: flex;
+    align-items: center;
 }
 
 .leftbox-top-title span {
     font-family: PangMenZhengDao;
     font-size: 20px;
     color: #B7CFFC;
-    margin-left: 80px;
+    margin-left: 40px;
 }
 
 .leftbox-top-title span:nth-child(2) {
@@ -733,5 +746,31 @@ onBeforeUnmount(() => {
     align-items: center;
     height: 40px;
     margin-top: 5px;
+}
+
+.bar{
+    position: absolute;
+    bottom: 135px;
+    right: 50px;
+    display: flex;
+    align-items: center;
+}
+
+.color-bar {
+    width: 10px;
+    height: 176px;
+    background: linear-gradient(180deg, #FF0000 0%, #FFDB00 33%, #C4FF00 66%, #3AAA00 100%);
+    border-radius: 9px;
+}
+
+.color-bar-number{
+    height: 176px;
+    color: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    margin-right: 5px;
+    font-size: 12px;
 }
 </style>

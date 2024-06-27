@@ -445,14 +445,16 @@ onBeforeUnmount(() => {
   height: 33px;
   background-image: url("../../assets/image/title.png");
   background-repeat: no-repeat;
-  background-size: 130% 100%;
+  background-size: 140% 100%;
+  display: flex;
+  align-items: center;
 }
 
 .leftbox-top-title span {
   font-family: PangMenZhengDao;
   font-size: 20px;
   color: #b7cffc;
-  margin-left: 80px;
+  margin-left: 40px;
 }
 
 .leftbox-top-title span:nth-child(2) {

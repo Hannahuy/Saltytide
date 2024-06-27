@@ -18,31 +18,43 @@
             </div>
             <div class="Weather-type-icon">
                 <img src="../../assets/img/weather_sunny_icon.png" alt="Sunny"
-                    :class="{ 'selected': selectedIcon === 'sunny' , 'disabled': swtichvalue}" @click="selectIcon('sunny')" />
+                    :class="{ 'selected': selectedIcon === 'sunny', 'disabled': swtichvalue }"
+                    @click="selectIcon('sunny')" />
                 <img src="../../assets/img/heavyrain.png" alt="Heavy Rain"
-                    :class="{ 'selected': selectedIcon === 'heavyrain' , 'disabled': swtichvalue}" @click="selectIcon('heavyrain')" />
+                    :class="{ 'selected': selectedIcon === 'heavyrain', 'disabled': swtichvalue }"
+                    @click="selectIcon('heavyrain')" />
                 <img src="../../assets/img/Mediumfog.png" alt="Medium Fog"
-                    :class="{ 'selected': selectedIcon === 'fog' , 'disabled': swtichvalue}" @click="selectIcon('fog')" />
+                    :class="{ 'selected': selectedIcon === 'fog', 'disabled': swtichvalue }"
+                    @click="selectIcon('fog')" />
             </div>
             <div class="Weather-type-icon-detailed">
-                <img :src="weatherone" alt="" :class="{ 'selected': selectedIconDetail === 'sunnyDetail', 'disabled': swtichvalue }"
+                <img :src="weatherone" alt=""
+                    :class="{ 'selected': selectedIconDetail === 'sunnyDetail', 'disabled': swtichvalue }"
                     @click="selectDetailIcon('sunnyDetail')" />
-                <img :src="weathertwo" alt="" :class="{ 'selected': selectedIconDetail === 'heavyrainDetail' , 'disabled': swtichvalue}"
+                <img :src="weathertwo" alt=""
+                    :class="{ 'selected': selectedIconDetail === 'heavyrainDetail', 'disabled': swtichvalue }"
                     @click="selectDetailIcon('heavyrainDetail')" />
-                <img :src="weatherthree" alt="" :class="{ 'selected': selectedIconDetail === 'fogDetail' , 'disabled': swtichvalue}"
+                <img :src="weatherthree" alt=""
+                    :class="{ 'selected': selectedIconDetail === 'fogDetail', 'disabled': swtichvalue }"
                     @click="selectDetailIcon('fogDetail')" />
             </div>
             <div class="leftbox-top-content">
                 <span>风强度</span>
-                <img src="../../assets/img/small_icon.png" alt="" :class="{ 'disabled': swtichvalue }" class="imgbutton" @click="decreaseintensity">
-                <el-slider v-model="Windintensity" :disabled="swtichvalue" style="width: 240px;margin-left: 20px;" @change="getWindintensity" />
-                <img src="../../assets/img/big_icon.png" :class="{ 'disabled': swtichvalue }" alt="" class="imgbutton" @click="addintensity">
+                <img src="../../assets/img/small_icon.png" alt="" :class="{ 'disabled': swtichvalue }" class="imgbutton"
+                    @click="decreaseintensity">
+                <el-slider v-model="Windintensity" :disabled="swtichvalue" style="width: 240px;margin-left: 20px;"
+                    @change="getWindintensity" />
+                <img src="../../assets/img/big_icon.png" :class="{ 'disabled': swtichvalue }" alt="" class="imgbutton"
+                    @click="addintensity">
             </div>
             <div class="leftbox-top-content">
                 <span style="margin-left: 12px;">风向</span>
-                <img src="../../assets/img/small_icon.png" :class="{ 'disabled': swtichvalue }" alt="" class="imgbutton" @click="decreasedirection">
-                <el-slider v-model="Winddirection" :disabled="swtichvalue" style="width: 240px;margin-left: 20px;" @change="getWinddirection" />
-                <img src="../../assets/img/big_icon.png" :class="{ 'disabled': swtichvalue }" alt="" class="imgbutton" @click="adddirection">
+                <img src="../../assets/img/small_icon.png" :class="{ 'disabled': swtichvalue }" alt="" class="imgbutton"
+                    @click="decreasedirection">
+                <el-slider v-model="Winddirection" :disabled="swtichvalue" style="width: 240px;margin-left: 20px;"
+                    @change="getWinddirection" />
+                <img src="../../assets/img/big_icon.png" :class="{ 'disabled': swtichvalue }" alt="" class="imgbutton"
+                    @click="adddirection">
             </div>
         </div>
         <div class="leftbox-middle">
@@ -58,10 +70,12 @@
                 <span>24:00h</span>
             </div>
             <div class="leftbox-middle-content">
-                <img src="../../assets/img/small_icon.png" :class="{ 'disabled': swtichvalue }" alt="" class="imgbutton" @click="decreasetime">
-                <el-slider v-model="timevalue" :disabled="swtichvalue" style="width: 320px;margin-left: 20px;" :min="1" :max="86400" :step="1"
-                    @input="updateTimeDisplay" @change="gettimevalue" :show-tooltip="false" />
-                <img src="../../assets/img/big_icon.png" :class="{ 'disabled': swtichvalue }" alt="" class="imgbutton" @click="addtime">
+                <img src="../../assets/img/small_icon.png" :class="{ 'disabled': swtichvalue }" alt="" class="imgbutton"
+                    @click="decreasetime">
+                <el-slider v-model="timevalue" :disabled="swtichvalue" style="width: 320px;margin-left: 20px;" :min="1"
+                    :max="86400" :step="1" @input="updateTimeDisplay" @change="gettimevalue" :show-tooltip="false" />
+                <img src="../../assets/img/big_icon.png" :class="{ 'disabled': swtichvalue }" alt="" class="imgbutton"
+                    @click="addtime">
             </div>
             <div class="leftbox-middle-bottom">
                 <div class="leftbox-middle-bottom-content">
@@ -387,7 +401,9 @@ onMounted(() => {
     height: 33px;
     background-image: url('../../assets/image/title.png');
     background-repeat: no-repeat;
-    background-size: 100% 100%;
+    background-size: 150% 100%;
+    display: flex;
+    align-items: center;
 }
 
 .leftbox-top-title span {
@@ -492,6 +508,8 @@ onMounted(() => {
 
 .Weather-list-top-right {
     margin-left: 95px;
+    display: flex;
+    align-items: center;
 }
 
 .Weather-list-top-right span {
@@ -580,8 +598,11 @@ onMounted(() => {
     background-size: 100% 100%;
     margin-bottom: 4px;
 }
+
 .disabled {
-    pointer-events: none; /* 禁用鼠标事件 */
-    opacity: 0.6; /* 使元素半透明 */
+    pointer-events: none;
+    /* 禁用鼠标事件 */
+    opacity: 0.6;
+    /* 使元素半透明 */
 }
 </style>

@@ -159,9 +159,9 @@ onMounted(() => {
 .top-view {
     width: 100%;
     height: 80px;
-    background-image: url('../assets/image/图层 668.png');
+    background-image: url('../assets/image/top-bg.png');
     background-repeat: no-repeat;
-    background-size: 100% 180%;
+    background-size: 100% 120%;
     display: flex;
     justify-content: start;
     align-items: center;
