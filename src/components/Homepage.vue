@@ -184,6 +184,7 @@ onMounted(() => {
     font-weight: 400;
     color: #D4E1FF;
     background: linear-gradient(0deg, #7EC0FF 0%, #FFFFFF 100%);
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     letter-spacing: 10px;
@@ -257,9 +258,9 @@ onMounted(() => {
     box-sizing: border-box;
 }
 
-.right-tool-button.active {
-    /* background-color: #0dc9e2; */
-}
+/* .right-tool-button.active {
+    background-color: #0dc9e2;
+} */
 
 .right-tool-button-measurement {
     position: absolute;
