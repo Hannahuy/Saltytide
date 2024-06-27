@@ -63,8 +63,8 @@ import Saltytidesimulation from './topButton/Saltytidesimulation.vue'
 import Intelligentanalytics from './topButton/Intelligentanalytics.vue'
 import background from './topButton/background.vue'
 import { callUIInteraction } from "../module/webrtcVideo/webrtcVideo.js";
-import axios from 'axios'
 
+// 获取当前时间
 const currentTime = ref('');
 const currentDate = ref('');
 const updateTime = () => {
@@ -87,6 +87,7 @@ const activeButtonright = ref('')
 const activeToolButton = ref('')
 const showMeasurement = ref(false)
 const showVisualangle = ref(false)
+// 顶部一级标题
 const setActiveButton = (button) => {
     if (activeButton.value !== button) {
         callUIInteraction({
@@ -95,7 +96,7 @@ const setActiveButton = (button) => {
         activeButton.value = button;
     }
 }
-
+// 右侧工具栏
 const setActiveToolButton = (button) => {
     if (activeToolButton.value === button) {
         activeToolButton.value = '';
@@ -116,6 +117,7 @@ const setActiveToolButton = (button) => {
         });
     }
 }
+// 面积
 const loadarea = (button) => {
     if (activeButtonright.value !== button) {
         callUIInteraction({
@@ -124,6 +126,7 @@ const loadarea = (button) => {
         activeButtonright.value = button;
     }
 }
+// 长度
 const loadlength = (button) => {
     if (activeButtonright.value !== button) {
         callUIInteraction({
@@ -137,9 +140,6 @@ onMounted(() => {
     callUIInteraction({
         function: '实时监测'
     });
-    // axios.get('/api/get_raster_value?lat=113.427139&lon=22.151838').then((res)=>{
-    //     console.log(res);
-    // })
 })
 </script>
 

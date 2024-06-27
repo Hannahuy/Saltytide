@@ -54,6 +54,14 @@
             </div>
             <div class="color-bar"></div>
         </div>
+        <div class="nextbar" v-show="shownextbar">
+            <div class="color-nextbar-number">
+                <span>23(‰)</span>
+                <span>11(‰)</span>
+                <span>0(‰)</span>
+            </div>
+            <div class="color-nextbar"></div>
+        </div>
         <div class="bottomCalendar">
             <el-date-picker v-model="timePick" type="date" :editable="false" />
         </div>
@@ -99,6 +107,7 @@
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import dayjs from 'dayjs'
 import * as echarts from "echarts";
+import axios from 'axios'
 import { callUIInteraction, addResponseEventListener } from "../../module/webrtcVideo/webrtcVideo.js";
 
 // const timePick = ref(new Date());
@@ -123,6 +132,7 @@ const transversalsoptions = [
     }
 ]
 let lastClickedTab = '';
+// 左侧二级菜单
 const toggleBox = (tab) => {
     transversalsvalue.value = '';
     if (activeTab.value === tab) {
@@ -173,12 +183,13 @@ const toggleBox = (tab) => {
     }
     lastClickedTab = tab;
 }
-
+// 获取断面选择框内容
 const getselect = (e) => {
     callUIInteraction({
         function: e,
     });
 }
+// 图片路径   顺序切换图片
 const imagePaths = [
     '/src/assets/dataImg/89414d47203f8e5fd56cf15b9520970.png',
     '/src/assets/dataImg/f11baccb8e23beb13656810a1757a87.png',
@@ -188,6 +199,7 @@ let currentImagePathIndex = 0;
 const updateImage = () => {
     transversalsEchartsimg.value = imagePaths[currentImagePathIndex];
 }
+// 倒退
 const Backoff = () => {
     const previousTime = timePlay.value;
     timePlay.value = dayjs(previousTime).subtract(1, 'hour').valueOf();
@@ -199,6 +211,7 @@ const Backoff = () => {
     currentImagePathIndex = (currentImagePathIndex - 1 + imagePaths.length) % imagePaths.length;
     updateImage()
 }
+// 暂停/播放
 let previousPlayState = '';
 const togglePlay = () => {
     previousPlayState = activePlay.value;
@@ -212,6 +225,7 @@ const togglePlay = () => {
         }, 16.6665);
     }
 }
+// 前进
 const Fastforward = () => {
     const previousTime = timePlay.value;
     timePlay.value = dayjs(previousTime).add(1, 'hour').valueOf();
@@ -285,6 +299,7 @@ watch(timePlay, (newVal) => {
         // console.log(currentTime.format('YYYY-MM-DD HH:mm:ss'));
     }
 });
+// 监听时间轴
 const gettimePlay = (e) => {
     const clickedTime = dayjs(e).format('YYYY-MM-DD HH:mm:ss');
     if (activePlay.value = 'play') {
@@ -297,7 +312,7 @@ const gettimePlay = (e) => {
 }
 const firstSpanText = ref('');
 const secondSpanText = ref('');
-
+// 重新绘制
 const anewtop = () => {
     if (transversalsvalue.value === '河道中心断面') {
         callUIInteraction({
@@ -311,6 +326,7 @@ const anewtop = () => {
         console.log('自定义');
     }
 }
+// 完成
 const finishtop = () => {
     var formattedTime = dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss');
     if (transversalsvalue.value === '河道中心断面') {
@@ -330,16 +346,18 @@ const finishtop = () => {
         });
     }
 }
-
+// 关闭echarts图表
 const closeEcharts = () => {
     showEcharts.value = false;
 }
+// 监听Z轴
 const getZaxis = (e) => {
     callUIInteraction({
         function: 'Z轴剖切/' + e,
     });
     console.log(e);
 }
+// 监听特征阈值
 const getthreshold = (e) => {
     callUIInteraction({
         function: '特征阈值/' + e,
@@ -355,6 +373,9 @@ const showtransversals = computed(() => {
 const showbar = computed(() => {
     return activeTab.value === 'top';
 });
+const shownextbar = computed(() => {
+    return activeTab.value === 'bottom';
+});
 // let waterdata = null;
 // const init = () => {
 //     const waterChartElement = document.getElementById("transversalsEcharts");
@@ -367,8 +388,16 @@ const showbar = computed(() => {
 //     };
 //     waterdata.setOption(options);
 // }
+// 接收来自UE的传值
 const myHandleResponseFunction = (data) => {
-    console.log(data);
+    const datajson = JSON.parse(data);
+    const lonValue = datajson.Lon;
+    const latValue = datajson.Lat;
+    axios.get(`/api/get_raster_value?lat=${latValue}&lon=${lonValue}`).then((res) => {
+        console.log(res.data.values);
+    }).catch((err) => {
+        console.error(err);
+    });
 }
 onMounted(() => {
     // init();
@@ -748,7 +777,7 @@ onBeforeUnmount(() => {
     margin-top: 5px;
 }
 
-.bar{
+.bar {
     position: absolute;
     bottom: 135px;
     right: 50px;
@@ -763,7 +792,33 @@ onBeforeUnmount(() => {
     border-radius: 9px;
 }
 
-.color-bar-number{
+.color-bar-number {
+    height: 176px;
+    color: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    margin-right: 5px;
+    font-size: 12px;
+}
+
+.nextbar {
+    position: absolute;
+    bottom: 135px;
+    right: 50px;
+    display: flex;
+    align-items: center;
+}
+
+.color-nextbar {
+    width: 10px;
+    height: 176px;
+    background: linear-gradient( 180deg, #FF0000 0%, #FFDB00 20%, #C4FF00 40%, #00FF09 60%, #2323f5 80%, #7E01FF 100%);
+    border-radius: 9px;
+}
+
+.color-nextbar-number {
     height: 176px;
     color: #FFFFFF;
     display: flex;

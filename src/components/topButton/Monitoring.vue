@@ -60,13 +60,14 @@ import * as echarts from "echarts";
 import tabledataJson from "/public/data/实时监测.json";
 
 const tableData = ref([]);
+// 获取表格数据
 const gettable = () => {
   tableData.value = tabledataJson.Table;
 };
 
 let waterChartInstance = null;
 let salinityChartInstance = null;
-
+// 绘制echarts图表
 const initWaterChart = () => {
   const waterChartElement = document.getElementById("WaterCharts");
   if (waterChartInstance) {
@@ -82,10 +83,8 @@ const initWaterChart = () => {
         data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
         axisLabel: {
           show: true,
-          textStyle: {
-            color: "#b7cffc", //更改坐标轴文字颜色
-            fontSize: 12, //更改坐标轴文字大小
-          },
+          color: "#b7cffc", //更改坐标轴文字颜色
+          fontSize: 12, //更改坐标轴文字大小
         },
       },
     ],
@@ -93,10 +92,8 @@ const initWaterChart = () => {
       splitLine: { show: false },
       axisLabel: {
         show: true,
-        textStyle: {
-          color: "#b7cffc", //更改坐标轴文字颜色
-          fontSize: 12, //更改坐标轴文字大小
-        },
+        color: "#b7cffc", //更改坐标轴文字颜色
+        fontSize: 12, //更改坐标轴文字大小
       },
     },
     series: [
@@ -121,7 +118,7 @@ const initWaterChart = () => {
   };
   waterChartInstance.setOption(options);
 };
-
+// 绘制echarts图表
 const initSalinityChart = () => {
   const salinityChartElement = document.getElementById("SalinityCharts");
   if (salinityChartInstance) {
@@ -135,9 +132,7 @@ const initSalinityChart = () => {
     legend: {
       orient: 'vertical',
       left: 'left',
-      textStyle: {
-        color: '#b7cffc',
-      },
+      color: '#b7cffc',
     },
     series: [
       {
@@ -151,14 +146,10 @@ const initSalinityChart = () => {
           { value: 3, name: '盐度监测' }
         ],
         itemStyle: {
-          normal: {
-            label: {
-              textStyle: {
-                color: '#b7cffc',
-                fontWeight: 'bolder'
-              }
-            },
-          }
+          label: {
+            color: '#b7cffc',
+            fontWeight: 'bolder'
+          },
         },
         emphasis: {
           itemStyle: {

@@ -122,12 +122,12 @@ const timevalue = ref(sessionStorage.getItem('timevalue') ? parseInt(sessionStor
 const Windintensity = ref(sessionStorage.getItem('Windintensity') ? parseInt(sessionStorage.getItem('Windintensity')) : 0);
 const Winddirection = ref(sessionStorage.getItem('Winddirection') ? parseInt(sessionStorage.getItem('Winddirection')) : 0);
 const oceanWavevalue = ref(sessionStorage.getItem('oceanWavevalue') ? parseInt(sessionStorage.getItem('oceanWavevalue')) : 0);
-
+// 时间模拟时间轴
 const updateTimeDisplay = (value) => {
     timevalue.value = value;
     sessionStorage.setItem('timevalue', value);
 };
-
+// 获取当前时间
 const updateTime = () => {
     const now = new Date();
     const hours = String(now.getHours()).padStart(2, '0');
@@ -143,9 +143,9 @@ const updateTime = () => {
 
 updateTime();
 setInterval(updateTime, 1000);
+// 是否实时
 const swtichvalue = ref(false);
 let intervalId;
-
 const handleswtich = (e) => {
     callUIInteraction({
         function: '是否实时/' + e,
@@ -164,7 +164,7 @@ const handleswtich = (e) => {
         clearInterval(intervalId);
     }
 }
-
+// 根据图片路径判断对应天气内容
 const weatherIcons = {
     '/src/assets/img/weather_sunny_icon.png': '晴天',
     '/src/assets/img/sunnycloudy.png': '晴转多云',
@@ -182,13 +182,13 @@ const weathertwo = ref('/src/assets/img/sunnycloudy.png')
 const weatherthree = ref('/src/assets/img/cloudy.png')
 const selectedIcon = ref(sessionStorage.getItem('selectedIcon') || 'sunny');
 const selectedIconDetail = ref(sessionStorage.getItem('selectedIconDetail') || 'sunnyDetail');
-
+// 选择第一层天气图标
 const selectIcon = (icon) => {
     selectedIcon.value = icon;
     sessionStorage.setItem('selectedIcon', icon);
     updateWeatherDetails(icon);
 };
-
+// 选择第二层天气图标
 const selectDetailIcon = (icon) => {
     selectedIconDetail.value = icon;
     sessionStorage.setItem('selectedIconDetail', icon);
@@ -247,7 +247,7 @@ const updateWeatherDetails = (icon) => {
     sessionStorage.setItem('weathertwo', weathertwo.value);
     sessionStorage.setItem('weatherthree', weatherthree.value);
 };
-
+// 时间模拟时间轴增加
 const addtime = () => {
     timevalue.value += 3600;
     sessionStorage.setItem('timevalue', timevalue.value);
@@ -255,7 +255,7 @@ const addtime = () => {
         function: '虚拟仿真时间模拟/' + timevalue.value,
     });
 };
-
+// 时间模拟时间轴减少
 const decreasetime = () => {
     timevalue.value -= 3600;
     sessionStorage.setItem('timevalue', timevalue.value);
@@ -263,7 +263,7 @@ const decreasetime = () => {
         function: '虚拟仿真时间模拟/' + timevalue.value,
     });
 };
-
+// 风强度增加
 const addintensity = () => {
     Windintensity.value++;
     sessionStorage.setItem('Windintensity', Windintensity.value);
@@ -271,7 +271,7 @@ const addintensity = () => {
         function: '虚拟仿真风强度/' + Windintensity.value,
     });
 };
-
+// 风强度减少
 const decreaseintensity = () => {
     Windintensity.value--;
     sessionStorage.setItem('Windintensity', Windintensity.value);
@@ -279,7 +279,7 @@ const decreaseintensity = () => {
         function: '虚拟仿真风强度/' + Windintensity.value,
     });
 };
-
+// 风向增加
 const adddirection = () => {
     Winddirection.value++;
     sessionStorage.setItem('Winddirection', Winddirection.value);
@@ -287,7 +287,7 @@ const adddirection = () => {
         function: '虚拟仿真风向/' + Winddirection.value,
     });
 };
-
+// 风向增加
 const decreasedirection = () => {
     Winddirection.value--;
     sessionStorage.setItem('Winddirection', Winddirection.value);
@@ -295,7 +295,7 @@ const decreasedirection = () => {
         function: '虚拟仿真风向/' + Winddirection.value,
     });
 };
-
+// 海浪模拟增加
 const addoceanWave = () => {
     oceanWavevalue.value++;
     sessionStorage.setItem('oceanWavevalue', oceanWavevalue.value);
@@ -303,7 +303,7 @@ const addoceanWave = () => {
         function: '虚拟仿真海浪高度/' + oceanWavevalue.value,
     });
 };
-
+// 海浪模拟减少
 const decreaseoceanWave = () => {
     oceanWavevalue.value--;
     sessionStorage.setItem('oceanWavevalue', oceanWavevalue.value);
@@ -311,28 +311,28 @@ const decreaseoceanWave = () => {
         function: '虚拟仿真海浪高度/' + oceanWavevalue.value,
     });
 };
-
+// 监听最后拖动的风强度
 const getWindintensity = (e) => {
     sessionStorage.setItem('Windintensity', e);
     callUIInteraction({
         function: '虚拟仿真风强度/' + e,
     });
 };
-
+// 监听最后拖动的风向
 const getWinddirection = (e) => {
     sessionStorage.setItem('Winddirection', e);
     callUIInteraction({
         function: '虚拟仿真风向/' + e,
     });
 };
-
+// 监听最后拖动的时间模拟
 const gettimevalue = (e) => {
     sessionStorage.setItem('timevalue', e);
     callUIInteraction({
         function: '虚拟仿真时间模拟/' + e,
     });
 };
-
+// 监听最后拖动的海浪强度
 const getoceanWavevalue = (e) => {
     sessionStorage.setItem('oceanWavevalue', e);
     callUIInteraction({

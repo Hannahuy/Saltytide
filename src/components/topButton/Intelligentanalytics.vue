@@ -31,65 +31,25 @@
         </div>
         <div class="leftbox-table">
           <table class="custom-table">
-            <tr v-if="dayradio === '1'">
-              <td>实时盐度</td>
-              <td>{{ tableData[0] }}</td>
+            <tr v-show="dayradio === '1'" v-for="(item, index) in tableHeaders.day1" :key="index">
+              <td>{{ item }}</td>
+              <td v-if="!editing">{{ tableData[index] }}</td>
+              <td v-else><el-input v-model="tableData[index]" /></td>
             </tr>
-            <tr v-if="dayradio === '1'">
-              <td>前1小时盐度</td>
-              <td>{{ tableData[1] }}</td>
-            </tr>
-            <tr v-if="dayradio === '1'">
-              <td>前2小时盐度</td>
-              <td>{{ tableData[2] }}</td>
-            </tr>
-            <tr v-if="dayradio === '1'">
-              <td>提前24小时三灶潮位</td>
-              <td>{{ tableData[3] }}</td>
-            </tr>
-            <tr v-if="dayradio === '1'">
-              <td>提前48小时马口径流</td>
-              <td>{{ tableData[4] }}</td>
-            </tr>
-            <tr v-if="dayradio === '1'">
-              <td>提前24小时u方向风速</td>
-              <td>{{ tableData[5] }}</td>
-            </tr>
-            <tr v-if="dayradio === '1'">
-              <td>提前24小时v方向风速</td>
-              <td>{{ tableData[6] }}</td>
-            </tr>
-            <tr v-if="dayradio === '2' || dayradio === '3'">
-              <td>今日最大盐度</td>
-              <td>{{ tableData[0] }}</td>
-            </tr>
-            <tr v-if="dayradio === '2' || dayradio === '3'">
-              <td>昨日最大盐度</td>
-              <td>{{ tableData[1] }}</td>
-            </tr>
-            <tr v-if="dayradio === '2' || dayradio === '3'">
-              <td>前日最大盐度</td>
-              <td>{{ tableData[2] }}</td>
-            </tr>
-            <tr v-if="dayradio === '2' || dayradio === '3'">
-              <td>今日三灶日最低潮位</td>
-              <td>{{ tableData[3] }}</td>
-            </tr>
-            <tr v-if="dayradio === '2' || dayradio === '3'">
-              <td>今日马口平均流量</td>
-              <td>{{ tableData[4] }}</td>
-            </tr>
-            <tr v-if="dayradio === '2' || dayradio === '3'">
-              <td>今日澳门风速</td>
-              <td>{{ tableData[5] }}</td>
-            </tr>
-            <tr v-if="dayradio === '2' || dayradio === '3'">
-              <td>今日潮波不对称性因子</td>
-              <td>{{ tableData[6] }}</td>
+            <tr v-show="dayradio === '2' || dayradio === '3'" v-for="(item, index) in tableHeaders.day2or3"
+              :key="index">
+              <td>{{ item }}</td>
+              <td v-if="!editing">{{ tableData[index] }}</td>
+              <td v-else><el-input v-model="tableData[index]" /></td>
             </tr>
           </table>
-          <el-button style="margin-top: 20px; margin-left: 372px" class="buttonstyle" type="primary"
-            @click="drive">驱动模型</el-button>
+          <div>
+            <div v-if="editing" style="margin-top: 20px;">
+              <el-button class="buttonstyle" type="primary" @click="addData">保存</el-button>
+              <el-button style="margin-left: 20px" class="buttonstyle" type="primary" @click="closeData">取消</el-button>
+            </div>
+            <el-button class="buttonstyles" type="primary" @click="drive">驱动模型</el-button>
+          </div>
         </div>
       </div>
     </div>
@@ -114,31 +74,23 @@ import { ElMessage } from 'element-plus'
 
 const selectValue = ref("");
 const selectoptions = [
-  {
-    value: "平岗",
-    label: "平岗",
-  },
-  {
-    value: "广昌",
-    label: "广昌",
-  },
-  {
-    value: "竹洲头",
-    label: "竹洲头",
-  },
-  {
-    value: "灯笼山",
-    label: "灯笼山",
-  },
-  {
-    value: "全禄水厂",
-    label: "全禄水厂",
-  },
+  { value: "平岗", label: "平岗" },
+  { value: "广昌", label: "广昌" },
+  { value: "竹洲头", label: "竹洲头" },
+  { value: "灯笼山", label: "灯笼山" },
+  { value: "全禄水厂", label: "全禄水厂" },
 ];
-const tableData = ref(["", "", "", "", "", "", ""])
+const tableData = ref(["", "", "", "", "", "", ""]);
+const originalTableData = ref([...tableData.value]);
 const dayradio = ref("1");
 const showEcharts = ref(false)
 const disable1Day = ref(false);
+const editing = ref(false);
+const tableHeaders = {
+  day1: ["实时盐度", "前1小时盐度", "前2小时盐度", "提前24小时三灶潮位", "提前48小时马口径流", "提前24小时u方向风速", "提前24小时v方向风速"],
+  day2or3: ["今日最大盐度", "昨日最大盐度", "前日最大盐度", "今日三灶日最低潮位", "今日马口平均流量", "今日澳门风速", "今日潮波不对称性因子"]
+};
+// 监听选择的预测范围
 watch(selectValue, (newValue) => {
   if (newValue === "平岗" || newValue === "广昌") {
     dayradio.value = "1";
@@ -148,6 +100,7 @@ watch(selectValue, (newValue) => {
     disable1Day.value = true;
   }
 });
+// echarts图表数据
 let waterdata = null;
 const init = () => {
   const waterChartElement = document.getElementById("leftbox-content");
@@ -246,9 +199,7 @@ const init = () => {
           color: 'rgba(255, 140, 0,1)'
         },
         itemStyle: {
-          normal: {
-            color: 'rgba(255, 140, 0,1)'
-          }
+          color: 'rgba(255, 140, 0,1)'
         },
         zlevel: 1
       },
@@ -276,9 +227,7 @@ const init = () => {
           color: 'rgba(30, 144, 255,1)'
         },
         itemStyle: {
-          normal: {
-            color: 'rgba(30, 144, 255,1)'
-          }
+          color: 'rgba(30, 144, 255,1)'
         },
         zlevel: 1,
         markArea: {
@@ -328,17 +277,15 @@ const init = () => {
           dashPattern: [20, 40] // 增加虚线的虚实间隔
         },
         itemStyle: {
-          normal: {
-            color: 'rgba(178, 34, 34,1)'
-          }
+          color: 'rgba(178, 34, 34,1)'
         },
         zlevel: 1
       }
-
     ]
   };
   waterdata.setOption(options);
 }
+// 关闭驱动模型的图表
 const closeEcharts = () => {
   showEcharts.value = false;
 }
@@ -364,7 +311,7 @@ const uploadSampleData = () => {
   }
   fileInput.value.click();
 };
-// 上传文件
+// 上传文件并读取显示到表格中
 const handleFileUpload = (event) => {
   const file = event.target.files[0];
   const reader = new FileReader();
@@ -377,13 +324,11 @@ const handleFileUpload = (event) => {
 
     const headers = jsonData[0];
     const rows = jsonData.slice(1)[0];
-    console.log(headers);
-    console.log(rows);
     tableData.value = rows;
   };
   reader.readAsArrayBuffer(file);
 };
-// 选择预测范围
+// 监听选择的预测范围
 const getdayradio = () => {
   tableData.value = ["", "", "", "", "", "", ""];
 }
@@ -396,13 +341,34 @@ const Manualentry = () => {
     })
     return
   }
+  originalTableData.value = [...tableData.value];
+  editing.value = true;
 }
+// 手动输入保存
+const addData = () => {
+  ElMessage({
+      message: '保存成功',
+      type: 'success',
+    })
+  editing.value = false;
+};
+// 手动输入取消
+const closeData = () => {
+  tableData.value = [...originalTableData.value];
+  editing.value = false;
+};
 // 驱动模型
 const drive = () => {
   const isTableDataEmpty = tableData.value.some(item => item === "");
   if (isTableDataEmpty) {
     ElMessage({
       message: '表格数据不能为空，请填写完整',
+      type: 'warning',
+    })
+    return
+  } else if (editing.value) {
+    ElMessage({
+      message: '请保存后驱动模型',
       type: 'warning',
     })
     return
@@ -425,7 +391,7 @@ onBeforeUnmount(() => {
 .leftbox {
   position: absolute;
   top: 100px;
-  left: 30px;
+  left: 20px;
 }
 
 .leftbox-middle {
@@ -555,6 +521,17 @@ onBeforeUnmount(() => {
   border: 0;
 }
 
+.buttonstyles {
+  margin-top: 20px;
+  margin-left: 372px;
+  border-radius: 0;
+  background-color: #0a6adf;
+  border: 0;
+  position: absolute;
+  right: 20px;
+  bottom: 24px;
+}
+
 .leftbox-table {
   margin-top: 20px;
 }
@@ -654,5 +631,20 @@ onBeforeUnmount(() => {
   text-align: center;
   height: 40px;
   width: 50%;
+}
+
+:deep(.el-input__wrapper) {
+  background-color: #041831;
+  border-radius: 0;
+  box-shadow: 0 0 0 1px #416491 inset;
+}
+
+:deep(.el-input__inner) {
+  color: #b7cffc;
+  text-align: center;
+}
+
+.active {
+  margin-left: 238px;
 }
 </style>
