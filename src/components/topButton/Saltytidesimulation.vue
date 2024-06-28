@@ -139,8 +139,21 @@ import { callUIInteraction, addResponseEventListener, } from "../../module/webrt
 const timePick = ref(dayjs("2023-03-10").toDate());
 const timePickform = ref(dayjs("2023-03-10").format('YYYY-MM-DD'));
 const disabledDate = (time) => {
-  return time.getFullYear() !== 2023 || time.getMonth() !== 2 || time.getDate() !== 10;
+  const year = time.getFullYear();
+  const month = time.getMonth();
+  const date = time.getDate();
+
+  // 只允许选择2023年3月10日和2023年11月16日到2023年11月21日
+  if (
+    (year === 2023 && month === 2 && date === 10) || // 2023年3月10日
+    (year === 2023 && month === 10 && date >= 16 && date <= 21) // 2023年11月16日到2023年11月21日
+  ) {
+    return false; // 可以选择
+  } else {
+    return true; // 不可选择
+  }
 };
+
 // const timePlay = ref(dayjs().startOf('day').valueOf())
 const timePlay = ref(dayjs("2023-03-10").startOf("day").valueOf());
 const activeTab = ref("top");
