@@ -56,9 +56,12 @@ div {
   inset: 490px auto auto 15px !important;
 }
 
-.el-popper__arrow {
+/* .el-popper__arrow {
   position: absolute;
   top: 336px !important;
   left: 75px !important;
+} */
+.el-popper__arrow::before {
+  display: none;
 }
 </style>

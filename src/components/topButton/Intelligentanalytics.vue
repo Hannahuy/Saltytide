@@ -117,53 +117,118 @@ const init = (data) => {
     waterdata.dispose();
   }
   waterdata = echarts.init(waterChartElement);
+  let _data = data;
+  // for (var i = 0; i < _data.length; i++) {
+  //   _data[i] = _data[i] < 250 ? 1000 : 0;
+  // }
+  // console.log(data);
+  console.log(_data);
   const options = {
-    visualMap: [
-      {
-        show: false,
-        type: 'continuous',
-        seriesIndex: 0,
-        min: 0,
-        max: 400
-      }
-    ],
     tooltip: {
       trigger: 'axis'
     },
-    xAxis: {
-      data: Array.from({ length: 24 }, (_, i) => `${i}:00`),
-      axisLabel: {
-        show: true,
-        textStyle: {
-          color: "#b7cffc", //更改坐标轴文字颜色
-          fontSize: 10, //更改坐标轴文字大小
-        },
-      },
-    },
-    yAxis: {
-      axisLine: {
-        show: false
-      },
-      axisLabel: {
-        show: true,
-        textStyle: {
-          color: "#b7cffc",
-          fontSize: 12
-        },
-        // formatter: '{value}‰'  // 单位为‰
-      },
-      splitLine: {
-        show: false
-      }
-    },
-    series: [
+    xAxis: [
       {
-        type: 'line',
-        showSymbol: false,
-        data: data
+        type: 'category',
+        axisLine: {
+          lineStyle: {
+            color: '#fff'
+          }
+        },
+        axisLabel: {
+          color: '#b7cffc',
+          fontSize: '10'
+        },
+        axisTick: { show: false },
+        boundaryGap: false,
+        data: Array.from({ length: 24 }, (_, i) => `${i}:00`),
       }
     ],
-    grid: { x: 60, y: 30, x2: 5, y2: 35 },
+    yAxis: [
+      {
+        type: 'value',
+        max: 1000, // 设置Y轴的最大值
+        axisLabel: {
+          color: '#b7cffc',
+          fontSize: '12',
+          formatter: '{value}mg/L'  // 单位为‰
+        },
+        splitLine: {
+          show: false
+        },
+        axisLine: {
+          show: true
+        },
+        nameLocation: 'end',
+        nameTextStyle: {
+          color: '#fff',
+          fontFamily: 'FZLTHK--GBK1-0',
+          fontSize: '14'
+        },
+        name: 'mg/L', // 单位
+        splitNumber: 5 // 这里可以调整网格线的数量，使得网格更加适合新的最大值
+      }
+    ],
+    series: [
+      {
+        name: '预测盐度',
+        type: 'line',
+        smooth: false,
+        label: {
+          show: false,
+          color: '#11d932',
+          fontWeight: 'bolder',
+          fontSize: '16',
+          position: 'top',
+          fontFamily: 'DIN Condensed'
+        },
+        emphasis: {
+          focus: 'series'
+        },
+        data: data,
+        symbolSize: 3,
+        itemStyle: {
+          normal: {
+            color: '#1E90FF'
+          }
+        },
+        zlevel: 1
+      },
+      {
+        name: '盐度超标线',
+        type: 'line',
+        data: [
+          250.0, 250.0, 250.0, 250.0, 250.0, 250.0, 250.0, 250.0, 250.0, 250.0,
+          250.0, 250.0, 250.0, 250.0, 250.0, 250.0, 250.0, 250.0, 250.0, 250.0,
+          250.0, 250.0, 250.0, 250.0
+        ],
+        symbolSize: 0,
+        lineStyle: {
+          color: '#DC143C',
+          type: 'dashed',
+          width: 2,
+          dashPattern: [20, 40] // 增加虚线的虚实间隔
+        },
+        itemStyle: {
+          normal: {
+            color: 'rgba(178, 34, 34,1)'
+          }
+        },
+        zlevel: 1
+      },
+      {
+        data: _data,
+        type: 'bar',
+        barWidth: '20',
+        color: "#778899"
+      }
+    ],
+    grid: {
+      bottom: '10%',
+      top: '15%',
+      right: '8%',
+      left: '12%'
+    },
   };
   waterdata.setOption(options);
 }

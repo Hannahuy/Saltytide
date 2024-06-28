@@ -164,6 +164,7 @@ const transversalsoptions = [
   },
 ];
 let lastClickedTab = "";
+const tabtimeName = ref('表层渲染')
 // 左侧二级菜单
 const toggleBox = (tab) => {
   transversalsvalue.value = "";
@@ -173,17 +174,20 @@ const toggleBox = (tab) => {
       callUIInteraction({
         function: "咸潮模拟_表层渲染/false",
       });
+      tabtimeName.value = ''
       console.log("咸潮模拟_表层渲染/false");
     } else if (tab === "middle") {
       callUIInteraction({
         function: "咸潮模拟_断面分析/false",
       });
+      tabtimeName.value = ''
       showEcharts.value = false;
       console.log("咸潮模拟_断面分析/false");
     } else if (tab === "bottom") {
       callUIInteraction({
         function: "咸潮模拟_体渲染/false",
       });
+      tabtimeName.value = ''
       console.log("咸潮模拟_体渲染/false");
     }
   } else {
@@ -192,6 +196,7 @@ const toggleBox = (tab) => {
     let tabName = "";
     if (tab === "top") {
       tabName = "表层渲染";
+      tabtimeName.value = "表层渲染";
       showEcharts.value = false;
       showtransversals.value = false;
       callUIInteraction({
@@ -199,9 +204,11 @@ const toggleBox = (tab) => {
       });
     } else if (tab === "middle") {
       tabName = "断面分析";
+      tabtimeName.value = "断面分析";
       showtransversals.value = true;
     } else if (tab === "bottom") {
       tabName = "体渲染";
+      tabtimeName.value = "体渲染";
       showEcharts.value = false;
       showtransversals.value = false;
       callUIInteraction({
@@ -236,7 +243,7 @@ const Backoff = () => {
   const previousTime = timePlay.value;
   timePlay.value = dayjs(previousTime).subtract(1, "hour").valueOf();
   callUIInteraction({
-    function: "咸潮模拟时间轴/" + dayjs(timePlay.value).format("YYYY-MM-DD HH:mm:ss"),
+    function: `咸潮模拟${tabtimeName.value}时间轴/` + dayjs(timePlay.value).format("YYYY-MM-DD HH:mm:ss"),
   });
   // console.log("倒退:", dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'));
   transversalsEchartsimg.value = imagePaths[currentImagePathIndex];
@@ -263,7 +270,7 @@ const Fastforward = () => {
   const previousTime = timePlay.value;
   timePlay.value = dayjs(previousTime).add(1, "hour").valueOf();
   callUIInteraction({
-    function: "咸潮模拟时间轴/" + dayjs(timePlay.value).format("YYYY-MM-DD HH:mm:ss"),
+    function: `咸潮模拟${tabtimeName.value}时间轴/` + dayjs(timePlay.value).format("YYYY-MM-DD HH:mm:ss"),
   });
   // console.log("快进:", dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'));
   transversalsEchartsimg.value = imagePaths[currentImagePathIndex];
@@ -317,7 +324,7 @@ watch(timePick, (newVal) => {
   const selectedDate = dayjs(newVal);
   const formattedDate = selectedDate.format("YYYY-MM-DD");
   callUIInteraction({
-    function: "咸潮模拟选择时间/" + formattedDate,
+    function: `咸潮模拟${tabtimeName.value}选择时间/` + formattedDate,
   });
   min.value = selectedDate.startOf("day").valueOf();
   max.value = selectedDate.endOf("day").valueOf();
@@ -327,9 +334,8 @@ watch(timePlay, (newVal) => {
   const currentTime = dayjs(newVal);
   if (currentTime.minute() === 0 && currentTime.second() === 0) {
     callUIInteraction({
-      function: "咸潮模拟时间轴/" + currentTime.format("YYYY-MM-DD HH:mm:ss"),
+      function: `咸潮模拟${tabtimeName.value}时间轴/` + currentTime.format("YYYY-MM-DD HH:mm:ss"),
     });
-    // console.log(currentTime.format('YYYY-MM-DD HH:mm:ss'));
   }
 });
 // 监听时间轴
@@ -339,7 +345,7 @@ const gettimePlay = (e) => {
     activePlay.value = "";
   }
   callUIInteraction({
-    function: "咸潮模拟时间轴/" + clickedTime,
+    function: `咸潮模拟${activeTab.value}时间轴/` + clickedTime,
   });
   // console.log(clickedTime);
 };
@@ -441,8 +447,8 @@ const salinityinit = (data) => {
       axisLabel: {
         show: true,
         textStyle: {
-          color: "#b7cffc", //更改坐标轴文字颜色
-          fontSize: 10, //更改坐标轴文字大小
+          color: "#b7cffc",
+          fontSize: 10,
         },
       },
     },
@@ -456,7 +462,9 @@ const salinityinit = (data) => {
           color: "#b7cffc",
           fontSize: 12
         },
-        formatter: '{value}‰'  // 单位为‰
+        formatter: function (value) {
+          return value.toFixed(2) + '‰';
+        }
       },
       splitLine: {
         show: false
