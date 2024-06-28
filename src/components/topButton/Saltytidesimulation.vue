@@ -104,7 +104,7 @@
       </div>
     </div>
     <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%)">
-      <div class="leftbox-middle" v-show="showEcharts">
+      <div class="leftbox-middles" v-show="showEcharts">
         <div class="leftbox-top-title">
           <span>{{ firstSpanText }}</span>
           <span>{{ secondSpanText }}</span>
@@ -345,7 +345,7 @@ const gettimePlay = (e) => {
     activePlay.value = "";
   }
   callUIInteraction({
-    function: `咸潮模拟${activeTab.value}时间轴/` + clickedTime,
+    function: `咸潮模拟${tabtimeName.value}时间轴/` + clickedTime,
   });
   // console.log(clickedTime);
 };
@@ -483,6 +483,7 @@ const salinityinit = (data) => {
 };
 // 接收来自UE的传值
 const myHandleResponseFunction = (data) => {
+  console.log(data);
   const datajson = JSON.parse(data);
   const lonValue = datajson.Lon;
   const latValue = datajson.Lat;
@@ -811,7 +812,16 @@ onBeforeUnmount(() => {
   padding: 20px;
   box-sizing: border-box;
 }
-
+.leftbox-middles{
+  width: 900px;
+  height: 520px;
+  background-image: url("../../assets/image/框-bg.png");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  margin-top: 20px;
+  padding: 20px;
+  box-sizing: border-box;
+}
 .leftbox-top-title {
   width: 860px;
   height: 33px;

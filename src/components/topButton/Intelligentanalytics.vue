@@ -73,6 +73,7 @@ import * as echarts from "echarts";
 import * as XLSX from "xlsx";
 import axios from "axios";
 import { ElMessage } from 'element-plus'
+import { ElLoading } from 'element-plus'
 import { callUIInteraction, addResponseEventListener, } from "../../module/webrtcVideo/webrtcVideo.js";
 
 const selectValue = ref("");
@@ -117,12 +118,15 @@ const init = (data) => {
     waterdata.dispose();
   }
   waterdata = echarts.init(waterChartElement);
-  let _data = data;
-  // for (var i = 0; i < _data.length; i++) {
-  //   _data[i] = _data[i] < 250 ? 1000 : 0;
-  // }
-  // console.log(data);
-  console.log(_data);
+  let _data = [...data];
+  for (var i = 0; i < _data.length; i++) {
+    _data[i] = _data[i] < 250 ? 1000 : 0;
+  }
+
+  // 寻找数据的最小值和最大值
+  const minValue = Math.min(...data);
+  const maxValue = Math.max(...data);
+
   const options = {
     tooltip: {
       trigger: 'axis'
@@ -136,8 +140,10 @@ const init = (data) => {
           }
         },
         axisLabel: {
-          color: '#b7cffc',
-          fontSize: '10'
+          textStyle: {
+            color: "#b7cffc", //更改坐标轴文字颜色
+            fontSize: 10, //更改坐标轴文字大小
+          },
         },
         axisTick: { show: false },
         boundaryGap: false,
@@ -147,11 +153,17 @@ const init = (data) => {
     yAxis: [
       {
         type: 'value',
-        max: 1000, // 设置Y轴的最大值
+        min: minValue - 100, // 设置Y轴的最小值
+        max: maxValue + 100, // 设置Y轴的最大值
         axisLabel: {
-          color: '#b7cffc',
-          fontSize: '12',
-          formatter: '{value}mg/L'  // 单位为‰
+          show: true,
+          textStyle: {
+            color: "#b7cffc", //更改坐标轴文字颜色
+            fontSize: 12, //更改坐标轴文字大小
+          },
+          formatter: function (value, index) {
+            return value.toFixed(0) + 'mg/L'
+          }
         },
         splitLine: {
           show: false
@@ -197,11 +209,7 @@ const init = (data) => {
       {
         name: '盐度超标线',
         type: 'line',
-        data: [
-          250.0, 250.0, 250.0, 250.0, 250.0, 250.0, 250.0, 250.0, 250.0, 250.0,
-          250.0, 250.0, 250.0, 250.0, 250.0, 250.0, 250.0, 250.0, 250.0, 250.0,
-          250.0, 250.0, 250.0, 250.0
-        ],
+        data: Array(24).fill(250),
         symbolSize: 0,
         lineStyle: {
           color: '#DC143C',
@@ -320,10 +328,16 @@ const drive = () => {
     })
     return
   } else {
+    const loading = ElLoading.service({
+      lock: true,
+      text: '正在努力生成中...',
+      background: 'rgba(0, 0, 0, 0.7)',
+    })
     axios.get(`/api/PG_24h?s1=${tableData.value[0]}&s2=${tableData.value[1]}&s3=${tableData.value[2]}&sanzao=${tableData.value[3]}&makou=${tableData.value[4]}&macao_u=${tableData.value[5]}&macao_v=${tableData.value[6]}`).then((res) => {
       // console.log(res.data.forecast_values);
       showEcharts.value = true;
       init(res.data.forecast_values);
+      loading.close()
     })
   }
 }

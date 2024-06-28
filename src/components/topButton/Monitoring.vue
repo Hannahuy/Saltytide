@@ -58,7 +58,12 @@
 import { ref, onMounted, onBeforeUnmount } from "vue";
 import * as echarts from "echarts";
 import tabledataJson from "/public/data/实时监测.json";
+import { callUIInteraction, addResponseEventListener, } from "../../module/webrtcVideo/webrtcVideo.js";
 
+const myHandleResponseFunction = (data) => {
+  console.log(data);
+  
+};
 const tableData = ref([]);
 // 获取表格数据
 const gettable = () => {
@@ -181,6 +186,7 @@ onMounted(() => {
   initWaterChart();
   initSalinityChart();
   gettable();
+  addResponseEventListener("handle_responses", myHandleResponseFunction);
 });
 
 onBeforeUnmount(() => {
