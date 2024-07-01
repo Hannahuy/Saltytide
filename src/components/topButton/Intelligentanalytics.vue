@@ -110,6 +110,9 @@ const getselect = (e) => {
     function: "智能分析_站点/" + e,
   });
 }
+// 初始盐度超标线的值
+const markLineYAxis = ref(250);
+const showWidth = ref(2000);
 // echarts图表数据
 let waterdata = null;
 const init = (data) => {
@@ -120,7 +123,7 @@ const init = (data) => {
   waterdata = echarts.init(waterChartElement);
   let _data = [...data];
   for (var i = 0; i < _data.length; i++) {
-  _data[i] = _data[i] < 250 ? 1000 : 0;
+    _data[i] = _data[i] < markLineYAxis.value ? 1000 : 0;
   }
 
   // 寻找数据的最小值和最大值
@@ -148,10 +151,11 @@ const init = (data) => {
         axisTick: { show: false },
         boundaryGap: false,
         data: Array.from({ length: 24 }, (_, i) => `${i}:00`),
-              }
+      }
     ],
     yAxis: [
       {
+        id: '2', //指定id
         type: 'value',
         min: minValue - 100, // 设置Y轴的最小值
         max: maxValue + 100, // 设置Y轴的最大值
@@ -207,16 +211,27 @@ const init = (data) => {
         zlevel: 1
       },
       {
+        id: 'aaa',
         name: '盐度超标线',
         type: 'line',
-        data: Array(24).fill(250),
-        symbolSize: 0,
-        lineStyle: {
-          color: '#DC143C',
-          type: 'dashed',
-          width: 2,
-          dashPattern: [20, 40] // 增加虚线的虚实间隔
+        markLine: {
+          animation: false,
+          symbol: ['none', 'none'],
+          label: {
+            show: true,
+            position: 'center',
+            color: '#FF0000',
+            formatter: (params) => { return "盐度超标线" + params.value }
+          },
+          lineStyle: {
+            color: '#FF0000',
+            width: 2,
+            type: 'dashed',
+            dashPattern: [20, 40] // 增加虚线的虚实间隔
+          },
+          data: [{ yAxis: markLineYAxis.value }]
         },
+        symbolSize: 0,
         itemStyle: {
           normal: {
             color: 'rgba(178, 34, 34,1)'
@@ -225,6 +240,7 @@ const init = (data) => {
         zlevel: 1
       },
       {
+        id:'barSeries',
         data: _data,
         type: 'bar',
         barWidth: '20',
@@ -239,6 +255,39 @@ const init = (data) => {
     },
   };
   waterdata.setOption(options);
+  showWidth.value = window.innerWidth || document.documentElement.clientWidth;
+  const option2 = {
+    graphic: {
+      type: 'rect',
+      z: 100,
+      shape: {
+        width: showWidth.value,
+        height: 0
+      },
+      position: [0, waterdata.convertToPixel({ yAxisId: '2' }, markLineYAxis.value)],
+      draggable: true,
+      style: {
+        fill: 'rgba(0,0,0,0)',
+        stroke: 'rgba(0,0,0,0)',
+        lineWidth: 10
+      },
+      cursor: 'move',
+      ondrag: onPointDragging
+    }
+  };
+  waterdata.setOption(option2);
+
+  function onPointDragging() {
+    let yAxis = waterdata.convertFromPixel({ yAxisId: '2' }, this.position[1]);
+    waterdata.setOption({
+      series: [{
+        id: 'aaa',
+        markLine: {
+          data: [{ yAxis: yAxis }],
+        }
+      }]
+    });
+  }
 }
 // 关闭驱动模型的图表
 const closeEcharts = () => {
