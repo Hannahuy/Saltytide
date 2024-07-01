@@ -81,10 +81,10 @@
       <el-date-picker v-model="timePick" type="date" :disabled-date="disabledDate" :editable="false" />
     </div>
     <div class="bottombox-button">
-      <el-button type="primary" class="bottombox-Backoff" @click="Backoff"></el-button>
+      <el-button type="primary" class="bottombox-Backoff" :disabled="isDisabled" @click="Backoff"></el-button>
       <el-button type="primary" class="bottombox-play" :class="{ active: activePlay === 'play' }"
         :disabled="disabledPlay" @click="togglePlay" :title="disabledPlay ? '播放按钮已禁用' : ''"></el-button>
-      <el-button type="primary" class="bottombox-Fastforward" @click="Fastforward"></el-button>
+      <el-button type="primary" class="bottombox-Fastforward" :disabled="isDisabled" @click="Fastforward"></el-button>
     </div>
     <div class="bottombox">
       <div class="bottombox-slider">
@@ -180,6 +180,7 @@ const transversalsoptions = [
 let lastClickedTab = "";
 const tabtimeName = ref('表层渲染')
 const disabledPlay = ref(false);
+const isDisabled = ref(false);
 let playInterval = null;
 // 左侧二级菜单
 const toggleBox = (tab) => {
@@ -268,22 +269,24 @@ const updateImage = () => {
 let lastClickTime = 0;
 // 倒退
 const Backoff = () => {
-  if (tabtimeName.value === "体渲染") {
+  if (tabtimeName.value === '体渲染') {
     const currentTime = Date.now();
-    if (currentTime - lastClickTime < 1000) {
-      return; 
+    if (currentTime - lastClickTime.value < 1000) {
+      return;
     }
     lastClickTime = currentTime;
+    isDisabled.value = true;
+    setTimeout(() => {
+      isDisabled.value = false;
+    }, 1000);
   }
   const previousTime = timePlay.value;
-  timePlay.value = dayjs(previousTime).subtract(1, "hour").valueOf();
+  timePlay.value = dayjs(previousTime).subtract(1, 'hour').valueOf();
   callUIInteraction({
-    function: `咸潮模拟${tabtimeName.value}时间轴/` + dayjs(timePlay.value).format("YYYY-MM-DD HH:mm:ss"),
+    function: `咸潮模拟${tabtimeName.value}时间轴/` + dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'),
   });
-// console.log("倒退:", dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'));
   transversalsEchartsimg.value = imagePaths[currentImagePathIndex];
-  currentImagePathIndex =
-    (currentImagePathIndex - 1 + imagePaths.length) % imagePaths.length;
+  currentImagePathIndex = (currentImagePathIndex - 1 + imagePaths.length) % imagePaths.length;
   updateImage();
 };
 // 暂停/播放
@@ -305,19 +308,22 @@ const togglePlay = () => {
 };
 // 前进
 const Fastforward = () => {
-  if (tabtimeName.value === "体渲染") {
+  if (tabtimeName.value === '体渲染') {
     const currentTime = Date.now();
-    if (currentTime - lastClickTime < 1000) {
+    if (currentTime - lastClickTime.value < 1000) {
       return;
     }
     lastClickTime = currentTime;
+    isDisabled.value = true;
+    setTimeout(() => {
+      isDisabled.value = false;
+    }, 1000);
   }
   const previousTime = timePlay.value;
-  timePlay.value = dayjs(previousTime).add(1, "hour").valueOf();
+  timePlay.value = dayjs(previousTime).add(1, 'hour').valueOf();
   callUIInteraction({
-    function: `咸潮模拟${tabtimeName.value}时间轴/` + dayjs(timePlay.value).format("YYYY-MM-DD HH:mm:ss"),
+    function: `咸潮模拟${tabtimeName.value}时间轴/` + dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'),
   });
-  // console.log("快进:", dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'));
   transversalsEchartsimg.value = imagePaths[currentImagePathIndex];
   currentImagePathIndex = (currentImagePathIndex + 1) % imagePaths.length;
   updateImage();
@@ -1042,6 +1048,7 @@ onBeforeUnmount(() => {
   margin-right: 5px;
   font-size: 12px;
 }
+
 .bottombox-play[disabled] {
   cursor: not-allowed;
   background-image: url("../../assets/img/Timeout.png");
@@ -1052,5 +1059,29 @@ onBeforeUnmount(() => {
   border: 0;
   width: 40px;
   height: 40px;
+}
+
+.bottombox-Backoff:disabled {
+  cursor: not-allowed;
+  background-image: url("../../assets/img/Backoff.png");
+  background-repeat: no-repeat;
+  background-color: #42aeff;
+  background-position: center;
+  border-radius: 100%;
+  border: 0;
+  width: 30px;
+  height: 30px;
+}
+
+.bottombox-Fastforward:disabled {
+  cursor: not-allowed;
+  background-image: url("../../assets/img/Fastforward.png");
+  background-repeat: no-repeat;
+  background-color: #42aeff;
+  background-position: center;
+  border-radius: 100%;
+  border: 0;
+  width: 30px;
+  height: 30px;
 }
 </style>
