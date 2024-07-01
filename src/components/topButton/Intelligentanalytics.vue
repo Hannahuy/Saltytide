@@ -120,7 +120,7 @@ const init = (data) => {
   waterdata = echarts.init(waterChartElement);
   let _data = [...data];
   for (var i = 0; i < _data.length; i++) {
-    _data[i] = _data[i] < 250 ? 1000 : 0;
+  _data[i] = _data[i] < 250 ? 1000 : 0;
   }
 
   // 寻找数据的最小值和最大值
@@ -136,7 +136,7 @@ const init = (data) => {
         type: 'category',
         axisLine: {
           lineStyle: {
-            color: '#fff'
+            color: '#b7cffc'
           }
         },
         axisLabel: {
@@ -148,7 +148,7 @@ const init = (data) => {
         axisTick: { show: false },
         boundaryGap: false,
         data: Array.from({ length: 24 }, (_, i) => `${i}:00`),
-      }
+              }
     ],
     yAxis: [
       {
@@ -162,7 +162,7 @@ const init = (data) => {
             fontSize: 12, //更改坐标轴文字大小
           },
           formatter: function (value, index) {
-            return value.toFixed(0) + 'mg/L'
+            return value.toFixed(0)
           }
         },
         splitLine: {
@@ -173,7 +173,7 @@ const init = (data) => {
         },
         nameLocation: 'end',
         nameTextStyle: {
-          color: '#fff',
+          color: '#b7cffc',
           fontFamily: 'FZLTHK--GBK1-0',
           fontSize: '14'
         },
@@ -232,10 +232,10 @@ const init = (data) => {
       }
     ],
     grid: {
-      bottom: '10%',
-      top: '15%',
-      right: '8%',
-      left: '12%'
+      bottom: 20,
+      top: 70,
+      right: 20,
+      left: 60
     },
   };
   waterdata.setOption(options);

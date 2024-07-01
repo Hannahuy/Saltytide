@@ -491,7 +491,7 @@ const salinityinit = (data) => {
         data: data
       }
     ],
-    grid: { x: 50, y: 25, x2: 20, y2: 35 },
+    grid: { x: 60, y: 25, x2: 5, y2: 25 },
   };
   salinitydata.setOption(options);
 };
@@ -521,7 +521,7 @@ const myHandleResponseFunction = (data) => {
   }
 };
 onMounted(() => {
-  addResponseEventListener("handle_responses", myHandleResponseFunction);
+    addResponseEventListener("handle_responses", myHandleResponseFunction);
   callUIInteraction({
     function: "咸潮模拟_表层渲染/true",
   });
