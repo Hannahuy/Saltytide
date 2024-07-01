@@ -83,7 +83,7 @@
     <div class="bottombox-button">
       <el-button type="primary" class="bottombox-Backoff" @click="Backoff"></el-button>
       <el-button type="primary" class="bottombox-play" :class="{ active: activePlay === 'play' }"
-        @click="togglePlay"></el-button>
+        :disabled="disabledPlay" @click="togglePlay" :title="disabledPlay ? '播放按钮已禁用' : ''"></el-button>
       <el-button type="primary" class="bottombox-Fastforward" @click="Fastforward"></el-button>
     </div>
     <div class="bottombox">
@@ -179,6 +179,8 @@ const transversalsoptions = [
 ];
 let lastClickedTab = "";
 const tabtimeName = ref('表层渲染')
+const disabledPlay = ref(false);
+let playInterval = null;
 // 左侧二级菜单
 const toggleBox = (tab) => {
   transversalsvalue.value = "";
@@ -216,10 +218,12 @@ const toggleBox = (tab) => {
       callUIInteraction({
         function: "表层渲染/" + formattedTime,
       });
+      disabledPlay.value = false; // 启用播放按钮
     } else if (tab === "middle") {
       tabName = "断面分析";
       tabtimeName.value = "断面分析";
       showtransversals.value = true;
+      disabledPlay.value = false; // 启用播放按钮
     } else if (tab === "bottom") {
       tabName = "体渲染";
       tabtimeName.value = "体渲染";
@@ -228,6 +232,14 @@ const toggleBox = (tab) => {
       callUIInteraction({
         function: "体渲染/" + formattedTime,
       });
+      disabledPlay.value = true; // 禁用播放按钮
+      activePlay.value = ""; // 确保播放按钮不为play
+      timePick.value = dayjs("2023-03-10").startOf("day").toDate(); // 清空日期选择器
+      timePlay.value = dayjs(timePick.value).startOf("day").valueOf(); // 将时间轴从0点00开始
+      if (playInterval) {
+        clearInterval(playInterval); // 清除计时器
+        playInterval = null;
+      }
     }
     callUIInteraction({
       function: "咸潮模拟_" + tabName + "/true",
@@ -236,6 +248,7 @@ const toggleBox = (tab) => {
   }
   lastClickedTab = tab;
 };
+
 // 获取断面选择框内容
 const getselect = (e) => {
   callUIInteraction({
@@ -252,14 +265,22 @@ let currentImagePathIndex = 0;
 const updateImage = () => {
   transversalsEchartsimg.value = imagePaths[currentImagePathIndex];
 };
+let lastClickTime = 0;
 // 倒退
 const Backoff = () => {
+  if (tabtimeName.value === "体渲染") {
+    const currentTime = Date.now();
+    if (currentTime - lastClickTime < 1000) {
+      return; 
+    }
+    lastClickTime = currentTime;
+  }
   const previousTime = timePlay.value;
   timePlay.value = dayjs(previousTime).subtract(1, "hour").valueOf();
   callUIInteraction({
     function: `咸潮模拟${tabtimeName.value}时间轴/` + dayjs(timePlay.value).format("YYYY-MM-DD HH:mm:ss"),
   });
-  // console.log("倒退:", dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'));
+// console.log("倒退:", dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'));
   transversalsEchartsimg.value = imagePaths[currentImagePathIndex];
   currentImagePathIndex =
     (currentImagePathIndex - 1 + imagePaths.length) % imagePaths.length;
@@ -268,19 +289,29 @@ const Backoff = () => {
 // 暂停/播放
 let previousPlayState = "";
 const togglePlay = () => {
+  if (disabledPlay.value) return; // 添加判断，如果播放按钮被禁用，则不执行下面的代码
   previousPlayState = activePlay.value;
   activePlay.value = activePlay.value === "play" ? "" : "play";
   if (activePlay.value === "play") {
-    let interval = setInterval(() => {
+    playInterval = setInterval(() => {
       timePlay.value = dayjs(timePlay.value).add(1, "minute").valueOf();
       if (activePlay.value !== "play") {
-        clearInterval(interval);
+        clearInterval(playInterval);
       }
     }, 16.6665);
+  } else {
+    clearInterval(playInterval);
   }
 };
 // 前进
 const Fastforward = () => {
+  if (tabtimeName.value === "体渲染") {
+    const currentTime = Date.now();
+    if (currentTime - lastClickTime < 1000) {
+      return;
+    }
+    lastClickTime = currentTime;
+  }
   const previousTime = timePlay.value;
   timePlay.value = dayjs(previousTime).add(1, "hour").valueOf();
   callUIInteraction({
@@ -506,7 +537,7 @@ const myHandleResponseFunction = (data) => {
       message: datajson.error,
       type: 'warning',
     })
-  } else if(datajson.Type == '表层盐度点击查询') {
+  } else if (datajson.Type == '表层盐度点击查询') {
     axios.get(`/api/get_raster_value?lat=${latValue}&lon=${lonValue}`).then((res) => {
       if (res.data.success === true) {
         if (res.data.values) {
@@ -521,7 +552,7 @@ const myHandleResponseFunction = (data) => {
   }
 };
 onMounted(() => {
-    addResponseEventListener("handle_responses", myHandleResponseFunction);
+  addResponseEventListener("handle_responses", myHandleResponseFunction);
   callUIInteraction({
     function: "咸潮模拟_表层渲染/true",
   });
@@ -1010,5 +1041,16 @@ onBeforeUnmount(() => {
   align-items: center;
   margin-right: 5px;
   font-size: 12px;
+}
+.bottombox-play[disabled] {
+  cursor: not-allowed;
+  background-image: url("../../assets/img/Timeout.png");
+  background-repeat: no-repeat;
+  background-color: #42aeff;
+  background-position: 55% 50%;
+  border-radius: 100%;
+  border: 0;
+  width: 40px;
+  height: 40px;
 }
 </style>

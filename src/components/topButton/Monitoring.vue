@@ -182,7 +182,7 @@ const initSalinityChart = () => {
     },
     series: [
       {
-        name: 'Access From',
+        name: '站点数量',
         type: 'pie',
         radius: '50%',
         data: [
