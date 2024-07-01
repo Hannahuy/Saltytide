@@ -62,7 +62,10 @@
         <span>Intake aid</span>
         <img class="closeimg" src="../../assets/image/close.png" alt="" @click="closeEcharts">
       </div>
-      <div id="leftbox-content"></div>
+      <div style="display: flex;align-items: center;justify-content: center;margin-top: 26px;">
+        <el-button class="uploadbuttonstyle" type="primary" @click="downloadChart">下载图表</el-button>
+        <div id="leftbox-content"></div>
+      </div>
     </div>
   </div>
 </template>
@@ -157,8 +160,8 @@ const init = (data) => {
       {
         id: '2', //指定id
         type: 'value',
-        min: minValue - 100, // 设置Y轴的最小值
-        max: maxValue + 100, // 设置Y轴的最大值
+        min: minValue - 10, // 设置Y轴的最小值
+        max: maxValue + 10, // 设置Y轴的最大值
         axisLabel: {
           show: true,
           textStyle: {
@@ -219,9 +222,9 @@ const init = (data) => {
           symbol: ['none', 'none'],
           label: {
             show: true,
-            position: 'center',
+            // position: 'start',
             color: '#FF0000',
-            formatter: (params) => { return "盐度超标线" + params.value }
+            formatter: (params) => { return "" + params.value.toFixed(0) }
           },
           lineStyle: {
             color: '#FF0000',
@@ -240,7 +243,7 @@ const init = (data) => {
         zlevel: 1
       },
       {
-        id:'barSeries',
+        id: 'barSeries',
         data: _data,
         type: 'bar',
         barWidth: '20',
@@ -248,10 +251,10 @@ const init = (data) => {
       }
     ],
     grid: {
-      bottom: 20,
-      top: 70,
-      right: 20,
-      left: 60
+      bottom: 40,
+      top: 40,
+      right: 40,
+      left: 40
     },
   };
   waterdata.setOption(options);
@@ -279,12 +282,23 @@ const init = (data) => {
 
   function onPointDragging() {
     let yAxis = waterdata.convertFromPixel({ yAxisId: '2' }, this.position[1]);
+    markLineYAxis.value = yAxis; // 更新markLineYAxis的值
+    // 更新_data数组，将低于markLineYAxis值的数据设为1000
+    for (let i = 0; i < _data.length; i++) {
+      _data[i] = data[i] < markLineYAxis.value ? 1000 : 0;
+    }
     waterdata.setOption({
       series: [{
         id: 'aaa',
         markLine: {
           data: [{ yAxis: yAxis }],
         }
+      }, {
+        id: 'barSeries',
+        data: _data,
+        type: 'bar',
+        barWidth: '20',
+        color: "#778899"
       }]
     });
   }
@@ -390,6 +404,25 @@ const drive = () => {
     })
   }
 }
+// 下载图表
+const downloadChart = () => {
+  if (!waterdata) {
+    ElMessage({
+      message: '图表未生成',
+      type: 'warning',
+    });
+    return;
+  }
+  const url = waterdata.getDataURL({
+    type: 'png',
+    backgroundColor: '#fff',
+  });
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = '盐度分析.png';
+  a.click();
+};
+
 onMounted(() => {
 
 });
@@ -659,5 +692,13 @@ onBeforeUnmount(() => {
 
 .active {
   margin-left: 238px;
+}
+.uploadbuttonstyle{
+  border-radius: 0;
+  background-color: #0a6adf;
+  border: 0;
+  position: absolute;
+  top: 65px;
+  right: 30px;
 }
 </style>
