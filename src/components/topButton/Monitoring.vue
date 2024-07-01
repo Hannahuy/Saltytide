@@ -60,9 +60,29 @@ import * as echarts from "echarts";
 import tabledataJson from "/public/data/实时监测.json";
 import { callUIInteraction, addResponseEventListener, } from "../../module/webrtcVideo/webrtcVideo.js";
 
+const dataxAxis = ref(['00:00', '01:15', '02:30', '03:45', '05:00', '06:15', '07:30', '08:45', '10:00', '11:15', '12:30', '13:45', '15:00', '16:15', '17:30', '18:45', '20:00', '21:15', '22:30', '23:45'])
+const dataseries = ref([20, 30, 25, 35, 40, 45, 50, 48, 45, 40, 35, 30, 28, 30, 32, 35, 38, 40, 42, 40, 38, 36, 34, 32])
+const echartsname = ref('水位监测')
 const myHandleResponseFunction = (data) => {
-  console.log(data);
-  
+  echartsname.value = data;
+  switch (data) {
+    case '泵站监测':
+      dataseries.value = [120, 130, 125, 135, 140, 145, 150, 148, 145, 140, 135, 130, 128, 130, 132, 135, 138, 140, 142, 140, 138, 136, 134, 132];
+      initWaterChart();
+      break;
+    case '流量监测':
+      dataseries.value = [120, 130, 125, 135, 140, 145, 150, 148, 145, 140, 135, 130, 128, 130, 132, 135, 138, 140, 142, 140, 138, 136, 134, 132];
+      initWaterChart();
+      break;
+    case '水位监测':
+      dataseries.value = [20, 30, 25, 35, 40, 45, 50, 48, 45, 40, 35, 30, 28, 30, 32, 35, 38, 40, 42, 40, 38, 36, 34, 32];
+      initWaterChart();
+      break;
+    case '盐度监测':
+      dataseries.value = [4.4, 3.4, 3.1, 5.6, 7.5, 8.5, 9.5, 10.4, 11.4, 9.8, 7.5, 7.9, 7.1, 6.4, 6.2, 5.8, 5.4, 5.1, 4.7, 4.5, 3.9, 3.5, 3.4, 3.6];
+      initWaterChart();
+      break;
+  }
 };
 const tableData = ref([]);
 // 获取表格数据
@@ -80,12 +100,26 @@ const initWaterChart = () => {
   }
   waterChartInstance = echarts.init(waterChartElement);
   const options = {
-    grid: { x: 10, y: 10, x2: 10, y2: 1, containLabel: true },
+    title: {
+      text: echartsname.value,
+      left: 'center',
+      textStyle: {
+        color: '#b7cffc',
+        fontSize: 16
+      }
+    },
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        type: 'line',
+      }
+    },
+    grid: { x: 10, y: 40, x2: 10, y2: 10, containLabel: true },
     xAxis: [
       {
         type: "category",
         boundaryGap: false,
-        data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+        data: dataxAxis.value,
         axisLabel: {
           show: true,
           textStyle: {
@@ -107,7 +141,7 @@ const initWaterChart = () => {
     },
     series: [
       {
-        name: "Line 2",
+        name: echartsname.value,
         type: "line",
         stack: "Total",
         smooth: true,
@@ -121,7 +155,7 @@ const initWaterChart = () => {
           ]),
         },
         emphasis: { focus: "series" },
-        data: [120, 282, 111, 234, 220, 340, 310],
+        data: dataseries.value,
       },
     ],
   };
@@ -141,7 +175,7 @@ const initSalinityChart = () => {
     legend: {
       orient: 'vertical',
       left: '7%',
-      top:'15%',
+      top: '15%',
       textStyle: {
         color: '#b7cffc',
       },
@@ -167,8 +201,8 @@ const initSalinityChart = () => {
             },
           }
         },
-        left:'20%',
-        bottom:'17%',
+        left: '20%',
+        bottom: '17%',
         emphasis: {
           itemStyle: {
             shadowBlur: 10,

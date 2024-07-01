@@ -78,10 +78,10 @@ import { callUIInteraction, addResponseEventListener, } from "../../module/webrt
 
 const selectValue = ref("");
 const selectoptions = [
-  { value: "平岗", label: "平岗" },
-  { value: "广昌", label: "广昌" },
-  { value: "竹洲头", label: "竹洲头" },
-  { value: "灯笼山", label: "灯笼山" },
+  { value: "平岗泵站", label: "平岗泵站" },
+  { value: "广昌泵站", label: "广昌泵站" },
+  { value: "竹洲头泵站", label: "竹洲头泵站" },
+  { value: "灯笼山水闸", label: "灯笼山水闸" },
   { value: "全禄水厂", label: "全禄水厂" },
 ];
 const tableData = ref(["", "", "", "", "", "", ""]);
@@ -96,10 +96,10 @@ const tableHeaders = {
 };
 // 监听选择的预测范围
 watch(selectValue, (newValue) => {
-  if (newValue === "平岗" || newValue === "广昌") {
+  if (newValue === "平岗泵站" || newValue === "广昌泵站") {
     dayradio.value = "1";
     disable1Day.value = false;
-  } else if (newValue === "竹洲头" || newValue === "灯笼山" || newValue === "全禄水厂") {
+  } else if (newValue === "竹洲头泵站" || newValue === "灯笼山水闸" || newValue === "全禄水厂") {
     dayradio.value = "2";
     disable1Day.value = true;
   }

@@ -134,6 +134,7 @@ import dayjs from "dayjs";
 import * as echarts from "echarts";
 import axios from "axios";
 import { callUIInteraction, addResponseEventListener, } from "../../module/webrtcVideo/webrtcVideo.js";
+import { ElMessage } from 'element-plus'
 
 // const timePick = ref(new Date());
 const timePick = ref(dayjs("2023-03-10").toDate());
@@ -496,21 +497,28 @@ const salinityinit = (data) => {
 };
 // 接收来自UE的传值
 const myHandleResponseFunction = (data) => {
-  console.log(data);
   const datajson = JSON.parse(data);
+  console.log(datajson);
   const lonValue = datajson.Lon;
   const latValue = datajson.Lat;
-  axios.get(`/api/get_raster_value?lat=${latValue}&lon=${lonValue}`).then((res) => {
-    if (res.data.success === true) {
-      if (res.data.values) {
-        showsalinityEcharts.value = true;
-        salinityinit(res.data.values);
+  if (datajson.Type == '数据报错') {
+    ElMessage({
+      message: datajson.error,
+      type: 'warning',
+    })
+  } else if(datajson.Type == '表层盐度点击查询') {
+    axios.get(`/api/get_raster_value?lat=${latValue}&lon=${lonValue}`).then((res) => {
+      if (res.data.success === true) {
+        if (res.data.values) {
+          showsalinityEcharts.value = true;
+          salinityinit(res.data.values);
+        }
       }
-    }
-  })
-    .catch((err) => {
-      console.error(err);
-    });
+    })
+      .catch((err) => {
+        console.error(err);
+      });
+  }
 };
 onMounted(() => {
   addResponseEventListener("handle_responses", myHandleResponseFunction);
@@ -825,7 +833,8 @@ onBeforeUnmount(() => {
   padding: 20px;
   box-sizing: border-box;
 }
-.leftbox-middles{
+
+.leftbox-middles {
   width: 900px;
   height: 520px;
   background-image: url("../../assets/image/框-bg.png");
@@ -835,6 +844,7 @@ onBeforeUnmount(() => {
   padding: 20px;
   box-sizing: border-box;
 }
+
 .leftbox-top-title {
   width: 860px;
   height: 33px;
