@@ -271,7 +271,7 @@ let lastClickTime = 0;
 const Backoff = () => {
   if (tabtimeName.value === '体渲染') {
     const currentTime = Date.now();
-    if (currentTime - lastClickTime.value < 1000) {
+    if (currentTime - lastClickTime < 1000) {
       return;
     }
     lastClickTime = currentTime;
@@ -310,7 +310,7 @@ const togglePlay = () => {
 const Fastforward = () => {
   if (tabtimeName.value === '体渲染') {
     const currentTime = Date.now();
-    if (currentTime - lastClickTime.value < 1000) {
+    if (currentTime - lastClickTime < 1000) {
       return;
     }
     lastClickTime = currentTime;
@@ -387,6 +387,9 @@ watch(timePlay, (newVal) => {
     callUIInteraction({
       function: `咸潮模拟${tabtimeName.value}时间轴/` + currentTime.format("YYYY-MM-DD HH:mm:ss"),
     });
+  }
+  if (currentTime.isSame(dayjs(max.value))) {
+    activePlay.value = '';
   }
 });
 // 监听时间轴
