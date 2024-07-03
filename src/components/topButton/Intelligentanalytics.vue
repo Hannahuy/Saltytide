@@ -16,9 +16,10 @@
         <div class="leftbox-middle-content-top-raido">
           <span>预测范围：</span>
           <el-radio-group v-model="dayradio" class="ml-4" @change="getdayradio">
-            <el-radio value="1" size="large" :disabled="disable1Day" style="width: 115px;margin: 0">1天(逐时预报)</el-radio>
-            <el-radio value="2" size="large" style="width: 115px;margin: 0">3天(逐日预报)</el-radio>
-            <el-radio value="3" size="large" style="width: 115px;margin: 0">7天(逐日预报)</el-radio>
+            <el-radio value="1天(逐时预报)" size="large" :disabled="disable1Day"
+              style="width: 115px;margin: 0">1天(逐时预报)</el-radio>
+            <el-radio value="3天(逐日预报)" size="large" style="width: 115px;margin: 0">3天(逐日预报)</el-radio>
+            <el-radio value="7天(逐日预报)" size="large" style="width: 115px;margin: 0">7天(逐日预报)</el-radio>
           </el-radio-group>
         </div>
         <div class="leftbox-middle-content-middle">
@@ -32,13 +33,13 @@
         </div>
         <div class="leftbox-table">
           <table class="custom-table">
-            <tr v-show="dayradio === '1'" v-for="(item, index) in tableHeaders.day1" :key="index">
+            <tr v-show="dayradio === '1天(逐时预报)'" v-for="(item, index) in tableHeaders.day1" :key="index">
               <td>{{ item }}</td>
               <td v-if="!editing">{{ tableData[index] }}</td>
               <td v-else><el-input v-model="tableData[index]" /></td>
             </tr>
-            <tr v-show="dayradio === '2' || dayradio === '3'" v-for="(item, index) in tableHeaders.day2or3"
-              :key="index">
+            <tr v-show="dayradio === '3天(逐日预报)' || dayradio === '7天(逐日预报)'"
+              v-for="(item, index) in tableHeaders.day2or3" :key="index">
               <td>{{ item }}</td>
               <td v-if="!editing">{{ tableData[index] }}</td>
               <td v-else><el-input v-model="tableData[index]" /></td>
@@ -89,7 +90,8 @@ const selectoptions = [
 ];
 const tableData = ref(["", "", "", "", "", "", ""]);
 const originalTableData = ref([...tableData.value]);
-const dayradio = ref("1");
+const dayradio = ref("1天(逐时预报)");
+const yesDayradio = ref('')
 const showEcharts = ref(false)
 const disable1Day = ref(false);
 const editing = ref(false);
@@ -100,10 +102,12 @@ const tableHeaders = {
 // 监听选择的预测范围
 watch(selectValue, (newValue) => {
   if (newValue === "平岗泵站" || newValue === "广昌泵站") {
-    dayradio.value = "1";
+    dayradio.value = "1天(逐时预报)";
+    yesDayradio.value = "1天(逐时预报)";
     disable1Day.value = false;
   } else if (newValue === "竹洲头泵站" || newValue === "灯笼山水闸" || newValue === "全禄水厂") {
-    dayradio.value = "2";
+    dayradio.value = "3天(逐日预报)";
+    yesDayradio.value = "3天(逐日预报)";
     disable1Day.value = true;
   }
 });
@@ -119,21 +123,46 @@ const showWidth = ref(2000);
 // echarts图表数据
 let waterdata = null;
 const init = (data) => {
+  const now = new Date();
+  const currentHour = now.getHours();
+  const nextHour = (currentHour + 1) % 24;
+  // const newData = [...data.slice(nextHour), ...data.slice(0, nextHour)];
+  const newAxisData = Array.from({ length: 24 }, (_, i) => `${(nextHour + i) % 24}:00`);
   const waterChartElement = document.getElementById("leftbox-content");
   if (waterdata) {
     waterdata.dispose();
   }
   waterdata = echarts.init(waterChartElement);
-  let _data = [...data];
-  for (var i = 0; i < _data.length; i++) {
-    _data[i] = _data[i] < markLineYAxis.value ? 1000 : 0;
+  let markAreaData = [];
+  let start = null;
+  for (let i = 0; i < data.length; i++) {
+    if (data[i] < markLineYAxis.value) {
+      if (start === null) {
+        start = i;
+      }
+    } else {
+      if (start !== null) {
+        markAreaData.push([{ xAxis: `${start}:00` }, { xAxis: `${i - 1}:00` }]);
+        start = null;
+      }
+    }
+  }
+  if (start !== null) {
+    markAreaData.push([{ xAxis: `${start}:00` }, { xAxis: `23:00` }]);
   }
 
-  // 寻找数据的最小值和最大值
   const minValue = Math.min(...data);
   const maxValue = Math.max(...data);
 
   const options = {
+    title: {
+      text: selectValue.value + yesDayradio.value,
+      left: 'center',
+      textStyle: {
+        color: '#b7cffc',
+        fontSize: 16
+      }
+    },
     tooltip: {
       trigger: 'axis'
     },
@@ -147,29 +176,29 @@ const init = (data) => {
         },
         axisLabel: {
           textStyle: {
-            color: "#b7cffc", //更改坐标轴文字颜色
-            fontSize: 10, //更改坐标轴文字大小
+            color: "#b7cffc",
+            fontSize: 14,
           },
         },
         axisTick: { show: false },
         boundaryGap: false,
-        data: Array.from({ length: 24 }, (_, i) => `${i}:00`),
+        data: newAxisData,
       }
     ],
     yAxis: [
       {
-        id: '2', //指定id
+        id: '2',
         type: 'value',
-        min: minValue - 10, // 设置Y轴的最小值
-        max: maxValue + 10, // 设置Y轴的最大值
+        min: minValue - 10,
+        max: maxValue + 10,
         axisLabel: {
           show: true,
           textStyle: {
-            color: "#b7cffc", //更改坐标轴文字颜色
-            fontSize: 12, //更改坐标轴文字大小
+            color: "#b7cffc",
+            fontSize: 14,
           },
           formatter: function (value, index) {
-            return value.toFixed(0)
+            return value.toFixed(0);
           }
         },
         splitLine: {
@@ -184,12 +213,13 @@ const init = (data) => {
           fontFamily: 'FZLTHK--GBK1-0',
           fontSize: '14'
         },
-        name: 'mg/L', // 单位
-        splitNumber: 5 // 这里可以调整网格线的数量，使得网格更加适合新的最大值
+        name: 'mg/L',
+        splitNumber: 5
       }
     ],
     series: [
       {
+        id: 'bbb',
         name: '预测盐度',
         type: 'line',
         smooth: false,
@@ -211,7 +241,16 @@ const init = (data) => {
             color: '#1E90FF'
           }
         },
-        zlevel: 1
+        lineStyle: {
+          width: 5
+        },
+        zlevel: 1,
+        markArea: {
+          itemStyle: {
+            color: 'rgba(255, 173, 177, 0.4)'
+          },
+          data: markAreaData
+        }
       },
       {
         id: 'aaa',
@@ -222,15 +261,16 @@ const init = (data) => {
           symbol: ['none', 'none'],
           label: {
             show: true,
-            // position: 'start',
             color: '#FF0000',
-            formatter: (params) => { return "" + params.value.toFixed(0) }
+            formatter: (params) => { return "" + params.value.toFixed(0) },
+            fontSize: 16,
+            fontWeight: 600
           },
           lineStyle: {
             color: '#FF0000',
             width: 2,
             type: 'dashed',
-            dashPattern: [20, 40] // 增加虚线的虚实间隔
+            dashPattern: [20, 40]
           },
           data: [{ yAxis: markLineYAxis.value }]
         },
@@ -241,13 +281,6 @@ const init = (data) => {
           }
         },
         zlevel: 1
-      },
-      {
-        id: 'barSeries',
-        data: _data,
-        type: 'bar',
-        barWidth: '20',
-        color: "#778899"
       }
     ],
     grid: {
@@ -257,6 +290,7 @@ const init = (data) => {
       left: 40
     },
   };
+
   waterdata.setOption(options);
   showWidth.value = window.innerWidth || document.documentElement.clientWidth;
   const option2 = {
@@ -282,10 +316,23 @@ const init = (data) => {
 
   function onPointDragging() {
     let yAxis = waterdata.convertFromPixel({ yAxisId: '2' }, this.position[1]);
-    markLineYAxis.value = yAxis; // 更新markLineYAxis的值
-    // 更新_data数组，将低于markLineYAxis值的数据设为1000
-    for (let i = 0; i < _data.length; i++) {
-      _data[i] = data[i] < markLineYAxis.value ? 1000 : 0;
+    markLineYAxis.value = yAxis;
+    markAreaData = [];
+    start = null;
+    for (let i = 0; i < data.length; i++) {
+      if (data[i] < markLineYAxis.value) {
+        if (start === null) {
+          start = i;
+        }
+      } else {
+        if (start !== null) {
+          markAreaData.push([{ xAxis: `${start}:00` }, { xAxis: `${i - 1}:00` }]);
+          start = null;
+        }
+      }
+    }
+    if (start !== null) {
+      markAreaData.push([{ xAxis: `${start}:00` }, { xAxis: `23:00` }]);
     }
     waterdata.setOption({
       series: [{
@@ -294,11 +341,10 @@ const init = (data) => {
           data: [{ yAxis: yAxis }],
         }
       }, {
-        id: 'barSeries',
-        data: _data,
-        type: 'bar',
-        barWidth: '20',
-        color: "#778899"
+        id: 'bbb',
+        markArea: {
+          data: markAreaData
+        }
       }]
     });
   }
@@ -347,7 +393,8 @@ const handleFileUpload = (event) => {
   reader.readAsArrayBuffer(file);
 };
 // 监听选择的预测范围
-const getdayradio = () => {
+const getdayradio = (e) => {
+  yesDayradio.value = e
   tableData.value = ["", "", "", "", "", "", ""];
 }
 // 手动输入
@@ -415,11 +462,11 @@ const downloadChart = () => {
   }
   const url = waterdata.getDataURL({
     type: 'png',
-    backgroundColor: '#fff',
+    backgroundColor: '#1c446e',
   });
   const a = document.createElement('a');
   a.href = url;
-  a.download = '盐度分析.png';
+  a.download = selectValue.value + yesDayradio.value + '.png';
   a.click();
 };
 
@@ -693,12 +740,13 @@ onBeforeUnmount(() => {
 .active {
   margin-left: 238px;
 }
-.uploadbuttonstyle{
+
+.uploadbuttonstyle {
   border-radius: 0;
   background-color: #0a6adf;
   border: 0;
   position: absolute;
-  top: 65px;
-  right: 30px;
+  top: 20px;
+  right: 100px;
 }
 </style>
