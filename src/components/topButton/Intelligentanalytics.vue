@@ -112,7 +112,9 @@ watch(selectValue, (newValue) => {
   }
 });
 // 监听选择的站点
+const selectmessage = ref()
 const getselect = (e) => {
+  selectmessage.value = e;
   callUIInteraction({
     function: "智能分析_站点/" + e,
   });
@@ -124,35 +126,49 @@ const showWidth = ref(2000);
 let waterdata = null;
 const init = (data) => {
   const now = new Date();
-  const currentHour = now.getHours();
-  const nextHour = (currentHour + 1) % 24;
-  // const newData = [...data.slice(nextHour), ...data.slice(0, nextHour)];
-  const newAxisData = Array.from({ length: 24 }, (_, i) => `${(nextHour + i) % 24}:00`);
+  let newAxisData;
+  let seriesData;
+  if (dayradio.value === '1天(逐时预报)') {
+    const currentHour = now.getHours();
+    const nextHour = (currentHour + 1) % 24;
+    newAxisData = Array.from({ length: 24 }, (_, i) => `${(nextHour + i) % 24}:00`);
+    seriesData = data;
+  } else if (dayradio.value === '3天(逐日预报)') {
+    const currentDay = now.getDate();
+    const currentMonth = now.getMonth() + 1; // getMonth() 返回值范围为 0-11
+    newAxisData = Array.from({ length: 3 }, (_, i) => {
+      const date = new Date(now);
+      date.setDate(currentDay + i + 1);
+      return `${date.getMonth() + 1}月${date.getDate()}日`;
+    });
+    seriesData = data.slice(0, 3);
+  }
   const waterChartElement = document.getElementById("leftbox-content");
   if (waterdata) {
     waterdata.dispose();
   }
   waterdata = echarts.init(waterChartElement);
+
   let markAreaData = [];
   let start = null;
-  for (let i = 0; i < data.length; i++) {
-    if (data[i] < markLineYAxis.value) {
+  for (let i = 0; i < seriesData.length; i++) {
+    if (seriesData[i] < markLineYAxis.value) {
       if (start === null) {
         start = i;
       }
     } else {
       if (start !== null) {
-        markAreaData.push([{ xAxis: `${start}:00` }, { xAxis: `${i - 1}:00` }]);
+        markAreaData.push([{ xAxis: `${newAxisData[start]}` }, { xAxis: `${newAxisData[i - 1]}` }]);
         start = null;
       }
     }
   }
   if (start !== null) {
-    markAreaData.push([{ xAxis: `${start}:00` }, { xAxis: `23:00` }]);
+    markAreaData.push([{ xAxis: `${newAxisData[start]}` }, { xAxis: `${newAxisData[newAxisData.length - 1]}` }]);
   }
 
-  const minValue = Math.min(...data);
-  const maxValue = Math.max(...data);
+  const minValue = Math.min(...seriesData);
+  const maxValue = Math.max(...seriesData);
 
   const options = {
     title: {
@@ -234,7 +250,7 @@ const init = (data) => {
         emphasis: {
           focus: 'series'
         },
-        data: data,
+        data: seriesData,
         symbolSize: 3,
         itemStyle: {
           normal: {
@@ -319,20 +335,20 @@ const init = (data) => {
     markLineYAxis.value = yAxis;
     markAreaData = [];
     start = null;
-    for (let i = 0; i < data.length; i++) {
-      if (data[i] < markLineYAxis.value) {
+    for (let i = 0; i < seriesData.length; i++) {
+      if (seriesData[i] < markLineYAxis.value) {
         if (start === null) {
           start = i;
         }
       } else {
         if (start !== null) {
-          markAreaData.push([{ xAxis: `${start}:00` }, { xAxis: `${i - 1}:00` }]);
+          markAreaData.push([{ xAxis: `${newAxisData[start]}` }, { xAxis: `${newAxisData[i - 1]}` }]);
           start = null;
         }
       }
     }
     if (start !== null) {
-      markAreaData.push([{ xAxis: `${start}:00` }, { xAxis: `23:00` }]);
+      markAreaData.push([{ xAxis: `${newAxisData[start]}` }, { xAxis: `${newAxisData[newAxisData.length - 1]}` }]);
     }
     waterdata.setOption({
       series: [{
@@ -424,6 +440,7 @@ const closeData = () => {
 };
 // 驱动模型
 const drive = () => {
+  showEcharts.value = false;
   const isTableDataEmpty = tableData.value.some(item => item === "");
   if (isTableDataEmpty) {
     ElMessage({
@@ -443,12 +460,33 @@ const drive = () => {
       text: '正在努力生成中...',
       background: 'rgba(0, 0, 0, 0.7)',
     })
-    axios.get(`/api/PG_24h?s1=${tableData.value[0]}&s2=${tableData.value[1]}&s3=${tableData.value[2]}&sanzao=${tableData.value[3]}&makou=${tableData.value[4]}&macao_u=${tableData.value[5]}&macao_v=${tableData.value[6]}`).then((res) => {
-      // console.log(res.data.forecast_values);
-      showEcharts.value = true;
-      init(res.data.forecast_values);
-      loading.close()
-    })
+    if (dayradio.value == '1天(逐时预报)') {
+      axios.get(`/api/PG_24h?s1=${tableData.value[0]}&s2=${tableData.value[1]}&s3=${tableData.value[2]}&sanzao=${tableData.value[3]}&makou=${tableData.value[4]}&macao_u=${tableData.value[5]}&macao_v=${tableData.value[6]}`).then((res) => {
+        showEcharts.value = true;
+        init(res.data.forecast_values);
+        loading.close()
+      })
+    } else if (dayradio.value == '3天(逐日预报)') {
+      let selectname;
+      if (selectmessage.value === '平岗泵站') {
+        selectname = 'PG';
+      } else if (selectmessage.value === '广昌泵站') {
+        selectname = 'GC';
+      } else if (selectmessage.value === '竹洲头泵站') {
+        selectname = 'ZZT';
+      } else if (selectmessage.value === '灯笼山水闸') {
+        selectname = 'DLS';
+      } else if (selectmessage.value === '全禄水厂') {
+        selectname = 'QL';
+      }
+      axios.get(`/api/${selectname}_3d?s1=${tableData.value[0]}&s2=${tableData.value[1]}&s3=${tableData.value[2]}&sanzao=${tableData.value[3]}&macao=${tableData.value[4]}&makou=${tableData.value[5]}&sk=${tableData.value[6]}`).then((res) => {
+        showEcharts.value = true;
+        init(res.data.forecast_values);
+        loading.close()
+      })
+    } else if (dayradio.value == '7天(逐日预报)') {
+      console.log(7);
+    }
   }
 }
 // 下载图表
