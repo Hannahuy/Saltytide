@@ -64,6 +64,7 @@ const dataxAxis = ref(['00:00', '01:15', '02:30', '03:45', '05:00', '06:15', '07
 const dataseries = ref([20, 30, 25, 35, 40, 45, 50, 48, 45, 40, 35, 30, 28, 30, 32, 35, 38, 40, 42, 40, 38, 36, 34, 32])
 const echartsname = ref('水位监测')
 const myHandleResponseFunction = (data) => {
+  console.log(data);
   echartsname.value = data;
   switch (data) {
     case '泵站监测':
@@ -175,16 +176,17 @@ const initSalinityChart = () => {
     legend: {
       orient: 'vertical',
       left: '7%',
-      top: '15%',
+      top: '7%',
       textStyle: {
         color: '#b7cffc',
       },
+      itemGap:20, // 间距
     },
     series: [
       {
         name: '站点数量',
         type: 'pie',
-        radius: '50%',
+        radius: '80%',
         data: [
           { value: 3, name: '泵站监测' },
           { value: 2, name: '流量监测' },
@@ -196,7 +198,8 @@ const initSalinityChart = () => {
             label: {
               textStyle: {
                 color: '#b7cffc',
-                fontWeight: 'bolder'
+                fontWeight: 'bolder',
+                fontSize:14
               }
             },
           }
@@ -245,6 +248,7 @@ onBeforeUnmount(() => {
   top: 11%;
   left: 10px;
   padding: 20px;
+  overflow: hidden;
 }
 
 .leftbox1 {
