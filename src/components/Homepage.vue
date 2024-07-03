@@ -6,13 +6,13 @@
         </div>
         <div class="top-view-button">
             <div class="top-view-button-style" :class="{ 'active': activeButton === '实时监测' }"
-                    @click="setActiveButton('实时监测')">实时监测</div>
-            <div style="margin-left: 20px;" class="top-view-button-style"
-                    :class="{ 'active': activeButton === '咸潮预测' }" @click="setActiveButton('咸潮预测')">咸潮预测</div>
-            <div style="margin-left: 20px;" class="top-view-button-style"
-                    :class="{ 'active': activeButton === '智能分析' }" @click="setActiveButton('智能分析')">智能分析</div>
+                @click="setActiveButton('实时监测')">实时监测</div>
+            <div style="margin-left: 20px;" class="top-view-button-style" :class="{ 'active': activeButton === '咸潮预测' }"
+                @click="setActiveButton('咸潮预测')">咸潮预测</div>
+            <div style="margin-left: 20px;" class="top-view-button-style" :class="{ 'active': activeButton === '智能分析' }"
+                @click="setActiveButton('智能分析')">智能分析</div>
             <div style="margin-left: 20px;" class="top-view-button-style" :class="{ 'active': activeButton === '虚拟仿真' }"
-                    @click="setActiveButton('虚拟仿真')">虚拟仿真</div>
+                @click="setActiveButton('虚拟仿真')">虚拟仿真</div>
         </div>
         <div class="Weather-list-top-left">
             <span>{{ currentDate }}</span>
@@ -32,9 +32,12 @@
                         :src="activeToolButton === '空间量测' ? '/src/assets/image/tool_space_icon_active.png' : '/src/assets/image/tool_space_icon_default.png'"
                         alt="">
                     <div v-if="showMeasurement" class="right-tool-button-measurement">
-                        <img @click="loadlength('长度')" :src="activeButtonright === '长度' ? '/src/assets/image/测量 -3.png' :'/src/assets/image/测量 -2.png'"
-                         alt="" style="margin-bottom: 10px;">
-                        <img @click="loadarea('面积')" :src="activeButtonright === '面积' ? '/src/assets/image/面积 -2.png' : '/src/assets/image/面积 -1.png'" alt="">
+                        <img @click="loadlength('长度')"
+                            :src="activeButtonright === '长度' ? '/src/assets/image/测量 -3.png' : '/src/assets/image/测量 -2.png'"
+                            alt="" style="margin-bottom: 10px;">
+                        <img @click="loadarea('面积')"
+                            :src="activeButtonright === '面积' ? '/src/assets/image/面积 -2.png' : '/src/assets/image/面积 -1.png'"
+                            alt="">
                     </div>
                 </div>
             </el-tooltip>
@@ -137,9 +140,11 @@ const loadlength = (button) => {
 }
 onMounted(() => {
     setActiveButton('实时监测')
-    callUIInteraction({
-        function: '实时监测'
-    });
+    setTimeout(() => {
+        callUIInteraction({
+            function: '实时监测'
+        });
+    }, 1000)
 })
 </script>
 
@@ -189,6 +194,7 @@ onMounted(() => {
     -webkit-text-fill-color: transparent;
     letter-spacing: 10px;
 }
+
 .title-line-bg {
     background: url('../assets/image/title-横.png');
     width: 98vw;
@@ -232,13 +238,15 @@ onMounted(() => {
     background-size: 100% 100%;
     color: #D4E1FF;
 }
-.Weather-list-top-left{
+
+.Weather-list-top-left {
     color: #D4E1FF;
     font-size: 20px;
     position: absolute;
     right: 50px;
     top: 25px;
 }
+
 .right-tool {
     position: absolute;
     right: 20px;
