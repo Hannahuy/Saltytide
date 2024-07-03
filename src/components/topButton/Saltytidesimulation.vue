@@ -97,13 +97,14 @@
       </div>
       <div class="bottombox-timespan">
         <span>{{ formattedMinTime }}</span>
-        <span>{{ formattedMinTimeAdd6 }}</span>
-        <span>{{ formattedMinTimeAdd12 }}</span>
-        <span>{{ formattedMinTimeAdd18 }}</span>
+        <span>{{ formattedMinTimeAdd1Day }}</span>
+        <span>{{ formattedMinTimeAdd2Days }}</span>
+        <span>{{ formattedMinTimeAdd3Days }}</span>
+        <span>{{ formattedMinTimeAdd4Days }}</span>
         <span>{{ formattedMaxTime }}</span>
       </div>
     </div>
-    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%)">
+    <div style="position: absolute; top: 50%; left: 57%; transform: translate(-50%, -50%)">
       <div class="leftbox-middles" v-show="showEcharts">
         <div class="leftbox-top-title">
           <span>{{ firstSpanText }}</span>
@@ -111,7 +112,7 @@
           <img class="closeimg" src="../../assets/image/close.png" alt="" @click="closeEcharts" />
         </div>
         <div id="transversalsEcharts">
-          <img :src="transversalsEchartsimg" alt="" style="width: 100%; height: 100%;margin-top: 5px;" />
+          <img :src="transversalsEchartsimg" alt="" class="transversalsEchartsimg" />
         </div>
       </div>
     </div>
@@ -137,8 +138,12 @@ import { callUIInteraction, addResponseEventListener, } from "../../module/webrt
 import { ElMessage } from 'element-plus'
 
 // const timePick = ref(new Date());
-const timePick = ref(dayjs("2023-03-10").toDate());
-const timePickform = ref(dayjs("2023-03-10").format('YYYY-MM-DD'));
+const timePick = ref(dayjs("2023-11-16").toDate());
+const timePickform = ref(dayjs("2023-11-16").format('YYYY-MM-DD'));
+// const timePlay = ref(dayjs().startOf('day').valueOf())
+// const timePlay = ref(dayjs("2023-11-16").startOf("day").valueOf());
+const timePlay = ref(dayjs("2023-11-16 10:00").valueOf()); // 默认设置为 2023-11-16 10:00
+
 const disabledDate = (time) => {
   const year = time.getFullYear();
   const month = time.getMonth();
@@ -155,8 +160,6 @@ const disabledDate = (time) => {
   }
 };
 
-// const timePlay = ref(dayjs().startOf('day').valueOf())
-const timePlay = ref(dayjs("2023-03-10").startOf("day").valueOf());
 const activeTab = ref("top");
 const activePlay = ref("");
 const showEcharts = ref(false);
@@ -235,7 +238,7 @@ const toggleBox = (tab) => {
       });
       disabledPlay.value = true; // 禁用播放按钮
       activePlay.value = ""; // 确保播放按钮不为play
-      timePick.value = dayjs("2023-03-10").startOf("day").toDate(); // 清空日期选择器
+      timePick.value = dayjs("2023-11-16").startOf("day").toDate(); // 清空日期选择器
       timePlay.value = dayjs(timePick.value).startOf("day").valueOf(); // 将时间轴从0点00开始
       if (playInterval) {
         clearInterval(playInterval); // 清除计时器
@@ -271,14 +274,14 @@ let lastClickTime = 0;
 const Backoff = () => {
   if (tabtimeName.value === '体渲染') {
     const currentTime = Date.now();
-    if (currentTime - lastClickTime < 1000) {
+    if (currentTime - lastClickTime < 500) {
       return;
     }
     lastClickTime = currentTime;
     isDisabled.value = true;
     setTimeout(() => {
       isDisabled.value = false;
-    }, 1000);
+    }, 500);
   }
   const previousTime = timePlay.value;
   timePlay.value = dayjs(previousTime).subtract(1, 'hour').valueOf();
@@ -310,14 +313,14 @@ const togglePlay = () => {
 const Fastforward = () => {
   if (tabtimeName.value === '体渲染') {
     const currentTime = Date.now();
-    if (currentTime - lastClickTime < 1000) {
+    if (currentTime - lastClickTime < 500) {
       return;
     }
     lastClickTime = currentTime;
     isDisabled.value = true;
     setTimeout(() => {
       isDisabled.value = false;
-    }, 1000);
+    }, 500);
   }
   const previousTime = timePlay.value;
   timePlay.value = dayjs(previousTime).add(1, 'hour').valueOf();
@@ -332,7 +335,7 @@ const Fastforward = () => {
 // const min = ref(dayjs().startOf('day').valueOf());
 // const max = ref(dayjs().endOf('day').valueOf());
 const min = ref(dayjs(timePick.value).startOf("day").valueOf());
-const max = ref(dayjs(timePick.value).endOf("day").valueOf());
+const max = ref(dayjs(timePick.value).add(5, 'days').endOf("day").valueOf());
 
 const formattedTime = computed(() => {
   const time = dayjs(timePlay.value);
@@ -344,23 +347,27 @@ const formattedTime = computed(() => {
 });
 
 const formattedMinTime = computed(() => {
-  return dayjs(min.value).format("YYYY/MM/DD 00:00");
+  return dayjs(min.value).format("YYYY-MM-DD");
 });
 
-const formattedMinTimeAdd6 = computed(() => {
-  return dayjs(min.value).add(6, "hour").format("YYYY/MM/DD HH:mm");
+const formattedMinTimeAdd1Day = computed(() => {
+  return dayjs(min.value).add(1, "day").format("YYYY-MM-DD");
 });
 
-const formattedMinTimeAdd12 = computed(() => {
-  return dayjs(min.value).add(12, "hour").format("YYYY/MM/DD HH:mm");
+const formattedMinTimeAdd2Days = computed(() => {
+  return dayjs(min.value).add(2, "days").format("YYYY-MM-DD");
 });
 
-const formattedMinTimeAdd18 = computed(() => {
-  return dayjs(min.value).add(18, "hour").format("YYYY/MM/DD HH:mm");
+const formattedMinTimeAdd3Days = computed(() => {
+  return dayjs(min.value).add(3, "days").format("YYYY-MM-DD");
+});
+
+const formattedMinTimeAdd4Days = computed(() => {
+  return dayjs(min.value).add(4, "days").format("YYYY-MM-DD");
 });
 
 const formattedMaxTime = computed(() => {
-  return dayjs(max.value).add(1, "day").format("YYYY/MM/DD 00:00");
+  return dayjs(max.value).format("YYYY-MM-DD");
 });
 
 const style = computed(() => {
@@ -373,13 +380,16 @@ const style = computed(() => {
 });
 watch(timePick, (newVal) => {
   const selectedDate = dayjs(newVal);
-  const formattedDate = selectedDate.format("YYYY-MM-DD");
-  callUIInteraction({
-    function: `咸潮模拟${tabtimeName.value}选择时间/` + formattedDate,
-  });
+  if (selectedDate.isSame(dayjs("2023-11-16"), 'day')) {
+    timePlay.value = dayjs("2023-11-16 10:00").valueOf(); // 设置为 2023-11-16 10:00
+  } else {
+    timePlay.value = selectedDate.startOf("day").valueOf(); // 设置为选择日期的 00:00
+  }
   min.value = selectedDate.startOf("day").valueOf();
-  max.value = selectedDate.endOf("day").valueOf();
-  timePlay.value = selectedDate.startOf("day").valueOf();
+  max.value = selectedDate.add(5, 'days').endOf("day").valueOf(); // 保持进度条为5天的进度
+  callUIInteraction({
+    function: `咸潮模拟${tabtimeName.value}选择时间/` + selectedDate.format("YYYY-MM-DD"),
+  });
 });
 watch(timePlay, (newVal) => {
   const currentTime = dayjs(newVal);
@@ -497,16 +507,21 @@ const salinityinit = (data) => {
       trigger: 'axis'
     },
     xAxis: {
-      data: Array.from({ length: 24 }, (_, i) => `${timePickform.value} ${i}:00`),
+      data: Array.from({ length: 24 }, (_, i) => `${i}:00`),
       axisLabel: {
         show: true,
         textStyle: {
           color: "#b7cffc",
-          fontSize: 10,
+          fontSize: 14,
         },
       },
     },
     yAxis: {
+      name: '‰', // 添加单位
+      nameTextStyle: {
+        color: "#b7cffc",
+        fontSize: 14
+      },
       axisLine: {
         show: false
       },
@@ -514,10 +529,10 @@ const salinityinit = (data) => {
         show: true,
         textStyle: {
           color: "#b7cffc",
-          fontSize: 12
+          fontSize: 14
         },
         formatter: function (value) {
-          return value.toFixed(2) + '‰';
+          return value.toFixed(1);
         }
       },
       splitLine: {
@@ -528,10 +543,14 @@ const salinityinit = (data) => {
       {
         type: 'line',
         showSymbol: false,
-        data: data
+        name: '盐度值',
+        data: data,
+        lineStyle: { // 添加lineStyle属性
+          width: 5 // 设置线条粗细为2
+        }
       }
     ],
-    grid: { x: 60, y: 25, x2: 5, y2: 25 },
+    grid: { x: 30, y: 30, x2: 5, y2: 25 },
   };
   salinitydata.setOption(options);
 };
@@ -561,6 +580,13 @@ const myHandleResponseFunction = (data) => {
   }
 };
 onMounted(() => {
+  if (dayjs(timePick.value).isSame(dayjs("2023-11-16"), 'day')) {
+    timePlay.value = dayjs("2023-11-16 10:00").valueOf(); // 初始设置为 2023-11-16 10:00
+  } else {
+    timePlay.value = dayjs(timePick.value).startOf("day").valueOf(); // 初始设置为选择日期的 00:00
+  }
+  min.value = dayjs(timePick.value).startOf("day").valueOf();
+  max.value = dayjs(timePick.value).add(5, 'days').endOf("day").valueOf(); // 初始设置为5天的进度
   addResponseEventListener("handle_responses", myHandleResponseFunction);
   callUIInteraction({
     function: "咸潮模拟_表层渲染/true",
@@ -823,17 +849,17 @@ onBeforeUnmount(() => {
   justify-content: space-between;
   color: white;
   bottom: -10px;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .bottombox-slider-span {
-  width: 120px;
+  width: 125px;
   background-color: #42aeff;
   border-radius: 1.25rem;
   color: white;
   display: block;
   text-align: center;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 :deep(.el-slider__button) {
@@ -852,9 +878,17 @@ onBeforeUnmount(() => {
 }
 
 #transversalsEcharts {
-  width: 860px;
-  height: 430px;
   margin-top: 10px;
+  display: flex;
+  align-items: center;
+  width: 1110px;
+  height: 520px;
+  /* margin-top: 10px; */
+}
+
+.transversalsEchartsimg {
+  width: 100%;
+  height: 100%
 }
 
 #salinityEcharts {
@@ -875,8 +909,8 @@ onBeforeUnmount(() => {
 }
 
 .leftbox-middles {
-  width: 900px;
-  height: 520px;
+  width: 1150px;
+  height: 600px;
   background-image: url("../../assets/image/框-bg.png");
   background-repeat: no-repeat;
   background-size: 100% 100%;
@@ -886,11 +920,11 @@ onBeforeUnmount(() => {
 }
 
 .leftbox-top-title {
-  width: 860px;
+  width: 1100px;
   height: 33px;
   background-image: url("../../assets/image/title.png");
   background-repeat: no-repeat;
-  background-size: 85% 100%;
+  background-size: 65% 100%;
   display: flex;
   align-items: center;
 }
@@ -931,8 +965,8 @@ onBeforeUnmount(() => {
   position: absolute;
   width: 20px;
   height: 20px;
-  right: 25px;
-  top: 35px;
+  right: 30px;
+  top: 40px;
   cursor: pointer;
 }
 
