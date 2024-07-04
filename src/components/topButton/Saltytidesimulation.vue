@@ -3,22 +3,22 @@
     <div class="top-leftbox">
       <div class="top-leftbox-top" :class="{ active: activeTab === 'top' }" @click="toggleBox('top')">
         <img :src="activeTab === 'top'
-        ? '/src/assets/image/表层渲染-浅蓝.png'
-        : '/src/assets/image/表层渲染-深蓝.png'
+        ? littleBluetop
+        : bigBluetop
         " alt="" class="top-leftbox-img" />
         <span class="top-span">表层渲染</span>
       </div>
       <div class="top-leftbox-middle" :class="{ active: activeTab === 'middle' }" @click="toggleBox('middle')">
         <img :src="activeTab === 'middle'
-        ? '/src/assets/image/断面分析-浅蓝.png'
-        : '/src/assets/image/断面分析-深蓝.png'
+        ? littleBluemiddle
+        : bigBluemiddle
         " alt="" class="top-leftbox-img2" />
         <span class="top-span">断面分析</span>
       </div>
       <div class="top-leftbox-bottom" :class="{ active: activeTab === 'bottom' }" @click="toggleBox('bottom')">
         <img :src="activeTab === 'bottom'
-        ? '/src/assets/image/体渲染-浅蓝.png'
-        : '/src/assets/image/体渲染-深蓝.png'
+        ? littleBluebottom
+        : bigBluebottom
         " alt="" class="top-leftbox-img3" />
         <span>体渲染</span>
       </div>
@@ -136,6 +136,15 @@ import * as echarts from "echarts";
 import axios from "axios";
 import { callUIInteraction, addResponseEventListener, } from "../../module/webrtcVideo/webrtcVideo.js";
 import { ElMessage } from 'element-plus'
+import littleBluetop from '../../assets/image/表层渲染-浅蓝.png'
+import bigBluetop from '../../assets/image/表层渲染-深蓝.png'
+import littleBluemiddle from '../../assets/image/断面分析-浅蓝.png'
+import bigBluemiddle from '../../assets/image/断面分析-深蓝.png'
+import littleBluebottom from '../../assets/image/体渲染-浅蓝.png'
+import bigBluebottom from '../../assets/image/体渲染-深蓝.png'
+import imageindexone from '../../assets/dataImg/1aa4dcbb0bdeecd96083f41e35f910e.png'
+import imageindextwo from '../../assets/dataImg/f11baccb8e23beb13656810a1757a87.png'
+import imageindexthree from '../../assets/dataImg/89414d47203f8e5fd56cf15b9520970.png'
 
 // const timePick = ref(new Date());
 const timePick = ref(dayjs("2023-11-16").toDate());
@@ -166,9 +175,7 @@ const showEcharts = ref(false);
 const showsalinityEcharts = ref(false);
 const Zaxis = ref(1);
 const threshold = ref(0);
-const transversalsEchartsimg = ref(
-  "/src/assets/dataImg/1aa4dcbb0bdeecd96083f41e35f910e.png"
-);
+const transversalsEchartsimg = ref(imageindexone);
 const transversalsvalue = ref("");
 const transversalsoptions = [
   {
@@ -260,11 +267,7 @@ const getselect = (e) => {
   });
 };
 // 图片路径   顺序切换图片
-const imagePaths = [
-  "/src/assets/dataImg/89414d47203f8e5fd56cf15b9520970.png",
-  "/src/assets/dataImg/f11baccb8e23beb13656810a1757a87.png",
-  "/src/assets/dataImg/1aa4dcbb0bdeecd96083f41e35f910e.png",
-];
+const imagePaths = [imageindexthree,imageindextwo,imageindexone,];
 let currentImagePathIndex = 0;
 const updateImage = () => {
   transversalsEchartsimg.value = imagePaths[currentImagePathIndex];

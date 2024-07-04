@@ -115,6 +115,15 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { callUIInteraction } from "../../module/webrtcVideo/webrtcVideo.js";
+import sunnyday from '../../assets/img/weather_sunny_icon.png'
+import sunnycloudyday from '../../assets/img/sunnycloudy.png'
+import cloudyday from '../../assets/img/cloudy.png'
+import lightrainday from '../../assets/img/lightrain.png'
+import heavyrainday from '../../assets/img/heavyrain.png'
+import rainstormday from '../../assets/img/rainstorm.png'
+import Lightfogday from '../../assets/img/Lightfog.png'
+import Mediumfogday from '../../assets/img/Mediumfog.png'
+import Fogday from '../../assets/img/Fog.png'
 
 const currentTime = ref('');
 const currentDate = ref('');
@@ -166,20 +175,20 @@ const handleswtich = (e) => {
 }
 // 根据图片路径判断对应天气内容
 const weatherIcons = {
-    '/src/assets/img/weather_sunny_icon.png': '晴天',
-    '/src/assets/img/sunnycloudy.png': '晴转多云',
-    '/src/assets/img/cloudy.png': '多云',
-    '/src/assets/img/lightrain.png': '小雨',
-    '/src/assets/img/heavyrain.png': '中雨',
-    '/src/assets/img/rainstorm.png': '暴雨',
-    '/src/assets/img/Lightfog.png': '小雾',
-    '/src/assets/img/Mediumfog.png': '中雾',
-    '/src/assets/img/Fog.png': '大雾'
+    sunnyday: '晴天',
+    sunnycloudyday: '晴转多云',
+    cloudyday: '多云',
+    lightrainday: '小雨',
+    heavyrainday: '中雨',
+    rainstormday: '暴雨',
+    Lightfogday: '小雾',
+    Mediumfogday: '中雾',
+    Fogday: '大雾'
 };
 
-const weatherone = ref('/src/assets/img/weather_sunny_icon.png')
-const weathertwo = ref('/src/assets/img/sunnycloudy.png')
-const weatherthree = ref('/src/assets/img/cloudy.png')
+const weatherone = ref(sunnyday)
+const weathertwo = ref(sunnycloudyday)
+const weatherthree = ref(cloudyday)
 const selectedIcon = ref(sessionStorage.getItem('selectedIcon') || 'sunny');
 const selectedIconDetail = ref(sessionStorage.getItem('selectedIconDetail') || 'sunnyDetail');
 // 选择第一层天气图标
@@ -214,27 +223,27 @@ const selectDetailIcon = (icon) => {
 const updateWeatherDetails = (icon) => {
     switch (icon) {
         case 'sunny':
-            weatherone.value = '/src/assets/img/weather_sunny_icon.png';
-            weathertwo.value = '/src/assets/img/sunnycloudy.png';
-            weatherthree.value = '/src/assets/img/cloudy.png';
+            weatherone.value = sunnyday;
+            weathertwo.value = sunnycloudyday;
+            weatherthree.value = cloudyday;
             selectedIconDetail.value = 'sunnyDetail';
             callUIInteraction({
                 function: '选中的天气详情图标/晴天'
             });
             break;
         case 'heavyrain':
-            weatherone.value = '/src/assets/img/lightrain.png';
-            weathertwo.value = '/src/assets/img/heavyrain.png';
-            weatherthree.value = '/src/assets/img/rainstorm.png';
+            weatherone.value = lightrainday;
+            weathertwo.value = heavyrainday;
+            weatherthree.value = rainstormday;
             selectedIconDetail.value = 'heavyrainDetail';
             callUIInteraction({
                 function: '选中的天气详情图标/中雨'
             });
             break;
         case 'fog':
-            weatherone.value = '/src/assets/img/Lightfog.png';
-            weathertwo.value = '/src/assets/img/Mediumfog.png';
-            weatherthree.value = '/src/assets/img/Fog.png';
+            weatherone.value = Lightfogday;
+            weathertwo.value = Mediumfogday;
+            weatherthree.value = Fogday;
             selectedIconDetail.value = 'fogDetail';
             callUIInteraction({
                 function: '选中的天气详情图标/大雾'
