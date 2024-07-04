@@ -97,7 +97,7 @@ const disable1Day = ref(false);
 const editing = ref(false);
 const tableHeaders = {
   day1: ["实时盐度", "前1小时盐度", "前2小时盐度", "提前24小时三灶潮位", "提前48小时马口径流", "提前24小时u方向风速", "提前24小时v方向风速"],
-  day2or3: ["今日最大盐度", "昨日最大盐度", "前日最大盐度", "今日三灶日最低潮位", "今日马口平均流量", "今日澳门风速", "今日潮波不对称性因子"]
+  day2or3: ["今日最大盐度", "昨日最大盐度", "前日最大盐度", "今日三灶日最低潮位", "今日澳门风速", "今日马口平均流量", "今日潮波不对称性因子"]
 };
 // 监听选择的预测范围
 watch(selectValue, (newValue) => {
@@ -114,6 +114,7 @@ watch(selectValue, (newValue) => {
 // 监听选择的站点
 const selectmessage = ref()
 const getselect = (e) => {
+  tableData.value = ["", "", "", "", "", "", ""];
   selectmessage.value = e;
   callUIInteraction({
     function: "智能分析_站点/" + e,
@@ -405,6 +406,8 @@ const handleFileUpload = (event) => {
     const headers = jsonData[0];
     const rows = jsonData.slice(1)[0];
     tableData.value = rows;
+    // 清空文件输入元素
+    event.target.value = "";
   };
   reader.readAsArrayBuffer(file);
 };
