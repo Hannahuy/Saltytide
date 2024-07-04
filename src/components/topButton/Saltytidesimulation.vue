@@ -265,9 +265,14 @@ const getselect = (e) => {
   callUIInteraction({
     function: e,
   });
+  if (e == '自定义绘制断面') {
+    callUIInteraction({
+      function: '咸潮模拟自定义绘制断面选择时间轴/' + dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'),
+    });
+  }
 };
 // 图片路径   顺序切换图片
-const imagePaths = [imageindexthree,imageindextwo,imageindexone,];
+const imagePaths = [imageindexthree, imageindextwo, imageindexone,];
 let currentImagePathIndex = 0;
 const updateImage = () => {
   transversalsEchartsimg.value = imagePaths[currentImagePathIndex];
