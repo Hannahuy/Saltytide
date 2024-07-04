@@ -261,7 +261,9 @@ const toggleBox = (tab) => {
 };
 
 // 获取断面选择框内容
+const getselectmenu = ref()
 const getselect = (e) => {
+  getselectmenu.value = e;
   callUIInteraction({
     function: e,
   });
@@ -293,9 +295,21 @@ const Backoff = () => {
   }
   const previousTime = timePlay.value;
   timePlay.value = dayjs(previousTime).subtract(1, 'hour').valueOf();
-  callUIInteraction({
-    function: `咸潮模拟${tabtimeName.value}时间轴/` + dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'),
-  });
+  if (tabtimeName.value === '断面分析') {
+    if (getselectmenu.value === '河道中心断面') {
+      callUIInteraction({
+        function: `咸潮模拟河道中心断面选择时间轴/` + dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'),
+      });
+    } else {
+      callUIInteraction({
+        function: `咸潮模拟自定义绘制断面选择时间轴/` + dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'),
+      });
+    }
+  } else {
+    callUIInteraction({
+      function: `咸潮模拟${tabtimeName.value}时间轴/` + dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'),
+    });
+  }
   transversalsEchartsimg.value = imagePaths[currentImagePathIndex];
   currentImagePathIndex = (currentImagePathIndex - 1 + imagePaths.length) % imagePaths.length;
   updateImage();
@@ -332,9 +346,21 @@ const Fastforward = () => {
   }
   const previousTime = timePlay.value;
   timePlay.value = dayjs(previousTime).add(1, 'hour').valueOf();
-  callUIInteraction({
-    function: `咸潮模拟${tabtimeName.value}时间轴/` + dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'),
-  });
+  if (tabtimeName.value === '断面分析') {
+    if (getselectmenu.value === '河道中心断面') {
+      callUIInteraction({
+        function: `咸潮模拟河道中心断面选择时间轴/` + dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'),
+      });
+    } else {
+      callUIInteraction({
+        function: `咸潮模拟自定义绘制断面选择时间轴/` + dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'),
+      });
+    }
+  } else {
+    callUIInteraction({
+      function: `咸潮模拟${tabtimeName.value}时间轴/` + dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'),
+    });
+  }
   transversalsEchartsimg.value = imagePaths[currentImagePathIndex];
   currentImagePathIndex = (currentImagePathIndex + 1) % imagePaths.length;
   updateImage();
@@ -395,9 +421,9 @@ watch(timePick, (newVal) => {
   }
   min.value = selectedDate.startOf("day").valueOf();
   max.value = selectedDate.add(5, 'days').endOf("day").valueOf(); // 保持进度条为5天的进度
-  callUIInteraction({
-    function: `咸潮模拟${tabtimeName.value}选择时间/` + selectedDate.format("YYYY-MM-DD"),
-  });
+  // callUIInteraction({
+  //   function: `咸潮模拟${tabtimeName.value}选择时间/` + selectedDate.format("YYYY-MM-DD HH:mm:ss"),
+  // });
 });
 watch(timePlay, (newVal) => {
   const currentTime = dayjs(newVal);
