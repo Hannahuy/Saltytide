@@ -428,9 +428,21 @@ watch(timePick, (newVal) => {
 watch(timePlay, (newVal) => {
   const currentTime = dayjs(newVal);
   if (currentTime.minute() === 0 && currentTime.second() === 0) {
-    callUIInteraction({
-      function: `咸潮模拟${tabtimeName.value}时间轴/` + currentTime.format("YYYY-MM-DD HH:mm:ss"),
-    });
+    if (tabtimeName.value === '断面分析') {
+      if (getselectmenu.value === '河道中心断面') {
+        callUIInteraction({
+          function: `咸潮模拟河道中心断面选择时间轴/` + dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'),
+        });
+      } else {
+        callUIInteraction({
+          function: `咸潮模拟自定义绘制断面选择时间轴/` + dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'),
+        });
+      }
+    } else {
+      callUIInteraction({
+        function: `咸潮模拟${tabtimeName.value}时间轴/` + dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'),
+      });
+    }
   }
   if (currentTime.isSame(dayjs(max.value))) {
     activePlay.value = '';
@@ -442,9 +454,21 @@ const gettimePlay = (e) => {
   if ((activePlay.value = "play")) {
     activePlay.value = "";
   }
-  callUIInteraction({
-    function: `咸潮模拟${tabtimeName.value}时间轴/` + clickedTime,
-  });
+  if (tabtimeName.value === '断面分析') {
+    if (getselectmenu.value === '河道中心断面') {
+      callUIInteraction({
+        function: `咸潮模拟河道中心断面选择时间轴/` + dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'),
+      });
+    } else {
+      callUIInteraction({
+        function: `咸潮模拟自定义绘制断面选择时间轴/` + dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'),
+      });
+    }
+  } else {
+    callUIInteraction({
+      function: `咸潮模拟${tabtimeName.value}时间轴/` + dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'),
+    });
+  }
   // console.log(clickedTime);
 };
 const firstSpanText = ref("");
