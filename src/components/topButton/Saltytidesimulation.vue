@@ -624,7 +624,7 @@ const myHandleResponseFunction = (data) => {
       type: 'warning',
     })
   } else if (datajson.Type == '表层盐度点击查询') {
-    axios.get(`/api/get_raster_value?lat=${latValue}&lon=${lonValue}`).then((res) => {
+    axios.get(`http://192.168.0.124:5000/get_raster_value?lat=${latValue}&lon=${lonValue}`).then((res) => {
       if (res.data.success === true) {
         if (res.data.values) {
           showsalinityEcharts.value = true;
