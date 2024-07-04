@@ -150,7 +150,7 @@ onMounted(() => {
     setActiveButton('实时监测')
     setTimeout(() => {
         callUIInteraction({
-            function: '实时监测'
+            function: '刷新'
         });
     }, 1000)
 })
