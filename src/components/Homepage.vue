@@ -148,11 +148,6 @@ const loadlength = (button) => {
 }
 onMounted(() => {
     setActiveButton('实时监测')
-    setTimeout(() => {
-        callUIInteraction({
-            function: '刷新'
-        });
-    }, 1000)
 })
 </script>
 

@@ -464,7 +464,7 @@ const drive = () => {
       background: 'rgba(0, 0, 0, 0.7)',
     })
     if (dayradio.value == '1天(逐时预报)') {
-      axios.get(`http://192.168.0.124:5000/PG_24h?s1=${tableData.value[0]}&s2=${tableData.value[1]}&s3=${tableData.value[2]}&sanzao=${tableData.value[3]}&makou=${tableData.value[4]}&macao_u=${tableData.value[5]}&macao_v=${tableData.value[6]}`).then((res) => {
+      axios.get( window.VITE_APP_BASE_API + `PG_24h?s1=${tableData.value[0]}&s2=${tableData.value[1]}&s3=${tableData.value[2]}&sanzao=${tableData.value[3]}&makou=${tableData.value[4]}&macao_u=${tableData.value[5]}&macao_v=${tableData.value[6]}`).then((res) => {
         showEcharts.value = true;
         init(res.data.forecast_values);
         loading.close()
@@ -482,7 +482,7 @@ const drive = () => {
       } else if (selectmessage.value === '全禄水厂') {
         selectname = 'QL';
       }
-      axios.get(`http://192.168.0.124:5000/${selectname}_3d?s1=${tableData.value[0]}&s2=${tableData.value[1]}&s3=${tableData.value[2]}&sanzao=${tableData.value[3]}&macao=${tableData.value[4]}&makou=${tableData.value[5]}&sk=${tableData.value[6]}`).then((res) => {
+      axios.get( window.VITE_APP_BASE_API + `${selectname}_3d?s1=${tableData.value[0]}&s2=${tableData.value[1]}&s3=${tableData.value[2]}&sanzao=${tableData.value[3]}&macao=${tableData.value[4]}&makou=${tableData.value[5]}&sk=${tableData.value[6]}`).then((res) => {
         showEcharts.value = true;
         init(res.data.forecast_values);
         loading.close()
