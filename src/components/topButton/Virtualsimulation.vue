@@ -115,15 +115,15 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { callUIInteraction } from "../../module/webrtcVideo/webrtcVideo.js";
-import sunnyday from '../../assets/img/weather_sunny_icon.png'
-import sunnycloudyday from '../../assets/img/sunnycloudy.png'
-import cloudyday from '../../assets/img/cloudy.png'
-import lightrainday from '../../assets/img/lightrain.png'
-import heavyrainday from '../../assets/img/heavyrain.png'
-import rainstormday from '../../assets/img/rainstorm.png'
-import Lightfogday from '../../assets/img/Lightfog.png'
-import Mediumfogday from '../../assets/img/Mediumfog.png'
-import Fogday from '../../assets/img/Fog.png'
+import sunnyday from '../../assets/img/weather_sunny_icon.png';
+import sunnycloudyday from '../../assets/img/sunnycloudy.png';
+import cloudyday from '../../assets/img/cloudy.png';
+import lightrainday from '../../assets/img/lightrain.png';
+import heavyrainday from '../../assets/img/heavyrain.png';
+import rainstormday from '../../assets/img/rainstorm.png';
+import Lightfogday from '../../assets/img/Lightfog.png';
+import Mediumfogday from '../../assets/img/Mediumfog.png';
+import Fogday from '../../assets/img/Fog.png';
 
 const currentTime = ref('');
 const currentDate = ref('');
@@ -175,20 +175,20 @@ const handleswtich = (e) => {
 }
 // 根据图片路径判断对应天气内容
 const weatherIcons = {
-    sunnyday: '晴天',
-    sunnycloudyday: '晴转多云',
-    cloudyday: '多云',
-    lightrainday: '小雨',
-    heavyrainday: '中雨',
-    rainstormday: '暴雨',
-    Lightfogday: '小雾',
-    Mediumfogday: '中雾',
-    Fogday: '大雾'
+    [sunnyday]: '晴天',
+    [sunnycloudyday]: '多云',
+    [cloudyday]: '阴天',
+    [lightrainday]: '小雨',
+    [heavyrainday]: '中雨',
+    [rainstormday]: '暴雨',
+    [Lightfogday]: '小雾',
+    [Mediumfogday]: '中雾',
+    [Fogday]: '大雾'
 };
 
-const weatherone = ref(sunnyday)
-const weathertwo = ref(sunnycloudyday)
-const weatherthree = ref(cloudyday)
+const weatherone = ref(sunnyday);
+const weathertwo = ref(sunnycloudyday);
+const weatherthree = ref(cloudyday);
 const selectedIcon = ref(sessionStorage.getItem('selectedIcon') || 'sunny');
 const selectedIconDetail = ref(sessionStorage.getItem('selectedIconDetail') || 'sunnyDetail');
 // 选择第一层天气图标
