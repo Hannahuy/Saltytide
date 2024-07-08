@@ -22,21 +22,17 @@
             <el-tooltip class="item" effect="dark" content="场景漫游" placement="left">
                 <div class="right-tool-button" :class="{ 'active': activeToolButton === '场景漫游' }">
                     <img @click="setActiveToolButton('场景漫游')" style="width: 30px;height: 30px"
-                        :src="activeToolButton === '场景漫游' ? sceneactive : scenedefault"
-                        alt="">
+                        :src="activeToolButton === '场景漫游' ? sceneactive : scenedefault" alt="">
                 </div>
             </el-tooltip>
             <el-tooltip class="item" effect="dark" content="空间量测" placement="left">
                 <div class="right-tool-button" :class="{ 'active': activeToolButton === '空间量测' }">
                     <img @click="setActiveToolButton('空间量测')" style="width: 30px;height: 30px"
-                        :src="activeToolButton === '空间量测' ? spaceactive : spacedefault"
-                        alt="">
+                        :src="activeToolButton === '空间量测' ? spaceactive : spacedefault" alt="">
                     <div v-if="showMeasurement" class="right-tool-button-measurement">
-                        <img @click="loadlength('长度')"
-                            :src="activeButtonright === '长度' ? lenghtactive : lengthdefault"
+                        <img @click="loadlength('长度')" :src="activeButtonright === '长度' ? lenghtactive : lengthdefault"
                             alt="" style="margin-bottom: 10px;">
-                        <img @click="loadarea('面积')"
-                            :src="activeButtonright === '面积' ? areaactive : areadefault"
+                        <img @click="loadarea('面积')" :src="activeButtonright === '面积' ? areaactive : areadefault"
                             alt="">
                     </div>
                 </div>
@@ -148,6 +144,12 @@ const loadlength = (button) => {
 }
 onMounted(() => {
     setActiveButton('实时监测')
+    if (window.performance.navigation.type == 1) {
+        console.log("页面被刷新")
+        sessionStorage.clear();
+    } else {
+        console.log("首次被加载")
+    }
 })
 </script>
 

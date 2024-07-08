@@ -58,9 +58,6 @@
       <span>Device information</span>
       <img class="closeimg" src="../../assets/image/close.png" alt="" @click="close" />
     </div>
-    <div class="right-box-img">
-      <img :src="Deviceimg" alt="" class="Deviceimgbox">
-    </div>
     <div class="right-box-content">
       <div class="right-box-content-top">
         <span style="margin-right: 10px;">设备类型：{{ BDeviceType }}</span>
@@ -71,6 +68,9 @@
         <span style="margin-right: 10px;">经度：{{ BLongitude }}</span>
         <span>纬度：{{ BLatitude }}</span>
       </div>
+    </div>
+    <div class="right-box-img">
+      <img :src="Deviceimg" alt="" class="Deviceimgbox">
     </div>
   </div>
 </template>

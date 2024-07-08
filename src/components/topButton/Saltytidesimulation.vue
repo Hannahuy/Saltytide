@@ -82,8 +82,7 @@
     </div>
     <div class="bottombox-button">
       <el-button type="primary" class="bottombox-Backoff" :disabled="isDisabled" @click="Backoff"></el-button>
-      <el-button type="primary" class="bottombox-play" :class="{ active: activePlay === 'play' }"
-        :disabled="disabledPlay" @click="togglePlay" :title="disabledPlay ? '播放按钮已禁用' : ''"></el-button>
+      <el-button type="primary" class="bottombox-play" :class="{ active: activePlay === 'play' }" @click="togglePlay"></el-button>
       <el-button type="primary" class="bottombox-Fastforward" :disabled="isDisabled" @click="Fastforward"></el-button>
     </div>
     <div class="bottombox">
@@ -189,7 +188,6 @@ const transversalsoptions = [
 ];
 let lastClickedTab = "";
 const tabtimeName = ref('表层渲染')
-const disabledPlay = ref(false);
 const isDisabled = ref(false);
 let playInterval = null;
 // 左侧二级菜单
@@ -229,12 +227,24 @@ const toggleBox = (tab) => {
       callUIInteraction({
         function: "表层渲染/" + formattedTime,
       });
-      disabledPlay.value = false; // 启用播放按钮
+      activePlay.value = ""; // 确保播放按钮不为play
+      timePick.value = dayjs("2023-11-16").startOf("day").toDate(); // 清空日期选择器
+      timePlay.value = dayjs(timePick.value).startOf("day").valueOf(); // 将时间轴从0点00开始
+      if (playInterval) {
+        clearInterval(playInterval); // 清除计时器
+        playInterval = null;
+      }
     } else if (tab === "middle") {
       tabName = "断面分析";
       tabtimeName.value = "断面分析";
       showtransversals.value = true;
-      disabledPlay.value = false; // 启用播放按钮
+      activePlay.value = ""; // 确保播放按钮不为play
+      timePick.value = dayjs("2023-11-16").startOf("day").toDate(); // 清空日期选择器
+      timePlay.value = dayjs(timePick.value).startOf("day").valueOf(); // 将时间轴从0点00开始
+      if (playInterval) {
+        clearInterval(playInterval); // 清除计时器
+        playInterval = null;
+      }
     } else if (tab === "bottom") {
       tabName = "体渲染";
       tabtimeName.value = "体渲染";
@@ -243,7 +253,6 @@ const toggleBox = (tab) => {
       callUIInteraction({
         function: "体渲染/" + formattedTime,
       });
-      disabledPlay.value = true; // 禁用播放按钮
       activePlay.value = ""; // 确保播放按钮不为play
       timePick.value = dayjs("2023-11-16").startOf("day").toDate(); // 清空日期选择器
       timePlay.value = dayjs(timePick.value).startOf("day").valueOf(); // 将时间轴从0点00开始
@@ -316,8 +325,13 @@ const Backoff = () => {
 };
 // 暂停/播放
 let previousPlayState = "";
+let intervalTime = null;
 const togglePlay = () => {
-  if (disabledPlay.value) return; // 添加判断，如果播放按钮被禁用，则不执行下面的代码
+  if (tabtimeName.value == '体渲染') {
+    intervalTime = 50;
+  } else {
+    intervalTime = 16.6665;
+  }
   previousPlayState = activePlay.value;
   activePlay.value = activePlay.value === "play" ? "" : "play";
   if (activePlay.value === "play") {
@@ -326,7 +340,7 @@ const togglePlay = () => {
       if (activePlay.value !== "play") {
         clearInterval(playInterval);
       }
-    }, 16.6665);
+    }, intervalTime);
   } else {
     clearInterval(playInterval);
   }

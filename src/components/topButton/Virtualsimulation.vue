@@ -51,7 +51,7 @@
                 <span style="margin-left: 12px;">风向</span>
                 <img src="../../assets/img/small_icon.png" :class="{ 'disabled': swtichvalue }" alt="" class="imgbutton"
                     @click="decreasedirection">
-                <el-slider v-model="Winddirection" :disabled="swtichvalue" style="width: 240px;margin-left: 20px;"
+                <el-slider v-model="Winddirection" :min="0" :max="360" :disabled="swtichvalue" style="width: 240px;margin-left: 20px;"
                     @change="getWinddirection" />
                 <img src="../../assets/img/big_icon.png" :class="{ 'disabled': swtichvalue }" alt="" class="imgbutton"
                     @click="adddirection">
