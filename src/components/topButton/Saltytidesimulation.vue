@@ -46,7 +46,7 @@
         <div class="top-leftbox-middle-content-div-2">
           <div class="top-leftbox-middle-content-div-2-content">
             <div class="color-bar-one">
-              <a-slider v-model:value="Zaxis" vertical :reverse="true" @change="getZaxis" :min="0" :max="40" :step="1"
+              <a-slider v-model:value="Zaxis" vertical :reverse="true" @change="getZaxis" :min="0" :max="39" :step="1"
                 tooltipPlacement="top" />
             </div>
             <span class="top-leftbox-middle-content-div-2-span">多层剖切</span>
@@ -333,7 +333,7 @@ let previousPlayState = "";
 let intervalTime = null;
 const togglePlay = () => {
   if (tabtimeName.value == '体渲染') {
-    intervalTime = 50;
+    intervalTime = 20;
   } else {
     intervalTime = 16.6665;
   }
@@ -1160,12 +1160,12 @@ onBeforeUnmount(() => {
   width: 10px;
   height: 176px;
   background: linear-gradient(180deg,
-      #ff0000 0%,
-      #ffdb00 20%,
-      #c4ff00 40%,
-      #00ff09 60%,
-      #2323f5 80%,
-      #7e01ff 100%);
+      #ff0000 5%,
+      #ff8800 20%,
+      #ffdb00 35%,
+      #0cd112 50%,
+      #0dc1ce 70%,
+      #2323f5 95%);
   border-radius: 9px;
 }
 

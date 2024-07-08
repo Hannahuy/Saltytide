@@ -296,7 +296,7 @@ onBeforeUnmount(() => {
 .right-box {
   width: 500px;
   height: 35%;
-  min-height: 339px;
+  min-height: 360px;
   background-image: url("../../assets/image/框-bg.png");
   background-repeat: no-repeat;
   background-size: 100% 100%;
@@ -456,10 +456,8 @@ onBeforeUnmount(() => {
 .right-box-img {
   width: 100%;
   height: 200px;
-  margin-top: 10px;
 }
 .right-box-content {
-  margin-top: 10px;
   height: 90px;
   color: #b7cffc;
   display: flex;
