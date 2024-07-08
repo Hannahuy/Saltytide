@@ -3,23 +3,23 @@
     <div class="top-leftbox">
       <div class="top-leftbox-top" :class="{ active: activeTab === 'top' }" @click="toggleBox('top')">
         <img :src="activeTab === 'top'
-        ? littleBluetop
-        : bigBluetop
-        " alt="" class="top-leftbox-img" />
+          ? littleBluetop
+          : bigBluetop
+          " alt="" class="top-leftbox-img" />
         <span class="top-span">表层渲染</span>
       </div>
       <div class="top-leftbox-middle" :class="{ active: activeTab === 'middle' }" @click="toggleBox('middle')">
         <img :src="activeTab === 'middle'
-        ? littleBluemiddle
-        : bigBluemiddle
-        " alt="" class="top-leftbox-img2" />
+          ? littleBluemiddle
+          : bigBluemiddle
+          " alt="" class="top-leftbox-img2" />
         <span class="top-span">断面分析</span>
       </div>
       <div class="top-leftbox-bottom" :class="{ active: activeTab === 'bottom' }" @click="toggleBox('bottom')">
         <img :src="activeTab === 'bottom'
-        ? littleBluebottom
-        : bigBluebottom
-        " alt="" class="top-leftbox-img3" />
+          ? littleBluebottom
+          : bigBluebottom
+          " alt="" class="top-leftbox-img3" />
         <span>体渲染</span>
       </div>
       <div class="top-leftbox-middle-content" v-show="showtransversals">
@@ -638,7 +638,7 @@ const myHandleResponseFunction = (data) => {
       type: 'warning',
     })
   } else if (datajson.Type == '表层盐度点击查询') {
-    axios.get( window.VITE_APP_BASE_API + `get_raster_value?lat=${latValue}&lon=${lonValue}`).then((res) => {
+    axios.get(window.VITE_APP_BASE_API + `get_raster_value?lat=${latValue}&lon=${lonValue}`).then((res) => {
       if (res.data.success === true) {
         if (res.data.values) {
           showsalinityEcharts.value = true;
