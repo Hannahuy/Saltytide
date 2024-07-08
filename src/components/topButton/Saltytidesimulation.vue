@@ -3,23 +3,23 @@
     <div class="top-leftbox">
       <div class="top-leftbox-top" :class="{ active: activeTab === 'top' }" @click="toggleBox('top')">
         <img :src="activeTab === 'top'
-          ? littleBluetop
-          : bigBluetop
-          " alt="" class="top-leftbox-img" />
+        ? littleBluetop
+        : bigBluetop
+        " alt="" class="top-leftbox-img" />
         <span class="top-span">表层渲染</span>
       </div>
       <div class="top-leftbox-middle" :class="{ active: activeTab === 'middle' }" @click="toggleBox('middle')">
         <img :src="activeTab === 'middle'
-          ? littleBluemiddle
-          : bigBluemiddle
-          " alt="" class="top-leftbox-img2" />
+        ? littleBluemiddle
+        : bigBluemiddle
+        " alt="" class="top-leftbox-img2" />
         <span class="top-span">断面分析</span>
       </div>
       <div class="top-leftbox-bottom" :class="{ active: activeTab === 'bottom' }" @click="toggleBox('bottom')">
         <img :src="activeTab === 'bottom'
-          ? littleBluebottom
-          : bigBluebottom
-          " alt="" class="top-leftbox-img3" />
+        ? littleBluebottom
+        : bigBluebottom
+        " alt="" class="top-leftbox-img3" />
         <span>体渲染</span>
       </div>
       <div class="top-leftbox-middle-content" v-show="showtransversals">
@@ -45,14 +45,18 @@
         <span class="top-leftbox-middle-content-2-span">体渲染剖切</span>
         <div class="top-leftbox-middle-content-div-2">
           <div class="top-leftbox-middle-content-div-2-content">
-            <span class="top-leftbox-middle-content-div-2-span">Z轴剖切</span>
-            <el-slider v-model="Zaxis" style="width: 120px; margin-left: 10px" @change="getZaxis" :min="0" :max="1"
-              :step="0.01" />
+            <div class="color-bar-one">
+              <a-slider v-model:value="Zaxis" vertical :reverse="true" @change="getZaxis" :min="0" :max="40" :step="1"
+                tooltipPlacement="top" />
+            </div>
+            <span class="top-leftbox-middle-content-div-2-span">多层剖切</span>
           </div>
           <div class="top-leftbox-middle-content-div-2-content">
+            <div class="color-bar-two">
+              <a-slider v-model:value="threshold" vertical :reverse="true" @change="getthreshold" :min="0" :max="23"
+                :step="0.01" tooltipPlacement="top" />
+            </div>
             <span class="top-leftbox-middle-content-div-2-span">特征阈值</span>
-            <el-slider v-model="threshold" style="width: 120px; margin-left: 10px" @change="getthreshold" :min="0"
-              :max="1" :step="0.01" />
           </div>
         </div>
       </div>
@@ -82,7 +86,8 @@
     </div>
     <div class="bottombox-button">
       <el-button type="primary" class="bottombox-Backoff" :disabled="isDisabled" @click="Backoff"></el-button>
-      <el-button type="primary" class="bottombox-play" :class="{ active: activePlay === 'play' }" @click="togglePlay"></el-button>
+      <el-button type="primary" class="bottombox-play" :class="{ active: activePlay === 'play' }"
+        @click="togglePlay"></el-button>
       <el-button type="primary" class="bottombox-Fastforward" :disabled="isDisabled" @click="Fastforward"></el-button>
     </div>
     <div class="bottombox">
@@ -532,10 +537,10 @@ const closeEcharts = () => {
 const closesalinityEcharts = () => {
   showsalinityEcharts.value = false;
 };
-// 监听Z轴
+// 监听多层
 const getZaxis = (e) => {
   callUIInteraction({
-    function: "Z轴剖切/" + e,
+    function: "多层剖切/" + e,
   });
   console.log(e);
 };
@@ -766,7 +771,7 @@ onBeforeUnmount(() => {
 
 .top-leftbox-middle-content-2 {
   width: 200px;
-  height: 160px;
+  height: 280px;
   background-image: url("../../assets/image/弹框.png");
   background-repeat: no-repeat;
   background-position: center;
@@ -779,8 +784,8 @@ onBeforeUnmount(() => {
 
 .top-leftbox-middle-content-2-span {
   width: 100%;
-  height: 35px;
-  line-height: 38px;
+  height: 50px;
+  line-height: 60px;
   padding-left: 10px;
   font-size: 20px;
   display: block;
@@ -788,19 +793,11 @@ onBeforeUnmount(() => {
   box-sizing: border-box;
 }
 
-.top-leftbox-middle-content-div-2-span {
-  width: 60px;
-  height: 35px;
-  line-height: 38px;
-  font-size: 14px;
-  box-sizing: border-box;
-}
-
 .top-leftbox-middle-content-div-2 {
   display: flex;
-  flex-direction: column;
-  height: 85px;
-  padding: 10px;
+  align-items: center;
+  justify-content: space-evenly;
+  height: 215px;
 }
 
 .bottomCalendar {
@@ -934,12 +931,12 @@ onBeforeUnmount(() => {
   font-size: 14px;
 }
 
-:deep(.el-slider__button) {
+.bottombox-slider :deep(.el-slider__button) {
   background-color: transparent;
   border: 0;
 }
 
-:deep(.el-slider__bar) {
+.bottombox-slider :deep(.el-slider__bar) {
   background-color: #42aeff;
 }
 
@@ -1066,30 +1063,55 @@ onBeforeUnmount(() => {
   color: #b7cffc;
 }
 
-.top-leftbox-middle-content-2:deep(.el-slider__runway) {
-  height: 2px;
-  background-color: #00a8d2;
+.color-bar-one {
+  height: 150px;
+  margin-bottom: 25px;
 }
 
-.top-leftbox-middle-content-2:deep(.el-slider__bar) {
-  height: 2px;
-  background-color: #00a8d2;
+.color-bar-two {
+  height: 150px;
+  margin-bottom: 25px;
 }
 
-.top-leftbox-middle-content-2:deep(.el-slider__button) {
+/* .color-bar-one :deep(.el-slider__runway){
+  background-color: #00a8d2;
+
+}
+.color-bar-one :deep(.el-slider__bar){
+  background-color: #00a8d2;
+  
+}
+.color-bar-two :deep(.el-slider__runway){
+  background: linear-gradient(180deg,
+      #ff0000 0%,
+      #ffdb00 20%,
+      #c4ff00 40%,
+      #00ff09 60%,
+      #2323f5 80%,
+      #7e01ff 100%);
+}
+.color-bar-two :deep(.el-slider__bar){
+  background-color: transparent;
+} */
+
+/* .top-leftbox-middle-content-2:deep(.ant-slider-handle) {
   background-color: transparent;
   border: 0;
   background-image: url("../../assets/img/slipPoint_icon.png");
   background-repeat: no-repeat;
   background-size: 100% 100%;
-  margin-bottom: 4px;
-}
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  left: -4px;
+} */
 
 .top-leftbox-middle-content-div-2-content {
+  width: 85px;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  height: 40px;
-  margin-top: 5px;
+  margin-top: 15px;
 }
 
 .sidebar {

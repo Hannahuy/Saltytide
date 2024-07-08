@@ -64,4 +64,15 @@ div {
 .el-popper__arrow::before {
   display: none;
 }
+:where(.css-dev-only-do-not-override-19iuou).ant-tooltip .ant-tooltip-inner{
+  text-align: center;
+}
+:where(.css-dev-only-do-not-override-19iuou).ant-slider:hover .ant-slider-rail{
+  background-color: #91caff;
+  width: 4px;
+}
+:where(.css-dev-only-do-not-override-19iuou).ant-slider-vertical .ant-slider-rail{
+  background-color: #91caff;
+  width: 4px;
+}
 </style>

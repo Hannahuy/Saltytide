@@ -5,6 +5,8 @@ import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import axios from 'axios'
+import Antd from 'ant-design-vue';
+import 'ant-design-vue/dist/reset.css';
 
 // axios.get('./public/config.json').then((res) => {
   // window.VITE_APP_BASE_API = res.data.VITE_APP_BASE_API;
@@ -15,5 +17,6 @@ import axios from 'axios'
       locale: zhCn,
     })
   app.use(routes)
+  app.use(Antd)
   app.mount('#app')
 // })
