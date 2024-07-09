@@ -614,4 +614,8 @@ onMounted(() => {
     opacity: 0.6;
     /* 使元素半透明 */
 }
+:deep(.el-slider__runway.is-disabled .el-slider__bar){
+    height: 2px;
+    background-color: #00A8D2;
+}
 </style>
