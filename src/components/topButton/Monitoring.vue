@@ -465,6 +465,6 @@ onBeforeUnmount(() => {
 .right-box-content-top span,
 .right-box-content-bottom span {
   display: inline-block;
-  width: 160px;
+  width: 147px;
 }
 </style>
