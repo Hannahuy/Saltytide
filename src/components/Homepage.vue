@@ -19,12 +19,12 @@
             <span style="margin-left: 20px;">{{ currentTime }}</span>
         </div>
         <div class="right-tool">
-            <el-tooltip class="item" effect="dark" content="光照模式切换" placement="left">
+            <!-- <el-tooltip class="item" effect="dark" content="光照模式切换" placement="left">
                 <div class="right-tool-button" :class="{ 'active': activeToolButton === '光照模式切换' }">
                     <img @click="setActiveToolButton('光照模式切换')" style="width: 40px;height: 40px"
                         :src="activeToolButton === '光照模式切换' ? guangdefault : guangactive" alt="">
                 </div>
-            </el-tooltip>
+            </el-tooltip> -->
             <el-tooltip class="item" effect="dark" content="场景漫游" placement="left">
                 <div class="right-tool-button" :class="{ 'active': activeToolButton === '场景漫游' }">
                     <img @click="setActiveToolButton('场景漫游')" style="width: 30px;height: 30px"
@@ -286,7 +286,8 @@ onMounted(() => {
 .right-tool-button-measurement {
     position: absolute;
     right: 12px;
-    top: 168px;
+    top: 113px;
+    /* top: 168px; */
     display: flex;
     flex-direction: column;
     color: #FFFFFF;

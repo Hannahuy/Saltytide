@@ -228,43 +228,26 @@ const toggleBox = (tab) => {
       tabName = "表层渲染";
       tabtimeName.value = "表层渲染";
       showEcharts.value = false;
-      showtransversals.value = false;
       callUIInteraction({
         function: "表层渲染/" + formattedTime,
       });
-      activePlay.value = ""; // 确保播放按钮不为play
-      timePick.value = dayjs("2023-11-16").startOf("day").toDate(); // 清空日期选择器
-      timePlay.value = dayjs(timePick.value).startOf("day").valueOf(); // 将时间轴从0点00开始
-      if (playInterval) {
-        clearInterval(playInterval); // 清除计时器
-        playInterval = null;
-      }
     } else if (tab === "middle") {
       tabName = "断面分析";
       tabtimeName.value = "断面分析";
-      showtransversals.value = true;
-      activePlay.value = ""; // 确保播放按钮不为play
-      timePick.value = dayjs("2023-11-16").startOf("day").toDate(); // 清空日期选择器
-      timePlay.value = dayjs(timePick.value).startOf("day").valueOf(); // 将时间轴从0点00开始
-      if (playInterval) {
-        clearInterval(playInterval); // 清除计时器
-        playInterval = null;
-      }
     } else if (tab === "bottom") {
       tabName = "体渲染";
       tabtimeName.value = "体渲染";
       showEcharts.value = false;
-      showtransversals.value = false;
       callUIInteraction({
         function: "体渲染/" + formattedTime,
       });
-      activePlay.value = ""; // 确保播放按钮不为play
-      timePick.value = dayjs("2023-11-16").startOf("day").toDate(); // 清空日期选择器
-      timePlay.value = dayjs(timePick.value).startOf("day").valueOf(); // 将时间轴从0点00开始
-      if (playInterval) {
-        clearInterval(playInterval); // 清除计时器
-        playInterval = null;
-      }
+    }
+    activePlay.value = ""; // 确保播放按钮不为play
+    timePick.value = dayjs("2023-11-16").startOf("day").toDate(); // 清空日期选择器
+    timePlay.value = dayjs(timePick.value).startOf("day").valueOf(); // 将时间轴从0点00开始
+    if (playInterval) {
+      clearInterval(playInterval); // 清除计时器
+      playInterval = null;
     }
     callUIInteraction({
       function: "咸潮模拟_" + tabName + "/true",

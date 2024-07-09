@@ -162,10 +162,8 @@ const initWaterChart = () => {
         data: dataxAxis.value,
         axisLabel: {
           show: true,
-          textStyle: {
             color: "#b7cffc", //更改坐标轴文字颜色
             fontSize: 12, //更改坐标轴文字大小
-          },
         },
       },
     ],
@@ -173,10 +171,8 @@ const initWaterChart = () => {
       splitLine: { show: false },
       axisLabel: {
         show: true,
-        textStyle: {
           color: "#b7cffc", //更改坐标轴文字颜色
           fontSize: 12, //更改坐标轴文字大小
-        },
       },
     },
     series: [
@@ -232,16 +228,10 @@ const initSalinityChart = () => {
           { value: 4, name: '水位监测' },
           { value: 3, name: '盐度监测' }
         ],
-        itemStyle: {
-          normal: {
-            label: {
-              textStyle: {
-                color: '#b7cffc',
-                fontWeight: 'bolder',
-                fontSize: 14
-              }
-            },
-          }
+        label: {
+          color: '#b7cffc',
+          fontWeight: 'bolder',
+          fontSize: '14',
         },
         left: '20%',
         bottom: '17%',
@@ -282,7 +272,7 @@ onBeforeUnmount(() => {
 .top-leftbox {
   width: 500px;
   height: 83%;
-  min-height: 804px;
+  min-height: 845px;
   background-image: url("../../assets/image/框-bg.png");
   background-repeat: no-repeat;
   background-size: 100% 100%;
@@ -457,6 +447,7 @@ onBeforeUnmount(() => {
   width: 100%;
   height: 200px;
 }
+
 .right-box-content {
   height: 90px;
   color: #b7cffc;
@@ -476,5 +467,4 @@ onBeforeUnmount(() => {
   display: inline-block;
   width: 160px;
 }
-
 </style>
