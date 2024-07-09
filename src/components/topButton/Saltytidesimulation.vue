@@ -64,8 +64,8 @@
     <div v-show="showbar" class="sidebar">
       <div class="bar">
         <div class="color-bar-number">
-          <span>10(‰)</span>
           <span>5(‰)</span>
+          <span>3(‰)</span>
           <span>0(‰)</span>
         </div>
         <div class="color-bar"></div>
@@ -180,16 +180,16 @@ const showsalinityEcharts = ref(false);
 const Zaxis = ref(0);
 const threshold = ref(0);
 const transversalsEchartsimg = ref(imageindexone);
-const transversalsvalue = ref("");
+const transversalsvalue = ref("自定义绘制断面");
 const transversalsoptions = [
-  {
-    value: "河道中心断面",
-    label: "河道中心断面",
-  },
   {
     value: "自定义绘制断面",
     label: "自定义绘制断面",
   },
+  {
+    value: "河道中心断面",
+    label: "河道中心断面",
+  }
 ];
 let lastClickedTab = "";
 const tabtimeName = ref('表层渲染')
@@ -197,7 +197,6 @@ const isDisabled = ref(false);
 let playInterval = null;
 // 左侧二级菜单
 const toggleBox = (tab) => {
-  transversalsvalue.value = "";
   if (activeTab.value === tab) {
     activeTab.value = "";
     if (tab === "top") {
@@ -234,6 +233,9 @@ const toggleBox = (tab) => {
     } else if (tab === "middle") {
       tabName = "断面分析";
       tabtimeName.value = "断面分析";
+      callUIInteraction({
+        function: '咸潮模拟自定义绘制断面',
+      });
     } else if (tab === "bottom") {
       tabName = "体渲染";
       tabtimeName.value = "体渲染";
@@ -544,7 +546,7 @@ const showbar = computed(() => {
   return activeTab.value === "top";
 });
 const shownextbar = computed(() => {
-  return activeTab.value === "bottom";
+  return activeTab.value === "bottom" || activeTab.value === "middle";
 });
 let salinitydata = null;
 const salinityinit = (data) => {
@@ -650,6 +652,9 @@ onMounted(() => {
   addResponseEventListener("handle_responses", myHandleResponseFunction);
   callUIInteraction({
     function: "咸潮模拟_表层渲染/true",
+  });
+  callUIInteraction({
+    function: '咸潮模拟表层渲染时间轴/' + dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss')
   });
 });
 onBeforeUnmount(() => {
