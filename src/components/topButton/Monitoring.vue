@@ -154,7 +154,7 @@ const initWaterChart = () => {
         type: 'line',
       }
     },
-    grid: { x: 10, y: 40, x2: 10, y2: 10, containLabel: true },
+    grid: { x: 0, y: 40, x2: 10, y2: 10, containLabel: true },
     xAxis: [
       {
         type: "category",

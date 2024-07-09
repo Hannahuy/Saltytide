@@ -205,6 +205,7 @@ const toggleBox = (tab) => {
       });
       tabtimeName.value = ''
       console.log("咸潮模拟_表层渲染/false");
+      showsalinityEcharts.value = false;
     } else if (tab === "middle") {
       callUIInteraction({
         function: "咸潮模拟_断面分析/false",
@@ -236,6 +237,7 @@ const toggleBox = (tab) => {
       callUIInteraction({
         function: '咸潮模拟自定义绘制断面',
       });
+      showsalinityEcharts.value = false;
     } else if (tab === "bottom") {
       tabName = "体渲染";
       tabtimeName.value = "体渲染";
@@ -243,6 +245,7 @@ const toggleBox = (tab) => {
       callUIInteraction({
         function: "体渲染/" + formattedTime,
       });
+      showsalinityEcharts.value = false;
     }
     activePlay.value = ""; // 确保播放按钮不为play
     timePick.value = dayjs("2023-11-16").startOf("day").toDate(); // 清空日期选择器
@@ -546,7 +549,7 @@ const showbar = computed(() => {
   return activeTab.value === "top";
 });
 const shownextbar = computed(() => {
-  return activeTab.value === "bottom" || activeTab.value === "middle";
+  return activeTab.value === "bottom" || activeTab.value === "middle" & transversalsvalue.value === '自定义绘制断面';
 });
 let salinitydata = null;
 const salinityinit = (data) => {
@@ -633,6 +636,8 @@ const myHandleResponseFunction = (data) => {
         if (res.data.values) {
           showsalinityEcharts.value = true;
           salinityinit(res.data.values);
+        } else {
+          showsalinityEcharts.value = false;
         }
       }
     })
