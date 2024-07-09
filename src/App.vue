@@ -64,16 +64,16 @@ div {
 .el-popper__arrow::before {
   display: none;
 }
-:where(.css-dev-only-do-not-override-19iuou).ant-tooltip .ant-tooltip-inner{
+.ant-tooltip .ant-tooltip-inner{
   text-align: center;
 }
-:where(.css-dev-only-do-not-override-19iuou).ant-slider:hover .ant-slider-rail{
+.ant-slider:hover .ant-slider-rail{
   background-color: #91caff !important;
 }
-:where(.css-dev-only-do-not-override-19iuou).ant-slider-vertical .ant-slider-rail{
+.ant-slider-vertical .ant-slider-rail{
   background-color: #91caff !important;
 }
-:where(.css-dev-only-do-not-override-19iuou).ant-slider .ant-slider-rail{
+.ant-slider .ant-slider-rail{
   background-color: #91caff !important;
 }
 </style>
