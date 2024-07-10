@@ -763,7 +763,7 @@ onBeforeUnmount(() => {
   border: 1px solid #416491;
   padding: 8px;
   text-align: center;
-  height: 40px;
+  height: 57px;
   width: 50%;
 }
 

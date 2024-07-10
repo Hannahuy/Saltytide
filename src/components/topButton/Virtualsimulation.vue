@@ -531,6 +531,7 @@ onMounted(() => {
 .Weather-list-top-right :deep(.el-switch__core) {
     border-radius: 0;
     border: 1px solid #42AEFF;
+    background-color: transparent;
 }
 
 .Weather-list-top-right :deep(.el-switch__core .el-switch__action) {

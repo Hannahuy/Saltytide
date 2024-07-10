@@ -286,9 +286,11 @@ let currentImagePathIndex = 0;
 const updateImage = () => {
   transversalsEchartsimg.value = imagePaths[currentImagePathIndex];
 };
-let lastClickTime = 0;
 // 倒退
+let lastClickTime = 0;
+let handleTime = false;
 const Backoff = () => {
+  handleTime = true;
   if (tabtimeName.value === '体渲染') {
     const currentTime = Date.now();
     if (currentTime - lastClickTime < 500) {
@@ -345,6 +347,7 @@ const togglePlay = () => {
 };
 // 前进
 const Fastforward = () => {
+  handleTime = true;
   if (tabtimeName.value === '体渲染') {
     const currentTime = Date.now();
     if (currentTime - lastClickTime < 500) {
@@ -438,26 +441,30 @@ watch(timePick, (newVal) => {
   // });
 });
 watch(timePlay, (newVal) => {
-  const currentTime = dayjs(newVal);
-  if (currentTime.minute() === 0 && currentTime.second() === 0) {
-    if (tabtimeName.value === '断面分析') {
-      if (getselectmenu.value === '河道中心断面') {
-        callUIInteraction({
-          function: `咸潮模拟河道中心断面选择时间轴/` + dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'),
-        });
+  if (handleTime) {
+    handleTime = false;
+  } else {
+    const currentTime = dayjs(newVal);
+    if (currentTime.minute() === 0 && currentTime.second() === 0) {
+      if (tabtimeName.value === '断面分析') {
+        if (getselectmenu.value === '河道中心断面') {
+          callUIInteraction({
+            function: `咸潮模拟河道中心断面选择时间轴/` + dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'),
+          });
+        } else {
+          callUIInteraction({
+            function: `咸潮模拟自定义绘制断面选择时间轴/` + dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'),
+          });
+        }
       } else {
         callUIInteraction({
-          function: `咸潮模拟自定义绘制断面选择时间轴/` + dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'),
+          function: `咸潮模拟${tabtimeName.value}时间轴/` + dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'),
         });
       }
-    } else {
-      callUIInteraction({
-        function: `咸潮模拟${tabtimeName.value}时间轴/` + dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'),
-      });
     }
-  }
-  if (currentTime.isSame(dayjs(max.value))) {
-    activePlay.value = '';
+    if (currentTime.isSame(dayjs(max.value))) {
+      activePlay.value = '';
+    }
   }
 });
 // 监听时间轴
