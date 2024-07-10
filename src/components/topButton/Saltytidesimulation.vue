@@ -229,19 +229,28 @@ const toggleBox = (tab) => {
       tabtimeName.value = "表层渲染";
       showEcharts.value = false;
       callUIInteraction({
+        function: "咸潮模拟_" + tabName + "/true",
+      });
+      callUIInteraction({
         function: "表层渲染/" + formattedTime,
       });
     } else if (tab === "middle") {
       tabName = "断面分析";
       tabtimeName.value = "断面分析";
-      callUIInteraction({
-        function: '咸潮模拟自定义绘制断面',
-      });
       showsalinityEcharts.value = false;
+      callUIInteraction({
+        function: "咸潮模拟_" + tabName + "/true",
+      });
+      callUIInteraction({
+        function: '自定义绘制断面',
+      });
     } else if (tab === "bottom") {
       tabName = "体渲染";
       tabtimeName.value = "体渲染";
       showEcharts.value = false;
+      callUIInteraction({
+        function: "咸潮模拟_" + tabName + "/true",
+      });
       callUIInteraction({
         function: "体渲染/" + formattedTime,
       });
@@ -254,10 +263,6 @@ const toggleBox = (tab) => {
       clearInterval(playInterval); // 清除计时器
       playInterval = null;
     }
-    callUIInteraction({
-      function: "咸潮模拟_" + tabName + "/true",
-    });
-    console.log("咸潮模拟_" + tabName + "/true");
   }
   lastClickedTab = tab;
 };
