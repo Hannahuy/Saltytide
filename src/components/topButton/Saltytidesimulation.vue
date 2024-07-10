@@ -457,8 +457,9 @@ watch(timePlay, (newVal) => {
 });
 // 监听时间轴
 const gettimePlay = (e) => {
-  const clickedTime = dayjs(e).format("YYYY-MM-DD HH:mm:ss");
-  if ((activePlay.value = "play")) {
+  const clickedTime = dayjs(e).second(0).format("YYYY-MM-DD HH:mm:ss");
+  timePlay.value = dayjs(e).second(0).valueOf(); // 确保秒数为 0
+  if (activePlay.value === "play") {
     activePlay.value = "";
   }
   if (tabtimeName.value === '断面分析') {
