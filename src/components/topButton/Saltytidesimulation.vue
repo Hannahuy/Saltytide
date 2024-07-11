@@ -244,6 +244,9 @@ const toggleBox = (tab) => {
       callUIInteraction({
         function: '自定义绘制断面',
       });
+      callUIInteraction({
+        function: `咸潮模拟河道中心断面选择时间轴/` + dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss')
+      });
     } else if (tab === "bottom") {
       tabName = "体渲染";
       tabtimeName.value = "体渲染";
