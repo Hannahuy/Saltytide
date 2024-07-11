@@ -546,14 +546,14 @@ const getZaxis = (e) => {
   callUIInteraction({
     function: "多层剖切/" + e,
   });
-  console.log(e);
+  // console.log(e);
 };
 // 监听特征阈值
 const getthreshold = (e) => {
   callUIInteraction({
     function: "特征阈值/" + e,
   });
-  console.log(e);
+  // console.log(e);
 };
 const showVolumerendering = computed(() => {
   return activeTab.value === "bottom";
