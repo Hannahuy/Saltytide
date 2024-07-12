@@ -16,10 +16,10 @@
         <div class="leftbox-middle-content-top-raido">
           <span>预测范围：</span>
           <el-radio-group v-model="dayradio" class="ml-4" @change="getdayradio">
-            <el-radio value="1天(逐时预报)" size="large" :disabled="disable1Day"
-              style="width: 115px;margin: 0">1天(逐时预报)</el-radio>
+            <el-radio value="24h(逐时预报)" size="large" :disabled="disable1Day"
+              style="width: 115px;margin: 0">24h(逐时预报)</el-radio>
+            <el-radio value="48h(逐时预报)" size="large" style="width: 115px;margin: 0">48h(逐时预报)</el-radio>
             <el-radio value="3天(逐日预报)" size="large" style="width: 115px;margin: 0">3天(逐日预报)</el-radio>
-            <el-radio value="7天(逐日预报)" size="large" style="width: 115px;margin: 0">7天(逐日预报)</el-radio>
           </el-radio-group>
         </div>
         <div class="leftbox-middle-content-middle">
@@ -33,12 +33,12 @@
         </div>
         <div class="leftbox-table">
           <table class="custom-table">
-            <tr v-show="dayradio === '1天(逐时预报)'" v-for="(item, index) in tableHeaders.day1" :key="index">
+            <tr v-show="dayradio === '24h(逐时预报)' || dayradio === '48h(逐时预报)'" v-for="(item, index) in tableHeaders.day1" :key="index">
               <td>{{ item }}</td>
               <td v-if="!editing">{{ tableData[index] }}</td>
               <td v-else><el-input v-model="tableData[index]" /></td>
             </tr>
-            <tr v-show="dayradio === '3天(逐日预报)' || dayradio === '7天(逐日预报)'"
+            <tr v-show="dayradio === '3天(逐日预报)'"
               v-for="(item, index) in tableHeaders.day2or3" :key="index">
               <td>{{ item }}</td>
               <td v-if="!editing">{{ tableData[index] }}</td>
@@ -90,7 +90,7 @@ const selectoptions = [
 ];
 const tableData = ref(["", "", "", "", "", "", ""]);
 const originalTableData = ref([...tableData.value]);
-const dayradio = ref("1天(逐时预报)");
+const dayradio = ref("24h(逐时预报)");
 const yesDayradio = ref('')
 const showEcharts = ref(false)
 const disable1Day = ref(false);
@@ -102,8 +102,8 @@ const tableHeaders = {
 // 监听选择的预测范围
 watch(selectValue, (newValue) => {
   if (newValue === "平岗泵站" || newValue === "广昌泵站") {
-    dayradio.value = "1天(逐时预报)";
-    yesDayradio.value = "1天(逐时预报)";
+    dayradio.value = "24h(逐时预报)";
+    yesDayradio.value = "24h(逐时预报)";
     disable1Day.value = false;
   } else if (newValue === "竹洲头泵站" || newValue === "灯笼山水闸" || newValue === "全禄水厂") {
     dayradio.value = "3天(逐日预报)";
@@ -129,11 +129,12 @@ const init = (data) => {
   const now = new Date();
   let newAxisData;
   let seriesData;
-  if (dayradio.value === '1天(逐时预报)') {
+  
+  if (dayradio.value === '24h(逐时预报)') {
     const currentHour = now.getHours();
     const nextHour = (currentHour + 1) % 24;
     newAxisData = Array.from({ length: 24 }, (_, i) => `${(nextHour + i) % 24}:00`);
-    seriesData = data;
+    seriesData = data.map(value => parseFloat(value.toFixed(2))); // Round to 2 decimal places
   } else if (dayradio.value === '3天(逐日预报)') {
     const currentDay = now.getDate();
     const currentMonth = now.getMonth() + 1; // getMonth() 返回值范围为 0-11
@@ -142,8 +143,9 @@ const init = (data) => {
       date.setDate(currentDay + i + 1);
       return `${date.getMonth() + 1}月${date.getDate()}日`;
     });
-    seriesData = data.slice(0, 3);
+    seriesData = data.slice(0, 3).map(value => parseFloat(value.toFixed(2))); // Round to 2 decimal places
   }
+  
   const waterChartElement = document.getElementById("leftbox-content");
   if (waterdata) {
     waterdata.dispose();
@@ -463,7 +465,7 @@ const drive = () => {
       text: '正在努力生成中...',
       background: 'rgba(0, 0, 0, 0.7)',
     })
-    if (dayradio.value == '1天(逐时预报)') {
+    if (dayradio.value == '24h(逐时预报)') {
       axios.get( window.VITE_APP_BASE_API + `PG_24h?s1=${tableData.value[0]}&s2=${tableData.value[1]}&s3=${tableData.value[2]}&sanzao=${tableData.value[3]}&makou=${tableData.value[4]}&macao_u=${tableData.value[5]}&macao_v=${tableData.value[6]}`).then((res) => {
         showEcharts.value = true;
         init(res.data.forecast_values);
@@ -487,7 +489,7 @@ const drive = () => {
         init(res.data.forecast_values);
         loading.close()
       })
-    } else if (dayradio.value == '7天(逐日预报)') {
+    } else if (dayradio.value == '48h(逐时预报)') {
       console.log(7);
     }
   }

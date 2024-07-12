@@ -3,7 +3,7 @@ import { createRouter, createWebHashHistory } from "vue-router"
 const routes = [
     {
         path: '/',
-        name: '磨刀门河道咸潮数字孪生',
+        name: '磨刀门水道咸潮数字孪生',
         component: () => import('../components/Homepage.vue')
     },
 ]
