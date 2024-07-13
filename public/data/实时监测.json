@@ -1,70 +1,44 @@
-{
-    "Statistic": {
-        "BZ": 3,
-        "LL": 2,
-        "SW": 4,
-        "YD": 3
+[
+    {
+        "StationName": "平岗泵站",
+        "MonitorValues": "",
+        "Updated": "",
+        "StationClass": "咸情",
+        "StationCode": "SWJT_83000005"
     },
-    "Table": [
-        {
-            "DeviceName": "BZ01",
-            "DeviceType": "泵站监测",
-            "OnlineSituation": "在线"
-        },
-        {
-            "DeviceName": "BZ02",
-            "DeviceType": "泵站监测",
-            "OnlineSituation": "在线"
-        },
-        {
-            "DeviceName": "BZ03",
-            "DeviceType": "泵站监测",
-            "OnlineSituation": "在线"
-        },
-        {
-            "DeviceName": "LL01",
-            "DeviceType": "流量监测",
-            "OnlineSituation": "在线"
-        },
-        {
-            "DeviceName": "LL02",
-            "DeviceType": "流量监测",
-            "OnlineSituation": "在线"
-        },
-        {
-            "DeviceName": "SW01",
-            "DeviceType": "水位监测",
-            "OnlineSituation": "在线"
-        },
-        {
-            "DeviceName": "SW02",
-            "DeviceType": "水位监测",
-            "OnlineSituation": "在线"
-        },
-        {
-            "DeviceName": "SW03",
-            "DeviceType": "水位监测",
-            "OnlineSituation": "在线"
-        },
-        {
-            "DeviceName": "SW04",
-            "DeviceType": "水位监测",
-            "OnlineSituation": "在线"
-        },
-        {
-            "DeviceName": "YD01",
-            "DeviceType": "盐度监测",
-            "OnlineSituation": "在线"
-        },
-        {
-            "DeviceName": "YD02",
-            "DeviceType": "盐度监测",
-            "OnlineSituation": "在线"
-        },
-        {
-            "DeviceName": "YD03",
-            "DeviceType": "盐度监测",
-            "OnlineSituation": "在线"
-        }
-    ]
-}
+    {
+        "StationName": "广昌泵站",
+        "MonitorValues": "",
+        "Updated": "",
+        "StationClass": "咸情",
+        "StationCode": "SWJT_83000006"
+    },
+    {
+        "StationName": "灯笼山泵站",
+        "MonitorValues": "",
+        "Updated": "",
+        "StationClass": "咸情",
+        "StationCode": "SWJT_83000002"
+    },
+    {
+        "StationName": "竹洲头泵站",
+        "MonitorValues": "",
+        "Updated": "",
+        "StationClass": "咸情",
+        "StationCode": "SWJT_SWFB0013"
+    },
+    {
+        "StationName": "不知道是啥",
+        "MonitorValues": "",
+        "Updated": "",
+        "StationClass": "流量",
+        "StationCode": "SWJT_SWFB0015"
+    },
+    {
+        "StationName": "不知道是啥",
+        "MonitorValues": "",
+        "Updated": "",
+        "StationClass": "流量",
+        "StationCode": "SWJT_SWFB0017"
+    }
+]

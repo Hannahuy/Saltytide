@@ -53,7 +53,7 @@
           </div>
           <div class="top-leftbox-middle-content-div-2-content">
             <div class="color-bar-two">
-              <a-slider v-model:value="threshold" vertical :reverse="true" @change="getthreshold" :min="0" :max="23"
+              <a-slider v-model:value="threshold" vertical :reverse="true" @change="getthreshold" :min="0" :max="40"
                 :step="0.01" tooltipPlacement="top" />
             </div>
             <span class="top-leftbox-middle-content-div-2-span">特征阈值</span>
@@ -64,9 +64,9 @@
     <div v-show="showbar" class="sidebar">
       <div class="bar">
         <div class="color-bar-number">
-          <span>5(‰)</span>
-          <span>3(‰)</span>
-          <span>0(‰)</span>
+          <span>18(mg/L)</span>
+          <span>9(mg/L)</span>
+          <span>0(mg/L)</span>
         </div>
         <div class="color-bar"></div>
       </div>
@@ -74,9 +74,9 @@
     <div class="sidebar" v-show="shownextbar">
       <div class="nextbar">
         <div class="color-nextbar-number">
-          <span>23(‰)</span>
-          <span>11(‰)</span>
-          <span>0(‰)</span>
+          <span>40(mg/L)</span>
+          <span>20(mg/L)</span>
+          <span>0(mg/L)</span>
         </div>
         <div class="color-nextbar"></div>
       </div>
@@ -550,10 +550,11 @@ const getZaxis = (e) => {
 };
 // 监听特征阈值
 const getthreshold = (e) => {
+  const e_new = 23 / 40 * e;
   callUIInteraction({
-    function: "特征阈值/" + e,
+    function: "特征阈值/" + e_new,
   });
-  // console.log(e);
+  console.log(e_new);
 };
 const showVolumerendering = computed(() => {
   return activeTab.value === "bottom";
@@ -598,7 +599,7 @@ const salinityinit = (data) => {
       },
     },
     yAxis: {
-      name: '‰', // 添加单位
+      name: 'mg/L', // 添加单位
       nameTextStyle: {
         color: "#b7cffc",
         fontSize: 14
@@ -613,7 +614,7 @@ const salinityinit = (data) => {
           fontSize: 14
         },
         formatter: function (value) {
-          return value.toFixed(1);
+          return (1.805 * value + 0.03).toFixed(1);
         }
       },
       splitLine: {
@@ -1126,11 +1127,11 @@ onBeforeUnmount(() => {
 .sidebar {
   position: absolute;
   bottom: 35px;
-  right: 30px;
+  right: 25px;
   background-image: url("../../assets/image/框-bg.png");
   background-repeat: no-repeat;
   background-size: 100% 100%;
-  width: 70px;
+  width: 85px;
   height: 200px;
   display: flex;
   align-items: center;

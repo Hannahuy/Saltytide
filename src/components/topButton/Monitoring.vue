@@ -9,39 +9,30 @@
         <div class="top-leftbox-title-top-content">
           <span class="top-leftbox-title-top-span">3</span>
           <img src="/src/assets/img/图标4.png" class="top-leftbox-title-img" alt="">
-          <span>泵站监测</span>
+          <span>盐度监测</span>
         </div>
         <div class="top-leftbox-title-top-content">
           <span class="top-leftbox-title-top-span">2</span>
           <img src="/src/assets/img/图标4.png" class="top-leftbox-title-img" alt="">
           <span>流量监测</span>
         </div>
-        <div class="top-leftbox-title-top-content">
-          <span class="top-leftbox-title-top-span">4</span>
-          <img src="/src/assets/img/图标4.png" class="top-leftbox-title-img" alt="">
-          <span>水位监测</span>
-        </div>
-        <div class="top-leftbox-title-top-content">
-          <span class="top-leftbox-title-top-span">3</span>
-          <img src="/src/assets/img/图标4.png" class="top-leftbox-title-img" alt="">
-          <span>盐度监测</span>
-        </div>
       </div>
-      <div id="SalinityCharts"></div>
     </div>
     <div class="leftbox2">
       <div class="top-leftbox-title">
         <span>设备列表</span>
         <span>A list of devices</span>
       </div>
-      <el-table :data="tableData" style="width: 100%" :header-cell-style="{
+      <el-table :data="tableData" style="width: 100%;margin-top: 20px;" :header-cell-style="{
         background: 'transparent',
         fontSize: '15px',
         'text-align': 'center',
-      }" height="150" align="center">
-        <el-table-column prop="DeviceName" label="设备名称" align="center" />
-        <el-table-column prop="DeviceType" label="设备类型" align="center" />
-        <el-table-column prop="OnlineSituation" label="是否在线" align="center" />
+      }" height="280">
+        <el-table-column prop="StationName" label="测站名称" align="center" width="110" />
+        <el-table-column prop="MonitorValues" label="监测数值" align="center" width="100" />
+        <el-table-column prop="Updated" label="更新时间" align="center" width="180" />
+        <el-table-column prop="StationClass" label="站类" align="center" width="60" />
+        <el-table-column prop="StationCode" label="测站编码" align="center" width="140" />
       </el-table>
     </div>
     <div class="leftbox3">
@@ -82,8 +73,7 @@ import tabledataJson from "/public/data/实时监测.json";
 import { callUIInteraction, addResponseEventListener, } from "../../module/webrtcVideo/webrtcVideo.js";
 import salinity from '../../assets/img/盐度监测设备.png';
 import flowrate from '../../assets/img/流量监测设备.png';
-import waterlevel from '../../assets/img/水位监测设备.png';
-import pumpingstation from '../../assets/img/泵站监测设备.png';
+import dayjs from 'dayjs';
 
 const BDeviceType = ref('');
 const BDeviceName = ref('');
@@ -93,41 +83,40 @@ const BLatitude = ref('');
 const Devicebox = ref(false);
 const Deviceimg = ref()
 const dataxAxis = ref(['00:00', '01:15', '02:30', '03:45', '05:00', '06:15', '07:30', '08:45', '10:00', '11:15', '12:30', '13:45', '15:00', '16:15', '17:30', '18:45', '20:00', '21:15', '22:30', '23:45'])
-const dataseries = ref([20, 30, 25, 35, 40, 45, 50, 48, 45, 40, 35, 30, 28, 30, 32, 35, 38, 40, 42, 40, 38, 36, 34, 32])
-const echartsname = ref('水位监测')
+const dataseries = ref([4.4, 3.4, 3.1, 5.6, 7.5, 8.5, 9.5, 10.4, 11.4, 9.8, 7.5, 7.9, 7.1, 6.4, 6.2, 5.8, 5.4, 5.1, 4.7, 4.5, 3.9, 3.5, 3.4, 3.6])
+const echartsname = ref('平岗泵站')
 const myHandleResponseFunction = (data) => {
-  const jsonData = JSON.parse(data);
-  echartsname.value = jsonData.DeviceType;
-  switch (jsonData.DeviceType) {
-    case '泵站监测':
-      dataseries.value = [120, 130, 125, 135, 140, 145, 150, 148, 145, 140, 135, 130, 128, 130, 132, 135, 138, 140, 142, 140, 138, 136, 134, 132];
-      Deviceimg.value = pumpingstation;
-      break;
-    case '流量监测':
-      dataseries.value = [120, 130, 125, 135, 140, 145, 150, 148, 145, 140, 135, 130, 128, 130, 132, 135, 138, 140, 142, 140, 138, 136, 134, 132];
-      Deviceimg.value = flowrate;
-      break;
-    case '水位监测':
-      dataseries.value = [20, 30, 25, 35, 40, 45, 50, 48, 45, 40, 35, 30, 28, 30, 32, 35, 38, 40, 42, 40, 38, 36, 34, 32];
-      Deviceimg.value = waterlevel;
-      break;
-    case '盐度监测':
-      dataseries.value = [4.4, 3.4, 3.1, 5.6, 7.5, 8.5, 9.5, 10.4, 11.4, 9.8, 7.5, 7.9, 7.1, 6.4, 6.2, 5.8, 5.4, 5.1, 4.7, 4.5, 3.9, 3.5, 3.4, 3.6];
-      Deviceimg.value = salinity;
-      break;
-  }
-  initWaterChart();
-  Devicebox.value = true;
-  BDeviceType.value = jsonData.DeviceType;
-  BDeviceName.value = jsonData.DeviceName;
-  BOnlineStatus.value = jsonData.OnlineStatus;
-  BLongitude.value = jsonData.Longitude;
-  BLatitude.value = jsonData.Latitude;
+  console.log(data);
+  // const jsonData = JSON.parse(data);
+  // echartsname.value = jsonData.DeviceType;
+  // switch (jsonData.DeviceType) {
+  //   case '流量监测':
+  //     dataseries.value = [120, 130, 125, 135, 140, 145, 150, 148, 145, 140, 135, 130, 128, 130, 132, 135, 138, 140, 142, 140, 138, 136, 134, 132];
+  //     Deviceimg.value = flowrate;
+  //     break;
+  //   case '盐度监测':
+  //     dataseries.value = [4.4, 3.4, 3.1, 5.6, 7.5, 8.5, 9.5, 10.4, 11.4, 9.8, 7.5, 7.9, 7.1, 6.4, 6.2, 5.8, 5.4, 5.1, 4.7, 4.5, 3.9, 3.5, 3.4, 3.6];
+  //     Deviceimg.value = salinity;
+  //     break;
+  // }
+  // initWaterChart();
+  // Devicebox.value = true;
+  // BDeviceType.value = jsonData.DeviceType;
+  // BDeviceName.value = jsonData.DeviceName;
+  // BOnlineStatus.value = jsonData.OnlineStatus;
+  // BLongitude.value = jsonData.Longitude;
+  // BLatitude.value = jsonData.Latitude;
 };
 const tableData = ref([]);
 // 获取表格数据
 const gettable = () => {
-  tableData.value = tabledataJson.Table;
+  tableData.value = tabledataJson.map(item => {
+    item.MonitorValues = (Math.random() * 12).toFixed(1);
+    let updatedTime = dayjs();
+    updatedTime = updatedTime.minute(Math.floor(updatedTime.minute() / 10) * 10).second(0);
+    item.Updated = updatedTime.format('YYYY-MM-DD HH:mm:ss');
+    return item;
+  });
 };
 
 let waterChartInstance = null;
@@ -139,13 +128,14 @@ const initWaterChart = () => {
     waterChartInstance.dispose();
   }
   waterChartInstance = echarts.init(waterChartElement);
+  const spacedTitle = echartsname.value.split('').join(String.fromCharCode(160));
   const options = {
     title: {
-      text: echartsname.value,
+      text: spacedTitle,
       left: 'center',
       textStyle: {
         color: '#b7cffc',
-        fontSize: 16
+        fontSize: 18
       }
     },
     tooltip: {
@@ -154,7 +144,7 @@ const initWaterChart = () => {
         type: 'line',
       }
     },
-    grid: { x: 0, y: 40, x2: 10, y2: 10, containLabel: true },
+    grid: { x: '0%', y: '15%', x2: '0%', y2: '0%', containLabel: true },
     xAxis: [
       {
         type: "category",
@@ -169,6 +159,11 @@ const initWaterChart = () => {
     ],
     yAxis: {
       splitLine: { show: false },
+      name: 'mg/L', // 添加单位
+      nameTextStyle: {
+        color: "#b7cffc",
+        fontSize: 14
+      },
       axisLabel: {
         show: true,
           color: "#b7cffc", //更改坐标轴文字颜色
@@ -197,63 +192,12 @@ const initWaterChart = () => {
   };
   waterChartInstance.setOption(options);
 };
-// 绘制echarts图表
-const initSalinityChart = () => {
-  const salinityChartElement = document.getElementById("SalinityCharts");
-  if (salinityChartInstance) {
-    salinityChartInstance.dispose();
-  }
-  salinityChartInstance = echarts.init(salinityChartElement);
-  const options = {
-    tooltip: {
-      trigger: 'item'
-    },
-    legend: {
-      orient: 'vertical',
-      left: '7%',
-      top: '7%',
-      textStyle: {
-        color: '#b7cffc',
-      },
-      itemGap: 20, // 间距
-    },
-    series: [
-      {
-        name: '站点数量',
-        type: 'pie',
-        radius: '80%',
-        data: [
-          { value: 3, name: '泵站监测' },
-          { value: 2, name: '流量监测' },
-          { value: 4, name: '水位监测' },
-          { value: 3, name: '盐度监测' }
-        ],
-        label: {
-          color: '#b7cffc',
-          fontWeight: 'bolder',
-          fontSize: '14',
-        },
-        left: '20%',
-        bottom: '17%',
-        emphasis: {
-          itemStyle: {
-            shadowBlur: 10,
-            shadowOffsetX: 0,
-            shadowColor: 'rgba(0, 0, 0, 0.5)'
-          }
-        }
-      }
-    ]
-  };
-  salinityChartInstance.setOption(options);
-};
 // 关闭设备信息
 const close = () => {
   Devicebox.value = false;
 }
 onMounted(() => {
   initWaterChart();
-  initSalinityChart();
   gettable();
   addResponseEventListener("handle_responses", myHandleResponseFunction);
 });
@@ -298,18 +242,18 @@ onBeforeUnmount(() => {
 }
 
 .leftbox1 {
-  min-height: 321px;
-  height: 40%;
+  min-height: 175px;
+  height: 21.75%;
 }
 
 .leftbox2 {
-  min-height: 201px;
-  height: 25%;
+  min-height: 355px;
+  height: 44%;
 }
 
 .leftbox3 {
-  min-height: 281px;
-  height: 35%;
+  min-height: 275px;
+  height: 34.25%;
 }
 
 .top-leftbox-title {
@@ -389,11 +333,11 @@ onBeforeUnmount(() => {
 }
 
 
-#SalinityCharts {
+/* #SalinityCharts {
   width: 100%;
   height: 52%;
   margin-top: 20px;
-}
+} */
 
 #WaterCharts {
   width: 100%;
@@ -402,6 +346,7 @@ onBeforeUnmount(() => {
 }
 
 .top-leftbox-title-top {
+  height: 60%;
   margin-top: 20px;
   display: flex;
   justify-content: space-evenly;
@@ -414,11 +359,12 @@ onBeforeUnmount(() => {
   flex-direction: column;
   align-items: center;
   color: #b7cffc;
+  font-size: 18px;
 }
 
 .top-leftbox-title-img {
-  width: 80px;
-  height: 60px;
+  width: 100px;
+  height: 80px;
 }
 
 .top-leftbox-title-top-span {
@@ -426,7 +372,9 @@ onBeforeUnmount(() => {
   color: #b7cffc;
   font-size: 24px;
   font-family: YouSheBiaoTiHei;
-  left: 30px;
+  left: 38px;
+  top: 5px;
+  font-size: 30px;
 }
 
 .closeimg {
