@@ -86,7 +86,6 @@ const selectoptions = [
   { value: "广昌泵站", label: "广昌泵站" },
   { value: "竹洲头泵站", label: "竹洲头泵站" },
   { value: "灯笼山水闸", label: "灯笼山水闸" },
-  { value: "全禄水厂", label: "全禄水厂" },
 ];
 const tableData = ref(["", "", "", "", "", "", ""]);
 const originalTableData = ref([...tableData.value]);
@@ -105,7 +104,7 @@ watch(selectValue, (newValue) => {
     dayradio.value = "24h(逐时预报)";
     yesDayradio.value = "24h(逐时预报)";
     disable1Day.value = false;
-  } else if (newValue === "竹洲头泵站" || newValue === "灯笼山水闸" || newValue === "全禄水厂") {
+  } else if (newValue === "竹洲头泵站" || newValue === "灯笼山水闸") {
     dayradio.value = "3天(逐日预报)";
     yesDayradio.value = "3天(逐日预报)";
     disable1Day.value = true;
@@ -481,8 +480,6 @@ const drive = () => {
         selectname = 'ZZT';
       } else if (selectmessage.value === '灯笼山水闸') {
         selectname = 'DLS';
-      } else if (selectmessage.value === '全禄水厂') {
-        selectname = 'QL';
       }
       axios.get( window.VITE_APP_BASE_API + `${selectname}_3d?s1=${tableData.value[0]}&s2=${tableData.value[1]}&s3=${tableData.value[2]}&sanzao=${tableData.value[3]}&macao=${tableData.value[4]}&makou=${tableData.value[5]}&sk=${tableData.value[6]}`).then((res) => {
         showEcharts.value = true;
@@ -569,6 +566,8 @@ onBeforeUnmount(() => {
   background-image: url("../../assets/image/title.png");
   background-repeat: no-repeat;
   background-size: 80% 100%;
+  display: flex;
+  align-items: center;
 }
 
 .leftbox-echarts-top-title span {
