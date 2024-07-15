@@ -93,8 +93,8 @@ const Bunit = ref("");
 const Btime = ref("");
 const Devicebox = ref(false);
 const Deviceimg = ref('');
-const echartsname = ref("大涌口");
 const imagePaths = [salinity, flowrate, waterimg, staimg];
+const deviceName = ref("大涌口");
 const myHandleResponseFunction = (data) => {
   const jsonData = JSON.parse(data);
   console.log(jsonData);
@@ -111,10 +111,10 @@ const myHandleResponseFunction = (data) => {
     Btime.value = matchedDevice.Updated;
 
     // 重新绘制图表
+    deviceName.value = jsonData.DeviceName;
     const lastUpdated = dayjs(matchedDevice.Updated);
     const monitorValue = parseFloat(matchedDevice.MonitorValues);
-
-    initWaterChart(null, null, lastUpdated, monitorValue, jsonData.DeviceName);
+    initWaterChart(null, null, lastUpdated, monitorValue, deviceName.value);
   }
 
   Devicebox.value = true;
@@ -131,12 +131,12 @@ const handleSearch = () => {
   if (selectedTimeRange.value) {
     const [startTime, endTime] = selectedTimeRange.value;
     if (startTime && endTime) {
-      initWaterChart(startTime, endTime);
+      initWaterChart(startTime, endTime, null, null, deviceName.value);
     } else {
-      initWaterChart();
+      initWaterChart(null, null, null, null, deviceName.value);
     }
   } else {
-    initWaterChart();
+    initWaterChart(null, null, null, null, deviceName.value);
   }
 };
 let waterChartInstance = null;
@@ -376,7 +376,6 @@ onBeforeUnmount(() => {
   }
 });
 </script>
-
 
 <style scoped>
 .top-leftbox {
