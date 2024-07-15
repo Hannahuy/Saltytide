@@ -167,7 +167,7 @@ const initMessageChart = (startTime = null, endTime = null) => {
         interval: 0,
         color: '#b7cffc'
       },
-      data: ['竹洲头泵站', '平岗泵站', '联石湾', '马角', '灯笼', '大涌口', '广昌', '挂定角']
+      data: ['竹洲头泵站', '平岗泵站', '联石湾', '马角', '灯笼', '大涌口', '挂定角', '广昌']
     },
     yAxis: {
       type: 'value',
@@ -236,7 +236,7 @@ const initMessageChart = (startTime = null, endTime = null) => {
         name: '水质 mg/L',
         type: 'line',
         smooth: 0.2,
-        data: [0.1, 0.0, 1.5, 0.3, 0.0, 1.3, 32.0, 0.0],
+        data: [0.0, 1.3, 0.0, 1.5, 0.0, 0.1, 32.0, 0.0],
       }
     ]
   };
