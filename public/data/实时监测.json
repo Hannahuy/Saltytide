@@ -1,44 +1,58 @@
 [
     {
-        "StationName": "平岗泵站",
-        "MonitorValues": "",
-        "Updated": "",
-        "StationClass": "咸情",
-        "StationCode": "SWJT_83000005"
+        "StationName": "大涌口",
+        "MonitorValues": "0.1",
+        "Updated": "2024/5/9 9:55:00",
+        "StationClass": "mg/L",
+        "StationCode": "SWJT_83000001"
     },
     {
-        "StationName": "广昌泵站",
-        "MonitorValues": "",
-        "Updated": "",
-        "StationClass": "咸情",
-        "StationCode": "SWJT_83000006"
-    },
-    {
-        "StationName": "灯笼山泵站",
-        "MonitorValues": "",
-        "Updated": "",
-        "StationClass": "咸情",
+        "StationName": "灯笼",
+        "MonitorValues": "0.0",
+        "Updated": "2024/5/9 9:55:00",
+        "StationClass": "mg/L",
         "StationCode": "SWJT_83000002"
     },
     {
+        "StationName": "马角",
+        "MonitorValues": "1.5",
+        "Updated": "2024/5/9 9:55:00",
+        "StationClass": "mg/L",
+        "StationCode": "SWJT_83000003"
+    },
+    {
+        "StationName": "联石湾",
+        "MonitorValues": "0.0",
+        "Updated": "2024/5/9 9:55:00",
+        "StationClass": "mg/L",
+        "StationCode": "SWJT_83000004"
+    },
+    {
+        "StationName": "平岗泵站",
+        "MonitorValues": "1.3",
+        "Updated": "2024/5/9 9:55:00",
+        "StationClass": "mg/L",
+        "StationCode": "SWJT_83000005"
+    },
+    {
+        "StationName": "广昌",
+        "MonitorValues": "0.0",
+        "Updated": "2024/5/9 9:55:00",
+        "StationClass": "mg/L",
+        "StationCode": "SWJT_83000006"
+    },
+    {
+        "StationName": "挂定角",
+        "MonitorValues": "32.0",
+        "Updated": "2024/5/9 9:55:00",
+        "StationClass": "mg/L",
+        "StationCode": "SWJT_83000007"
+    },
+    {
         "StationName": "竹洲头泵站",
-        "MonitorValues": "",
-        "Updated": "",
-        "StationClass": "咸情",
+        "MonitorValues": "0.0",
+        "Updated": "2024/5/9 9:55:00",
+        "StationClass": "mg/L",
         "StationCode": "SWJT_SWFB0013"
-    },
-    {
-        "StationName": "不知道是啥",
-        "MonitorValues": "",
-        "Updated": "",
-        "StationClass": "流量",
-        "StationCode": "SWJT_SWFB0015"
-    },
-    {
-        "StationName": "不知道是啥",
-        "MonitorValues": "",
-        "Updated": "",
-        "StationClass": "流量",
-        "StationCode": "SWJT_SWFB0017"
     }
 ]
