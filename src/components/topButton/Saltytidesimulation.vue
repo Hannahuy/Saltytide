@@ -3,23 +3,23 @@
     <div class="top-leftbox">
       <div class="top-leftbox-top" :class="{ active: activeTab === 'top' }" @click="toggleBox('top')">
         <img :src="activeTab === 'top'
-        ? littleBluetop
-        : bigBluetop
-        " alt="" class="top-leftbox-img" />
+          ? littleBluetop
+          : bigBluetop
+          " alt="" class="top-leftbox-img" />
         <span class="top-span">表层渲染</span>
       </div>
       <div class="top-leftbox-middle" :class="{ active: activeTab === 'middle' }" @click="toggleBox('middle')">
         <img :src="activeTab === 'middle'
-        ? littleBluemiddle
-        : bigBluemiddle
-        " alt="" class="top-leftbox-img2" />
+          ? littleBluemiddle
+          : bigBluemiddle
+          " alt="" class="top-leftbox-img2" />
         <span class="top-span">断面分析</span>
       </div>
       <div class="top-leftbox-bottom" :class="{ active: activeTab === 'bottom' }" @click="toggleBox('bottom')">
         <img :src="activeTab === 'bottom'
-        ? littleBluebottom
-        : bigBluebottom
-        " alt="" class="top-leftbox-img3" />
+          ? littleBluebottom
+          : bigBluebottom
+          " alt="" class="top-leftbox-img3" />
         <span>体渲染</span>
       </div>
       <div class="top-leftbox-middle-content" v-show="showtransversals">
@@ -53,7 +53,7 @@
           </div>
           <div class="top-leftbox-middle-content-div-2-content">
             <div class="color-bar-two">
-              <a-slider v-model:value="threshold" vertical :reverse="true" @change="getthreshold" :min="0" :max="40"
+              <a-slider v-model:value="threshold" vertical :reverse="true" @change="getthreshold" :min="0" :max="41.5"
                 :step="0.01" tooltipPlacement="top" />
             </div>
             <span class="top-leftbox-middle-content-div-2-span">特征阈值</span>
@@ -74,7 +74,7 @@
     <div class="sidebar" v-show="shownextbar">
       <div class="nextbar">
         <div class="color-nextbar-number">
-          <span>40(mg/L)</span>
+          <span>41.5(mg/L)</span>
           <span>20(mg/L)</span>
           <span>0(mg/L)</span>
         </div>
@@ -550,7 +550,7 @@ const getZaxis = (e) => {
 };
 // 监听特征阈值
 const getthreshold = (e) => {
-  const e_new = 23 / 40 * e;
+  const e_new = 23 / 41.5 * e;
   callUIInteraction({
     function: "特征阈值/" + e_new,
   });
@@ -575,6 +575,7 @@ const salinityinit = (data) => {
     salinitydata.dispose();
   }
   salinitydata = echarts.init(salinityChartElement);
+  data = data.map(value => parseFloat(value).toFixed(2));
   const options = {
     visualMap: [
       {
@@ -646,7 +647,7 @@ const myHandleResponseFunction = (data) => {
     ElMessage({
       message: datajson.error,
       type: 'warning',
-    })
+    });
   } else if (datajson.Type == '表层盐度点击查询') {
     axios.get(window.VITE_APP_BASE_API + `get_raster_value?lat=${latValue}&lon=${lonValue}`).then((res) => {
       if (res.data.success === true) {
@@ -657,10 +658,50 @@ const myHandleResponseFunction = (data) => {
           showsalinityEcharts.value = false;
         }
       }
-    })
-      .catch((err) => {
+    }).catch((err) => {
+      console.error(err);
+    });
+  } else if (datajson.Type == '监测设备点击查询') {
+    let lon, lat;
+    if (datajson.DeviceName == '大涌口') {
+      lon = 113.409157;
+      lat = 22.210725;
+    } else if (datajson.DeviceName == '灯笼') {
+      lon = 113.381269;
+      lat = 22.229766;
+    } else if (datajson.DeviceName == '马角') {
+      lon = 113.373014;
+      lat = 22.252390;
+    } else if (datajson.DeviceName == '联石湾') {
+      lon = 113.360377;
+      lat = 22.263531;
+    } else if (datajson.DeviceName == '平岗泵站') {
+      lon = 113.308119;
+      lat = 22.331204;
+    } else if (datajson.DeviceName == '广昌') {
+      lon = 113.418896;
+      lat = 22.195317;
+    } else if (datajson.DeviceName == '挂定角') {
+      lon = 113.421996;
+      lat = 22.187936;
+    } else if (datajson.DeviceName == '竹洲头泵站') {
+      lon = 113.264171;
+      lat = 22.388227;
+    }
+    if (lon && lat) {
+      axios.get(window.VITE_APP_BASE_API + `get_raster_value?lat=${lat}&lon=${lon}`).then((res) => {
+        if (res.data.success === true) {
+          if (res.data.values) {
+            showsalinityEcharts.value = true;
+            salinityinit(res.data.values);
+          } else {
+            showsalinityEcharts.value = false;
+          }
+        }
+      }).catch((err) => {
         console.error(err);
       });
+    }
   }
 };
 onMounted(() => {
@@ -1127,11 +1168,11 @@ onBeforeUnmount(() => {
 .sidebar {
   position: absolute;
   bottom: 35px;
-  right: 25px;
+  right: 20px;
   background-image: url("../../assets/image/框-bg.png");
   background-repeat: no-repeat;
   background-size: 100% 100%;
-  width: 85px;
+  width: 95px;
   height: 200px;
   display: flex;
   align-items: center;
