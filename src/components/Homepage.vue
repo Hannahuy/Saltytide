@@ -7,10 +7,10 @@
         <div class="top-view-button">
             <div class="top-view-button-style" :class="{ 'active': activeButton === '实时监测' }"
                 @click="setActiveButton('实时监测')">实时监测</div>
-            <div style="margin-left: 20px;" class="top-view-button-style" :class="{ 'active': activeButton === '咸潮预测' }"
-                @click="setActiveButton('咸潮预测')">咸潮预测</div>
-            <div style="margin-left: 20px;" class="top-view-button-style" :class="{ 'active': activeButton === '智能分析' }"
-                @click="setActiveButton('智能分析')">智能分析</div>
+            <div style="margin-left: 20px;" class="top-view-button-style" :class="{ 'active': activeButton === '咸潮模拟' }"
+                @click="setActiveButton('咸潮模拟')">咸潮模拟</div>
+            <div style="margin-left: 20px;" class="top-view-button-style" :class="{ 'active': activeButton === '智能预报' }"
+                @click="setActiveButton('智能预报')">智能预报</div>
             <div style="margin-left: 20px;" class="top-view-button-style" :class="{ 'active': activeButton === '虚拟仿真' }"
                 @click="setActiveButton('虚拟仿真')">虚拟仿真</div>
         </div>
@@ -47,10 +47,10 @@
         <div v-if="activeButton === '实时监测'">
             <Monitoring />
         </div>
-        <div v-if="activeButton === '咸潮预测'">
+        <div v-if="activeButton === '咸潮模拟'">
             <Saltytidesimulation />
         </div>
-        <div v-if="activeButton === '智能分析'">
+        <div v-if="activeButton === '智能预报'">
             <Intelligentanalytics />
         </div>
         <div v-if="activeButton === '虚拟仿真'">

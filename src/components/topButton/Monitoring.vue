@@ -19,8 +19,8 @@
     </div>
     <div class="leftbox1">
       <div class="top-leftbox-title">
-        <span>实时监测信息</span>
-        <span>Real-time monitoring of information</span>
+        <span>站点盐度总览</span>
+        <span>Site salinity overview</span>
       </div>
       <div id="MessageCharts"></div>
     </div>
@@ -233,7 +233,7 @@ const initMessageChart = (startTime = null, endTime = null) => {
     },
     series: [
       {
-        name: '水质 mg/L',
+        name: '盐度 mg/L',
         type: 'line',
         smooth: 0.2,
         data: [0.0, 1.3, 0.0, 1.5, 0.0, 0.1, 32.0, 0.0],
