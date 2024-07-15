@@ -2,7 +2,7 @@
   <div class="leftbox">
     <div class="leftbox-middle">
       <div class="leftbox-top-title">
-        <span>智能分析</span>
+        <span>智能预报</span>
         <span>Intelligent analytics</span>
       </div>
       <div class="leftbox-middle-content">
@@ -33,13 +33,13 @@
         </div>
         <div class="leftbox-table">
           <table class="custom-table">
-            <tr v-show="dayradio === '24h(逐时预报)' || dayradio === '48h(逐时预报)'" v-for="(item, index) in tableHeaders.day1" :key="index">
+            <tr v-show="dayradio === '24h(逐时预报)' || dayradio === '48h(逐时预报)'" v-for="(item, index) in tableHeaders.day1"
+              :key="index">
               <td>{{ item }}</td>
               <td v-if="!editing">{{ tableData[index] }}</td>
               <td v-else><el-input v-model="tableData[index]" /></td>
             </tr>
-            <tr v-show="dayradio === '3天(逐日预报)'"
-              v-for="(item, index) in tableHeaders.day2or3" :key="index">
+            <tr v-show="dayradio === '3天(逐日预报)'" v-for="(item, index) in tableHeaders.day2or3" :key="index">
               <td>{{ item }}</td>
               <td v-if="!editing">{{ tableData[index] }}</td>
               <td v-else><el-input v-model="tableData[index]" /></td>
@@ -69,6 +69,32 @@
       </div>
     </div>
   </div>
+  <div class="right-box" v-show="showTable">
+    <div class="right-box-top-title">
+      <span>取水时段</span>
+      <span>Intake Time</span>
+      <img class="closeimgs" src="../../assets/image/close.png" alt="" @click="closeTable">
+    </div>
+    <table class="custom-table-right">
+      <tr>
+        <td>取水总时长</td>
+        <td>24h</td>
+      </tr>
+      <tr>
+        <td>取水时段</td>
+        <td>
+          <div v-if="tableTime.length === 0">
+            无取水时段
+          </div>
+          <div v-else>
+            <tr v-for="(time, index) in tableTime" :key="index">
+              <td>{{ time }}</td>
+            </tr>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
 </template>
 
 <script setup>
@@ -85,26 +111,27 @@ const selectoptions = [
   { value: "平岗泵站", label: "平岗泵站" },
   { value: "广昌泵站", label: "广昌泵站" },
   { value: "竹洲头泵站", label: "竹洲头泵站" },
-  { value: "灯笼山水闸", label: "灯笼山水闸" },
 ];
 const tableData = ref(["", "", "", "", "", "", ""]);
 const originalTableData = ref([...tableData.value]);
 const dayradio = ref("24h(逐时预报)");
 const yesDayradio = ref('')
 const showEcharts = ref(false)
+const showTable = ref(false)
 const disable1Day = ref(false);
 const editing = ref(false);
 const tableHeaders = {
   day1: ["实时盐度", "前1小时盐度", "前2小时盐度", "提前24小时三灶潮位", "提前48小时马口径流", "提前24小时u方向风速", "提前24小时v方向风速"],
   day2or3: ["今日最大盐度", "昨日最大盐度", "前日最大盐度", "今日三灶日最低潮位", "今日澳门风速", "今日马口平均流量", "今日潮波不对称性因子"]
 };
+const tableTime = ref([])
 // 监听选择的预测范围
 watch(selectValue, (newValue) => {
   if (newValue === "平岗泵站" || newValue === "广昌泵站") {
     dayradio.value = "24h(逐时预报)";
     yesDayradio.value = "24h(逐时预报)";
     disable1Day.value = false;
-  } else if (newValue === "竹洲头泵站" || newValue === "灯笼山水闸") {
+  } else if (newValue === "竹洲头泵站") {
     dayradio.value = "3天(逐日预报)";
     yesDayradio.value = "3天(逐日预报)";
     disable1Day.value = true;
@@ -116,7 +143,7 @@ const getselect = (e) => {
   tableData.value = ["", "", "", "", "", "", ""];
   selectmessage.value = e;
   callUIInteraction({
-    function: "智能分析_站点/" + e,
+    function: "智能预报_站点/" + e,
   });
 }
 // 初始盐度超标线的值
@@ -128,23 +155,39 @@ const init = (data) => {
   const now = new Date();
   let newAxisData;
   let seriesData;
-  
+
+  const formatHour = (hour) => `${hour < 10 ? '0' : ''}${hour}:00`;
+  const formatDate = (date) => `${date.getMonth() + 1}月${date.getDate()}日 ${formatHour(date.getHours())}`;
+
   if (dayradio.value === '24h(逐时预报)') {
     const currentHour = now.getHours();
     const nextHour = (currentHour + 1) % 24;
-    newAxisData = Array.from({ length: 24 }, (_, i) => `${(nextHour + i) % 24}:00`);
-    seriesData = data.map(value => parseFloat(value.toFixed(2))); // Round to 2 decimal places
+    newAxisData = Array.from({ length: 24 }, (_, i) => formatHour((nextHour + i) % 24));
+    seriesData = data.map(value => parseFloat(value.toFixed(2)));
+  } else if (dayradio.value === '48h(逐时预报)') {
+    const currentHour = now.getHours();
+    newAxisData = Array.from({ length: 48 }, (_, i) => {
+      const date = new Date(now);
+      date.setHours(currentHour + i + 1);
+      return formatDate(date);
+    });
+    seriesData = data.map(value => parseFloat(value.toFixed(2)));
   } else if (dayradio.value === '3天(逐日预报)') {
     const currentDay = now.getDate();
-    const currentMonth = now.getMonth() + 1; // getMonth() 返回值范围为 0-11
     newAxisData = Array.from({ length: 3 }, (_, i) => {
       const date = new Date(now);
       date.setDate(currentDay + i + 1);
       return `${date.getMonth() + 1}月${date.getDate()}日`;
     });
-    seriesData = data.slice(0, 3).map(value => parseFloat(value.toFixed(2))); // Round to 2 decimal places
+    seriesData = data.slice(0, 3).map(value => parseFloat(value.toFixed(2)));
   }
-  
+
+  // 更新 markLineYAxis 值
+  const minValue = Math.min(...seriesData);
+  if (minValue > markLineYAxis.value) {
+    markLineYAxis.value = minValue;
+  }
+
   const waterChartElement = document.getElementById("leftbox-content");
   if (waterdata) {
     waterdata.dispose();
@@ -169,7 +212,6 @@ const init = (data) => {
     markAreaData.push([{ xAxis: `${newAxisData[start]}` }, { xAxis: `${newAxisData[newAxisData.length - 1]}` }]);
   }
 
-  const minValue = Math.min(...seriesData);
   const maxValue = Math.max(...seriesData);
 
   const options = {
@@ -197,6 +239,7 @@ const init = (data) => {
             color: "#b7cffc",
             fontSize: 14,
           },
+          padding: [0, 0, 0, 40]
         },
         axisTick: { show: false },
         boundaryGap: false,
@@ -240,7 +283,7 @@ const init = (data) => {
         id: 'bbb',
         name: '预测盐度',
         type: 'line',
-        smooth: false,
+        smooth: 0.2,
         label: {
           show: false,
           color: '#11d932',
@@ -256,7 +299,7 @@ const init = (data) => {
         symbolSize: 3,
         itemStyle: {
           normal: {
-            color: '#1E90FF'
+            color: '#00ffff'
           }
         },
         lineStyle: {
@@ -265,7 +308,7 @@ const init = (data) => {
         zlevel: 1,
         markArea: {
           itemStyle: {
-            color: 'rgba(255, 173, 177, 0.4)'
+            color: 'rgba(205, 92, 92, 0.30)'
           },
           data: markAreaData
         }
@@ -365,11 +408,26 @@ const init = (data) => {
         }
       }]
     });
+    tableTime.value = formatTableTime(markAreaData);
+    console.log(markAreaData);
   }
+
+  const formatTableTime = (data) => {
+    return data
+      .filter(item => item[0].xAxis !== item[1].xAxis)
+      .map(item => `${item[0].xAxis}-${item[1].xAxis}`);
+  };
+
+  tableTime.value = formatTableTime(markAreaData);
+  console.log(markAreaData);
 }
+
 // 关闭驱动模型的图表
 const closeEcharts = () => {
   showEcharts.value = false;
+}
+const closeTable = () => {
+  showTable.value = false;
 }
 // 实时数据
 const Realtimedata = () => {
@@ -445,6 +503,7 @@ const closeData = () => {
 // 驱动模型
 const drive = () => {
   showEcharts.value = false;
+  showTable.value = false;
   const isTableDataEmpty = tableData.value.some(item => item === "");
   if (isTableDataEmpty) {
     ElMessage({
@@ -465,8 +524,29 @@ const drive = () => {
       background: 'rgba(0, 0, 0, 0.7)',
     })
     if (dayradio.value == '24h(逐时预报)') {
-      axios.get( window.VITE_APP_BASE_API + `PG_24h?s1=${tableData.value[0]}&s2=${tableData.value[1]}&s3=${tableData.value[2]}&sanzao=${tableData.value[3]}&makou=${tableData.value[4]}&macao_u=${tableData.value[5]}&macao_v=${tableData.value[6]}`).then((res) => {
+      axios.get(window.VITE_APP_BASE_API + `PG_24h?s1=${tableData.value[0]}&s2=${tableData.value[1]}&s3=${tableData.value[2]}&sanzao=${tableData.value[3]}&makou=${tableData.value[4]}&macao_u=${tableData.value[5]}&macao_v=${tableData.value[6]}`).then((res) => {
         showEcharts.value = true;
+        showTable.value = true;
+        init(res.data.forecast_values);
+        loading.close()
+      })
+    } else if (dayradio.value == '48h(逐时预报)') {
+      let selectname;
+      if (selectmessage.value === '平岗泵站') {
+        selectname = 'PG';
+      } else if (selectmessage.value === '广昌泵站') {
+        selectname = 'GC';
+      } else {
+        loading.close()
+        ElMessage({
+          message: '暂无该站点驱动',
+          type: 'warning',
+        })
+        return
+      }
+      axios.get(window.VITE_APP_BASE_API + `${selectname}_48h?s1=${tableData.value[0]}&s2=${tableData.value[1]}&s3=${tableData.value[2]}&sanzao=${tableData.value[3]}&makou=${tableData.value[4]}&macao_u=${tableData.value[5]}&macao_v=${tableData.value[6]}`).then((res) => {
+        showEcharts.value = true;
+        showTable.value = true;
         init(res.data.forecast_values);
         loading.close()
       })
@@ -478,16 +558,13 @@ const drive = () => {
         selectname = 'GC';
       } else if (selectmessage.value === '竹洲头泵站') {
         selectname = 'ZZT';
-      } else if (selectmessage.value === '灯笼山水闸') {
-        selectname = 'DLS';
       }
-      axios.get( window.VITE_APP_BASE_API + `${selectname}_3d?s1=${tableData.value[0]}&s2=${tableData.value[1]}&s3=${tableData.value[2]}&sanzao=${tableData.value[3]}&macao=${tableData.value[4]}&makou=${tableData.value[5]}&sk=${tableData.value[6]}`).then((res) => {
+      axios.get(window.VITE_APP_BASE_API + `${selectname}_3d?s1=${tableData.value[0]}&s2=${tableData.value[1]}&s3=${tableData.value[2]}&sanzao=${tableData.value[3]}&macao=${tableData.value[4]}&makou=${tableData.value[5]}&sk=${tableData.value[6]}`).then((res) => {
         showEcharts.value = true;
+        showTable.value = false;
         init(res.data.forecast_values);
         loading.close()
       })
-    } else if (dayradio.value == '48h(逐时预报)') {
-      console.log(7);
     }
   }
 }
@@ -754,6 +831,15 @@ onBeforeUnmount(() => {
   cursor: pointer;
 }
 
+.closeimgs {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  right: 16px;
+  top: 27px;
+  cursor: pointer;
+}
+
 .custom-table {
   border-collapse: collapse;
   width: 100%;
@@ -790,5 +876,53 @@ onBeforeUnmount(() => {
   position: absolute;
   top: 20px;
   right: 100px;
+}
+
+.right-box {
+  width: 400px;
+  height: auto;
+  position: absolute;
+  right: 122px;
+  top: 50%;
+  transform: translate(0%, -50%);
+  background-image: url('../../assets/image/框-bg.png');
+  padding: 20px;
+}
+
+.right-box-top-title {
+  width: 100%;
+  height: 33px;
+  background-image: url("../../assets/image/title.png");
+  background-repeat: no-repeat;
+  background-size: 190% 100%;
+  display: flex;
+  align-items: center;
+}
+
+.right-box-top-title span {
+  font-family: PangMenZhengDao;
+  font-size: 20px;
+  color: #b7cffc;
+  margin-left: 40px;
+}
+
+.right-box-top-title span:nth-child(2) {
+  font-size: 12px;
+}
+
+.custom-table-right {
+  border-collapse: collapse;
+  width: 100%;
+  color: #b7cffc;
+  margin-top: 10px;
+}
+
+.custom-table-right th,
+.custom-table-right td {
+  border: 2px solid #416491;
+  padding: 8px;
+  text-align: center;
+  height: 35px;
+  width: auto;
 }
 </style>
