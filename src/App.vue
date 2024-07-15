@@ -1,10 +1,13 @@
 <template>
-  <div>
+  <a-config-provider :locale="zhCN">
     <router-view></router-view>
-  </div>
+  </a-config-provider>
 </template>
 <script setup>
-
+import zhCN from 'ant-design-vue/es/locale/zh_CN';
+import dayjs from 'dayjs';
+import 'dayjs/locale/zh-cn';
+dayjs.locale('zh-cn');
 </script>
 <style>
 * {
@@ -64,16 +67,30 @@ div {
 .el-popper__arrow::before {
   display: none;
 }
-.ant-tooltip .ant-tooltip-inner{
+
+.ant-tooltip .ant-tooltip-inner {
   text-align: center;
 }
-.ant-slider:hover .ant-slider-rail{
+
+.ant-slider:hover .ant-slider-rail {
   background-color: #91caff !important;
 }
-.ant-slider-vertical .ant-slider-rail{
+
+.ant-slider-vertical .ant-slider-rail {
   background-color: #91caff !important;
 }
-.ant-slider .ant-slider-rail{
+
+.ant-slider .ant-slider-rail {
   background-color: #91caff !important;
+}
+
+:where(.css-dev-only-do-not-override-19iuou).ant-picker-range {
+  border-radius: 0;
+}
+:where(.css-dev-only-do-not-override-19iuou).ant-picker{
+  border: 1px solid #2A77C6;
+}
+:where(.css-dev-only-do-not-override-19iuou).ant-picker .ant-picker-input >input:placeholder-shown{
+  text-align: center;
 }
 </style>
