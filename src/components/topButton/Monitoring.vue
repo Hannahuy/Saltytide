@@ -30,7 +30,7 @@
         <span>Monitoring information</span>
       </div>
       <div style="display: flex;align-items: center;justify-content: center;">
-        <a-range-picker style="width:300px;margin-top: 10px;" v-model:value="selectedTimeRange" show-time />
+        <a-range-picker dropdownClassName="rangePickerIceGai" style="width:380px;margin-top: 10px;" v-model:value="selectedTimeRange" show-time />
         <el-button class="buttonserch" type="primary" @click="handleSearch">查询</el-button>
       </div>
       <div id="WaterCharts"></div>
@@ -589,5 +589,12 @@ onBeforeUnmount(() => {
   text-align: center;
   height: 35px;
   width: 50%;
+}
+:deep(.ant-picker-input > input){
+  color: #b7cffc;
+  text-align: center;
+}
+:deep(.ant-picker-input input::placeholder) {
+  color: #9cadcc;
 }
 </style>

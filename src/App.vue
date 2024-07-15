@@ -87,10 +87,21 @@ div {
 :where(.css-dev-only-do-not-override-19iuou).ant-picker-range {
   border-radius: 0;
 }
-:where(.css-dev-only-do-not-override-19iuou).ant-picker{
+
+:where(.css-dev-only-do-not-override-19iuou).ant-picker {
   border: 1px solid #2A77C6;
 }
-:where(.css-dev-only-do-not-override-19iuou).ant-picker .ant-picker-input >input:placeholder-shown{
+
+:where(.css-dev-only-do-not-override-19iuou).ant-picker .ant-picker-input>input:placeholder-shown {
   text-align: center;
+}
+
+:where(.css-dev-only-do-not-override-19iuou).ant-picker {
+  background-color: #041831;
+}
+
+.anticon svg {
+  color: #2A77C6;
+  background-color: #041831;
 }
 </style>
