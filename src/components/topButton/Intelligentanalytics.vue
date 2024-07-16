@@ -127,7 +127,7 @@ const tableHeaders = {
 const tableTime = ref([])
 const tableTimeyera = ref([])
 const totalIntakeTime = computed(() => {
-  // 如果有日期
+// 如果有日期
   if (tableTimeyera.value.some(timeStr => timeStr.includes(' '))) {
     if (tableTimeyera.value.length === 0) {
       return 0;
@@ -158,7 +158,7 @@ const totalIntakeTime = computed(() => {
       total += hours;
     });
     return total;
-  } else {  // 如果没有日期
+} else {  // 如果没有日期
     if (tableTime.value.length === 0) {
       return 0;
     }
@@ -201,17 +201,25 @@ const showWidth = ref(2000);
 // echarts图表数据
 let waterdata = null;
 const init = (data) => {
+  markLineYAxis.value = 250;
   const now = new Date();
   let newAxisData;
   let seriesData;
 
-  const formatHour = (hour) => `${hour < 10 ? '0' : ''}${hour}:00`;
-  const formatDate = (date) => `${date.getMonth() + 1}月${date.getDate()}日 ${formatHour(date.getHours())}`;
+  const formatDate = (date) => {
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const hour = date.getHours();
+    return `${month}月${day}日 ${hour < 10 ? '0' : ''}${hour}:00`;
+  };
 
   if (dayradio.value === '24h(逐时预报)') {
     const currentHour = now.getHours();
-    const nextHour = (currentHour + 1) % 24;
-    newAxisData = Array.from({ length: 24 }, (_, i) => formatHour((nextHour + i) % 24));
+    newAxisData = Array.from({ length: 24 }, (_, i) => {
+      const date = new Date(now);
+      date.setHours(currentHour + i + 1);
+      return formatDate(date);
+    });
     seriesData = data.map(value => parseFloat(value.toFixed(2)));
   } else if (dayradio.value === '48h(逐时预报)') {
     const currentHour = now.getHours();
@@ -288,7 +296,7 @@ const init = (data) => {
             color: "#b7cffc",
             fontSize: 14,
           },
-          padding: [0, 0, 0, 40]
+          padding: [0, 0, 0, 30]
         },
         axisTick: { show: false },
         boundaryGap: false,
