@@ -78,7 +78,7 @@
     <table class="custom-table-right">
       <tr>
         <td>取水总时长</td>
-        <td>24h</td>
+        <td>{{ totalIntakeTime }}h</td>
       </tr>
       <tr>
         <td>取水时段</td>
@@ -86,19 +86,19 @@
           <div v-if="tableTime.length === 0">
             无取水时段
           </div>
-          <div v-else>
-            <tr v-for="(time, index) in tableTime" :key="index">
-              <td>{{ time }}</td>
-            </tr>
-          </div>
-        </td>
+          <div v-else style="display: flex; flex-direction: column; align-items: center;">
+      <tr v-for="(time, index) in tableTime" :key="index">
+        <td>{{ time }}</td>
       </tr>
-    </table>
+  </div>
+  </td>
+  </tr>
+  </table>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, watch } from "vue";
+import { ref, onMounted, onBeforeUnmount, watch, computed } from "vue";
 import * as echarts from "echarts";
 import * as XLSX from "xlsx";
 import axios from "axios";
@@ -125,6 +125,55 @@ const tableHeaders = {
   day2or3: ["今日最大盐度", "昨日最大盐度", "前日最大盐度", "今日三灶日最低潮位", "今日澳门风速", "今日马口平均流量", "今日潮波不对称性因子"]
 };
 const tableTime = ref([])
+const tableTimeyera = ref([])
+const totalIntakeTime = computed(() => {
+  // 如果有日期
+  if (tableTimeyera.value.some(timeStr => timeStr.includes(' '))) {
+    if (tableTimeyera.value.length === 0) {
+      return 0;
+    }
+    let total = 0;
+    tableTimeyera.value.forEach(period => {
+      const [startStr, endStr] = period.split('-');
+      // 解析开始时间
+      const startParts = startStr.trim().match(/(\d+)年(\d+)月(\d+)日 (\d+):(\d+)/);
+      const startYear = parseInt(startParts[1]);
+      const startMonth = parseInt(startParts[2]) - 1; // 月份从0开始
+      const startDay = parseInt(startParts[3]);
+      const startHour = parseInt(startParts[4]);
+      const startMinute = parseInt(startParts[5]);
+      const startTime = new Date(startYear, startMonth, startDay, startHour, startMinute);
+      // 解析结束时间
+      const endParts = endStr.trim().match(/(\d+)年(\d+)月(\d+)日 (\d+):(\d+)/);
+      const endYear = parseInt(endParts[1]);
+      const endMonth = parseInt(endParts[2]) - 1; // 月份从0开始
+      const endDay = parseInt(endParts[3]);
+      const endHour = parseInt(endParts[4]);
+      const endMinute = parseInt(endParts[5]);
+      const endTime = new Date(endYear, endMonth, endDay, endHour, endMinute);
+      // 计算时间差，转换为小时
+      const diffMs = endTime - startTime;
+      const hours = diffMs / (1000 * 60 * 60);
+      // 累加总时长
+      total += hours;
+    });
+    return total;
+  } else {  // 如果没有日期
+    if (tableTime.value.length === 0) {
+      return 0;
+    }
+    const parseTime = (timeStr) => {
+      const [hours, minutes] = timeStr.split(':').map(Number);
+      return hours + minutes / 60;
+    };
+    return tableTime.value.reduce((total, period) => {
+      const [start, end] = period.split('-');
+      const startTime = parseTime(start);
+      const endTime = parseTime(end);
+      return total + (endTime > startTime ? endTime - startTime : 24 - startTime + endTime);
+    }, 0).toFixed(0);
+  }
+});
 // 监听选择的预测范围
 watch(selectValue, (newValue) => {
   if (newValue === "平岗泵站" || newValue === "广昌泵站") {
@@ -409,9 +458,15 @@ const init = (data) => {
       }]
     });
     tableTime.value = formatTableTime(markAreaData);
-    console.log(markAreaData);
+    tableTimeyera.value = formatTableTimes(markAreaData);
   }
-
+  const formatTableTimes = (data) => {
+    const currentYear = new Date().getFullYear();
+    return data
+      .filter(item => item[0].xAxis !== item[1].xAxis)
+      .map(item => `${currentYear}年${item[0].xAxis}-${currentYear}年${item[1].xAxis}`);
+  };
+  tableTimeyera.value = formatTableTimes(markAreaData);
   const formatTableTime = (data) => {
     return data
       .filter(item => item[0].xAxis !== item[1].xAxis)
@@ -419,7 +474,6 @@ const init = (data) => {
   };
 
   tableTime.value = formatTableTime(markAreaData);
-  console.log(markAreaData);
 }
 
 // 关闭驱动模型的图表
