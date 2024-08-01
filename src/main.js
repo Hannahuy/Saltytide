@@ -10,8 +10,10 @@ import 'ant-design-vue/dist/reset.css';
 
 // axios.get('./public/config.json').then((res) => {
   // window.VITE_APP_BASE_API = res.data.VITE_APP_BASE_API;
-  const VITE_APP_BASE_API = 'http://192.168.0.124:5000/';
+  const VITE_APP_BASE_API = 'http://192.168.0.84:5000/';
+  const VITE_APP_SPBT_API = 'http://192.168.0.84:8080/';
   window.VITE_APP_BASE_API = VITE_APP_BASE_API;
+  window.VITE_APP_SPBT_API = VITE_APP_SPBT_API;
   const app = createApp(App)
   app.use(ElementPlus, {
       locale: zhCn,

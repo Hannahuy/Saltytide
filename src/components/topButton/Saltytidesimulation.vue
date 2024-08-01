@@ -3,23 +3,23 @@
     <div class="top-leftbox">
       <div class="top-leftbox-top" :class="{ active: activeTab === 'top' }" @click="toggleBox('top')">
         <img :src="activeTab === 'top'
-          ? littleBluetop
-          : bigBluetop
-          " alt="" class="top-leftbox-img" />
+        ? littleBluetop
+        : bigBluetop
+        " alt="" class="top-leftbox-img" />
         <span class="top-span">表层渲染</span>
       </div>
       <div class="top-leftbox-middle" :class="{ active: activeTab === 'middle' }" @click="toggleBox('middle')">
         <img :src="activeTab === 'middle'
-          ? littleBluemiddle
-          : bigBluemiddle
-          " alt="" class="top-leftbox-img2" />
+        ? littleBluemiddle
+        : bigBluemiddle
+        " alt="" class="top-leftbox-img2" />
         <span class="top-span">断面分析</span>
       </div>
       <div class="top-leftbox-bottom" :class="{ active: activeTab === 'bottom' }" @click="toggleBox('bottom')">
         <img :src="activeTab === 'bottom'
-          ? littleBluebottom
-          : bigBluebottom
-          " alt="" class="top-leftbox-img3" />
+        ? littleBluebottom
+        : bigBluebottom
+        " alt="" class="top-leftbox-img3" />
         <span>体渲染</span>
       </div>
       <div class="top-leftbox-middle-content" v-show="showtransversals">
@@ -140,15 +140,13 @@ import * as echarts from "echarts";
 import axios from "axios";
 import { callUIInteraction, addResponseEventListener, } from "../../module/webrtcVideo/webrtcVideo.js";
 import { ElMessage } from 'element-plus'
+import { ElLoading } from 'element-plus'
 import littleBluetop from '../../assets/image/表层渲染-浅蓝.png'
 import bigBluetop from '../../assets/image/表层渲染-深蓝.png'
 import littleBluemiddle from '../../assets/image/断面分析-浅蓝.png'
 import bigBluemiddle from '../../assets/image/断面分析-深蓝.png'
 import littleBluebottom from '../../assets/image/体渲染-浅蓝.png'
 import bigBluebottom from '../../assets/image/体渲染-深蓝.png'
-import imageindexone from '../../assets/dataImg/1aa4dcbb0bdeecd96083f41e35f910e.png'
-import imageindextwo from '../../assets/dataImg/f11baccb8e23beb13656810a1757a87.png'
-import imageindexthree from '../../assets/dataImg/89414d47203f8e5fd56cf15b9520970.png'
 
 // const timePick = ref(new Date());
 const timePick = ref(dayjs("2023-11-16").toDate());
@@ -179,7 +177,7 @@ const showEcharts = ref(false);
 const showsalinityEcharts = ref(false);
 const Zaxis = ref(0);
 const threshold = ref(0);
-const transversalsEchartsimg = ref(imageindexone);
+const transversalsEchartsimg = ref();
 const transversalsvalue = ref("自定义绘制断面");
 const transversalsoptions = [
   {
@@ -283,12 +281,6 @@ const getselect = (e) => {
     });
   }
 };
-// 图片路径   顺序切换图片
-const imagePaths = [imageindexthree, imageindextwo, imageindexone,];
-let currentImagePathIndex = 0;
-const updateImage = () => {
-  transversalsEchartsimg.value = imagePaths[currentImagePathIndex];
-};
 // 倒退
 let lastClickTime = 0;
 let handleTime = false;
@@ -307,6 +299,16 @@ const Backoff = () => {
   }
   const previousTime = timePlay.value;
   timePlay.value = dayjs(previousTime).subtract(1, 'hour').valueOf();
+  if (showEcharts.value = true) {
+    // 调用接口
+    const formattedTime = dayjs(timePlay.value).format('YYYY-MM-DD-HH');
+    const datajson = {
+      Function: '河道中心断面选取',
+      河段: riverduan.value,
+      date: formattedTime
+    };
+    myHandleResponseFunction(JSON.stringify(datajson));
+  }
   if (tabtimeName.value === '断面分析') {
     if (getselectmenu.value === '河道中心断面') {
       callUIInteraction({
@@ -322,9 +324,6 @@ const Backoff = () => {
       function: `咸潮模拟${tabtimeName.value}时间轴/` + dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'),
     });
   }
-  transversalsEchartsimg.value = imagePaths[currentImagePathIndex];
-  currentImagePathIndex = (currentImagePathIndex - 1 + imagePaths.length) % imagePaths.length;
-  updateImage();
 };
 // 暂停/播放
 let previousPlayState = "";
@@ -350,6 +349,7 @@ const togglePlay = () => {
 };
 // 前进
 const Fastforward = () => {
+  console.log(riverduan.value);
   handleTime = true;
   if (tabtimeName.value === '体渲染') {
     const currentTime = Date.now();
@@ -364,6 +364,16 @@ const Fastforward = () => {
   }
   const previousTime = timePlay.value;
   timePlay.value = dayjs(previousTime).add(1, 'hour').valueOf();
+  if (showEcharts.value = true) {
+    // 调用接口
+    const formattedTime = dayjs(timePlay.value).format('YYYY-MM-DD-HH');
+    const datajson = {
+      Function: '河道中心断面选取',
+      河段: riverduan.value,
+      date: formattedTime
+    };
+    myHandleResponseFunction(JSON.stringify(datajson));
+  }
   if (tabtimeName.value === '断面分析') {
     if (getselectmenu.value === '河道中心断面') {
       callUIInteraction({
@@ -379,10 +389,8 @@ const Fastforward = () => {
       function: `咸潮模拟${tabtimeName.value}时间轴/` + dayjs(timePlay.value).format('YYYY-MM-DD HH:mm:ss'),
     });
   }
-  transversalsEchartsimg.value = imagePaths[currentImagePathIndex];
-  currentImagePathIndex = (currentImagePathIndex + 1) % imagePaths.length;
-  updateImage();
 };
+
 
 // const min = ref(dayjs().startOf('day').valueOf());
 // const max = ref(dayjs().endOf('day').valueOf());
@@ -514,9 +522,6 @@ const anewtop = () => {
 const finishtop = () => {
   var formattedTime = dayjs(timePlay.value).format("YYYY-MM-DD HH:mm:ss");
   if (transversalsvalue.value === "河道中心断面") {
-    showEcharts.value = true;
-    firstSpanText.value = "河道中心断面";
-    secondSpanText.value = "river center section";
     callUIInteraction({
       function:
         "河道中心断面_完成/" +
@@ -575,7 +580,9 @@ const salinityinit = (data) => {
     salinitydata.dispose();
   }
   salinitydata = echarts.init(salinityChartElement);
-  data = data.map(value => parseFloat(value).toFixed(2));
+  // 提取 X 轴和 Y 轴数据
+  const xData = Object.keys(data); // 获取时间
+  const yData = Object.values(data).map(value => parseFloat(value).toFixed(2)); // 获取盐度值并格式化
   const options = {
     visualMap: [
       {
@@ -590,13 +597,14 @@ const salinityinit = (data) => {
       trigger: 'axis'
     },
     xAxis: {
-      data: Array.from({ length: 24 }, (_, i) => `${i}:00`),
+      data: xData, // 使用提取的时间作为 X 轴数据
       axisLabel: {
         show: true,
         textStyle: {
           color: "#b7cffc",
           fontSize: 14,
         },
+        padding: [0, 0, 0, 30]
       },
     },
     yAxis: {
@@ -627,16 +635,22 @@ const salinityinit = (data) => {
         type: 'line',
         showSymbol: false,
         name: '盐度值',
-        data: data,
+        data: yData, // 使用提取的盐度值作为 Y 轴数据
         lineStyle: { // 添加lineStyle属性
-          width: 5 // 设置线条粗细为2
+          width: 3 // 设置线条粗细为5
         }
       }
     ],
-    grid: { x: 30, y: 30, x2: 5, y2: 25 },
+    grid: { x: 35, y: 30, x2: 5, y2: 25 },
   };
   salinitydata.setOption(options);
 };
+const config = {
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded',
+  },
+}
+const riverduan = ref()
 // 接收来自UE的传值
 const myHandleResponseFunction = (data) => {
   const datajson = JSON.parse(data);
@@ -649,14 +663,27 @@ const myHandleResponseFunction = (data) => {
       type: 'warning',
     });
   } else if (datajson.Type == '表层盐度点击查询') {
-    axios.get(window.VITE_APP_BASE_API + `get_raster_value?lat=${latValue}&lon=${lonValue}`).then((res) => {
-      if (res.data.success === true) {
-        if (res.data.values) {
+    const loading = ElLoading.service({
+      lock: true,
+      text: '正在查询中...',
+      background: 'rgba(0, 0, 0, 0.7)',
+    })
+    axios.get(window.VITE_APP_SPBT_API + `salinity/getSalinityTimesStatistics?lat=${latValue}&lon=${lonValue}`, config).then((res) => {
+      if (res.data.code === 1) {
+        if (res.data.data || res.data.data.timesSalinityMap) {
           showsalinityEcharts.value = true;
-          salinityinit(res.data.values);
+          salinityinit(res.data.data.timesSalinityMap);
+          loading.close()
         } else {
           showsalinityEcharts.value = false;
         }
+      } else {
+        ElMessage({
+          message: res.data.msg,
+          type: 'warning',
+        });
+        loading.close()
+        showsalinityEcharts.value = false;
       }
     }).catch((err) => {
       console.error(err);
@@ -689,17 +716,71 @@ const myHandleResponseFunction = (data) => {
       lat = 22.388227;
     }
     if (lon && lat) {
-      axios.get(window.VITE_APP_BASE_API + `get_raster_value?lat=${lat}&lon=${lon}`).then((res) => {
-        if (res.data.success === true) {
-          if (res.data.values) {
+      const loading = ElLoading.service({
+        lock: true,
+        text: '正在查询中...',
+        background: 'rgba(0, 0, 0, 0.7)',
+      })
+      axios.get(window.VITE_APP_SPBT_API + `salinity/getSalinityTimesStatistics?lat=${lat}&lon=${lon}`, config).then((res) => {
+        if (res.data.code === 1) {
+          if (res.data.data || res.data.data.timesSalinityMap) {
             showsalinityEcharts.value = true;
-            salinityinit(res.data.values);
+            salinityinit(res.data.data.timesSalinityMap);
+            loading.close()
           } else {
             showsalinityEcharts.value = false;
           }
+        } else {
+          ElMessage({
+            message: res.data.msg,
+            type: 'warning',
+          });
+          loading.close()
+          showsalinityEcharts.value = false;
         }
       }).catch((err) => {
         console.error(err);
+      });
+    }
+  } else if (datajson.Function == '河道中心断面选取') {
+    if (datajson.河段 == '') {
+      ElMessage({
+        message: '请选择河段',
+        type: 'warning',
+      });
+      return
+    } else {
+      const formattedTime = dayjs(timePlay.value).format('YYYY-MM-DD-HH');
+      riverduan.value = datajson.河段;
+      const data = JSON.stringify({
+        date: formattedTime,
+        lineIndex: riverduan.value
+      });
+      const loading = ElLoading.service({
+        lock: true,
+        text: '正在生成中...',
+        background: 'rgba(0, 0, 0, 0.7)',
+      })
+      axios.post(window.VITE_APP_SPBT_API + `salinity/getCrossSectionImage`, data, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then((res) => {
+        if (res.data.code === 1) {
+          transversalsEchartsimg.value = `${res.data.data.image}`;
+          loading.close()
+          showEcharts.value = true;
+          firstSpanText.value = "河道中心断面";
+          secondSpanText.value = "river center section";
+        } else {
+          ElMessage({
+            message: res.data.msg,
+            type: 'warning',
+          });
+          loading.close()
+        }
+      }).catch((error) => {
+        console.error("Error occurred:",);
       });
     }
   }
@@ -908,7 +989,7 @@ onBeforeUnmount(() => {
 }
 
 :deep(.el-input__inner) {
-  margin-right: 20px;
+  margin-right: 15px;
   color: rgb(0, 113, 204);
   cursor: pointer;
 }

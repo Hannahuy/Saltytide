@@ -30,7 +30,7 @@
         <span>Monitoring information</span>
       </div>
       <div style="display: flex;align-items: center;justify-content: center;">
-        <a-range-picker dropdownClassName="rangePickerIceGai" style="width:380px;margin-top: 10px;" v-model:value="selectedTimeRange" show-time />
+        <a-range-picker style="width:380px;margin-top: 10px;" v-model:value="selectedTimeRange" show-time />
         <el-button class="buttonserch" type="primary" @click="handleSearch">查询</el-button>
       </div>
       <div id="WaterCharts"></div>
