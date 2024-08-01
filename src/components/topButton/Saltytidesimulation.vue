@@ -299,7 +299,7 @@ const Backoff = () => {
   }
   const previousTime = timePlay.value;
   timePlay.value = dayjs(previousTime).subtract(1, 'hour').valueOf();
-  if (showEcharts.value = true) {
+  if (showEcharts.value == true) {
     // 调用接口
     const formattedTime = dayjs(timePlay.value).format('YYYY-MM-DD-HH');
     const datajson = {
@@ -364,7 +364,7 @@ const Fastforward = () => {
   }
   const previousTime = timePlay.value;
   timePlay.value = dayjs(previousTime).add(1, 'hour').valueOf();
-  if (showEcharts.value = true) {
+  if (showEcharts.value == true) {
     // 调用接口
     const formattedTime = dayjs(timePlay.value).format('YYYY-MM-DD-HH');
     const datajson = {
